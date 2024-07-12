@@ -1,0 +1,96 @@
+.deconnexion_compte{
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom:0;
+    position:fixed;
+    background:var(--color-primary);
+}
+.parent_form{
+    position: absolute;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    top: 50%;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 30px;
+    padding-bottom: 40px !important;
+    border-radius: 5px;
+    text-align: center;
+}
+.parent_form h1{
+    font-size: 30px;
+    color: var(--color-primary);
+}
+.hablamundo_form{
+    width: 200px;
+    height: 50px;
+    object-fit: cover;
+    position: absolute;
+    top: 50px;
+    left: 30px;
+}
+.form{
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+.error{
+    color:#D73030;
+}
+.space_signup{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    position: relative;
+}
+.space_signup label{
+   text-align: left;
+   color: black;
+   font-size: 16px;
+   font-weight: 550;
+}
+.space_signup input{
+    width: 100%;
+    border-radius: 5px;
+    border: 1px solid #909090;
+    padding-left:10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    outline: none;
+ }
+ .eyes{
+    position: absolute;
+    width: 20px;
+    height: 15px;
+    color: #909090;
+    right: 10px;
+    top: 36px;
+ }
+ .space_signup input ::placeholder{
+   color: #909090;
+   font-size: 12px;
+ }
+ .forgot_password{
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    transform: translate3d(0,-15px,0);
+    cursor: pointer;
+ }
+ .connexion{
+    text-align: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border: none;
+    border-radius: 5px;
+    outline: none;
+    font-size: 14px;
+    background: var( --color-secondary);
+    color: white;
+    cursor: pointer;
+ }

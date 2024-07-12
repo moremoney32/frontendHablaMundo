@@ -1,0 +1,235 @@
+.parent_main{
+  background:white;
+  width:100%;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 45px;
+  display: flex;
+  flex-direction: column;
+  gap:22px;
+}
+.sous_parent_main_messages{
+ display: flex;
+ flex-direction: column;
+ gap: 10px;
+}
+.parent_messages{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-radius: 5px;
+  background: white;
+  align-items: center;
+border: 1px solid #0084FA1A;
+}
+.active{
+  background-color:#0084FA0D;
+}
+.parent_messages1{
+  display: flex;
+ gap: 10px;
+ align-items: center;
+ width:600px;
+}
+#masque{
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background:black;
+  opacity: 0.8;
+  z-index: 5;
+}
+#answer_client{
+background: white;
+  width: 50%;
+  margin: auto;
+  position: relative;
+  padding: 10px;
+  border-radius: 5px;
+  z-index: 2000;
+  /* height:95vh; */
+  position: fixed;
+  top:20px;
+  /* bottom:20px; */
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px !important;
+  padding-bottom: 100px;
+}
+.close{
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  width: 15px;
+  height: 15px;
+  color: grey;
+  cursor: pointer;
+}
+.parent_messages2{
+ font-size: 13px;
+ color: #42444B;
+ transform: translate3d(0,10px,0);
+}
+.infos_messages{
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.infos_messages_child1{
+  font-size: 14px;
+  color: black;
+  font-weight: 600;
+}
+.infos_messages_child2{
+  font-size: 12px;
+  color: black;
+}
+.parent_messages3{
+  border-radius: 5px;
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+  align-items: center;
+  border: 1px solid var(--color-primary);
+  background: white;
+  cursor: pointer;
+}
+
+.message{
+  width: 30px;
+  height: 30px;
+}
+.next{
+  width: 10px;
+  height: 10px;
+}
+.parent_messages3 span{
+  font-size: 11px;
+  color: var(--color-primary);
+}
+#answer_client p{
+  font-size: 14px;
+}
+.answer_client_name{
+  font-size: 17px;
+  font-weight: 550;
+  color: black;
+}
+.answer_client_messages{
+  font-size: 12px;
+  transform: translate3d(0,-10px,0);
+}
+.answer_client_img{
+  display: flex;
+  gap:15px;
+}
+.answer_form{
+  transform: translate3d(0,30px,0);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+}
+.objet_mail{
+  display: flex;
+  justify-content: space-between;
+}
+.objet{
+  font-size: 14px;
+  color: black;
+  font-weight: 550;
+}
+.objet_mail_chil1{
+  font-size: 14px;
+  color: black;
+  font-weight: 550;
+}
+.objet_mail_chil2{
+  font-size: 11px;
+  color:#090A0E;
+}
+.answer_email_input{
+  width: 100%;
+  border-radius: 5px;
+  border: 1px solid #909090;
+  padding-left:10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  outline: none;
+
+}
+.answer_mail_description{
+  display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.answer_mail_description label{
+  text-align: left;
+    color: black;
+    font-size: 14px;
+    font-weight: 550;
+}
+.answer_mail_sous_description{
+  border: 1px solid #BEBEBE;
+  border-radius: 5px;
+  padding-top: 5px;
+  background: white;
+}
+.answer_mail_sous_description_img{
+  display: flex;
+  gap: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #909090;
+  padding-left: 20px;
+}
+.img_answer_profession{
+  width:12px;
+  height:12px;
+  cursor: pointer;
+}
+.links{
+  width: 18px !important;
+  height: 18px !important;
+  transform: translate3d(0,-4px,0);
+  }
+  .lists{
+      width: 18px !important;
+      height: 18px !important; 
+      transform: translate3d(0,-4px,0); 
+  }
+  .upload{
+    width: 18px !important;
+      height: 18px !important; 
+      transform: translate3d(0,-4px,0); 
+  }
+  .textarea_answer{
+    font-size: 16px;
+  border: none;
+  outline: none;
+  padding-left: 20px;
+  padding-top: 10px;
+  padding-right: 20px;
+  padding-bottom: 25px;
+  height: 150px !important; 
+ overflow-y: auto;
+  }
+  .send_mail{
+    background: var(--color-primary);
+   width: 200px;
+   position: absolute;
+   right: 0px;
+   bottom:-50px;
+   text-align: center;
+   border: none;
+   border-radius: 5px; 
+   padding-top: 10px;
+   padding-bottom: 10px;
+   color: white;
+   cursor: pointer;
+  }

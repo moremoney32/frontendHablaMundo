@@ -1,0 +1,13 @@
+.parent_main{
+    background:white;
+    width:100%;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 45px;
+    display: flex;
+    flex-direction: column;
+    gap:22px;
+  }
+  .sous_parent_main{
+    background: violet;
+  }

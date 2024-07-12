@@ -1,0 +1,69 @@
+@import url('../../../../index.css');
+.header{
+    padding-top:13px;
+   padding-bottom:13px;
+   padding-left: 30px;
+   padding-right: 30px; 
+   background-color:var(--color-primary);
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   /* position: fixed;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
+  height: 70px; */
+ }
+ .header_main{
+  display: flex;
+  gap: 5px;
+ }
+ .header_main :nth-child(1){
+ font-size:23px;
+ color: black;
+ font-weight: 550;
+ }
+ .header_main :nth-child(2){
+  font-size:23px;
+  color:var(--color-primary);
+  font-weight: 550;
+  }
+ .header_left{
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.header_left :nth-child(1){
+  width: 30px;
+  height: 30px;
+}
+.header_left :nth-child(2){
+  width: 200px;
+  height: 40px;
+  object-fit: cover;
+}
+.header_right{
+  display: flex;
+  gap: 25px;
+  align-items: center;
+}
+.parent_notifications{
+  width: 25px;
+  height: 25px;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.parent_notifications img{
+  width: 15px;
+  height: 15px;
+}
+.photo_profil{
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 50%;
+  object-fit: cover !important;
+}
+

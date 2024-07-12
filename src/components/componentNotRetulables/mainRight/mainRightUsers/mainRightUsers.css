@@ -1,0 +1,185 @@
+.parent_main{
+  background:white;
+  width:100%;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 45px;
+  display: flex;
+  flex-direction: column;
+  gap:22px;
+}
+.sous_parent_main_users{
+  background:white;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+.sous_parent_main_users_header{
+  display: flex;
+  gap: 20px;
+}
+.sous_parent_main_users_header_input{
+  width: calc(100% - 170px) !important;
+  position: relative;
+}
+.input_users{
+  width: 100%; 
+  border-radius: 5px;
+  border: 1px solid #909090;
+  padding-left:10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  outline: none;
+}
+.parent_abonnes{
+  display: flex;
+  padding: 7px;
+ justify-content: space-between;
+  border: 1px solid #BEBEBE;
+  outline: none;
+  border-radius: 5px;
+  align-items: center;
+  cursor: pointer;
+  width: 150px;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+.parent_abonnes span{
+ font-size: 14px;
+}
+.down_user{
+  width: 14px;
+  height: 14px;
+}
+.parent_search_users{
+  position:absolute;
+  right: 0;
+  top:0px;
+  background: var(--color-primary);
+  border-radius: 5px;
+  padding-left: 12px;
+  padding-right: 12px;
+  height:100%;
+  padding-top: 10px;
+  cursor: pointer;
+}
+.search_users{
+  width: 18px;
+  height:18px;
+  object-fit: cover;
+}
+.sous_parent_main_users_information{
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+}
+.sous_parent_main_users_information-child1{
+  width: 100%;
+  display: flex;
+ justify-content: space-between; 
+}
+.sous_parent_main_users_information-child1 span{
+  width:calc((100% / 5) - 125px / 5);
+  color: black;
+  font-size:14px;
+  font-weight: 550;
+}
+.sous_parent_main_users_information-child2{
+  width: 100%;
+  display: flex;
+ justify-content: space-between; 
+ background: #0084FA0D;
+  padding: 10px;
+  border-radius: 5px;
+  align-items: center;
+}
+.sous_parent_main_users_information-child2 div{
+  width:calc((100% / 5) - 125px / 5);
+  cursor: pointer;
+}
+.prenom{
+  display:flex;
+  gap:5px;
+  align-items: center;
+}
+.prenom img{
+  width: 30px;
+  height: 30px;
+}
+.prenom span{
+  color:black !important;
+  font-size: 800 !important;
+  font-size: 15px;
+}
+.user_adress_mail{
+  color:#42444B;
+  font-size: 13px;
+}
+.user_inscription{
+  color:#42444B;
+  font-size: 14px;
+}
+.status{
+  font-size: 14px;
+}
+.status-abonne{
+  color: var(--color-primary) !important;
+}
+.action{
+  display:flex;
+  gap:5px;
+  justify-content:space-between;
+  background:white;
+  align-items:center;
+  padding: 5px;
+  border-radius: 5px;
+  padding-left: 15px;
+  padding-right: 15px;
+  cursor: pointer;
+}
+.action img{
+  width: 15px;
+  height: 15px;
+}
+.action span{
+  font-size:14px;
+}
+.pagination{
+  display: flex;
+  justify-content: space-between;
+}
+.pagination_nbrs_pages{
+  font-size: 12px;
+}
+.counter{
+  display: flex;
+  gap: 5px;
+}
+.direction_icons{
+   display: flex; 
+   gap: 10px; 
+   align-items: center;
+   cursor: pointer;
+   height: 30px;
+}
+.icons_pagination{
+  color: #42444B;
+}
+.non_active{
+  color: #42444B;
+  padding-left: 10px;
+  padding-right: 10px;
+  height:30px !important;
+  line-height: 30px;
+}
+.active_page{
+  color: white;
+  border-radius: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  background: var(--color-primary);
+  height:30px !important;
+  line-height: 30px;
+
+}

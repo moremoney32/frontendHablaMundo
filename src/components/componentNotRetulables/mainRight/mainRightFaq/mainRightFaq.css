@@ -1,0 +1,198 @@
+
+.sous_parent_main_faq{
+    padding-top: 20px;
+    display: flex;
+    gap: 45px;
+    flex-wrap: wrap; 
+  }
+  .sous_parent_main_faq_left{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+     width:calc((100% / 2) - 50px / 2); 
+  }
+  .question{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .question label{
+    text-align: left;
+    color: black;
+    font-size: 16px;
+    font-weight: 550;
+  }
+  .question input{
+    width: 100%;
+    border-radius: 5px;
+    border: 1px solid #909090;
+    padding-left:10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    outline: none;
+  }
+  .question input ::placeholder{
+    color: #909090;
+    font-size: 12px;
+  }
+  .error{
+    color: #D73030;
+  }
+  .description{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .description label{
+    text-align: left;
+    color: black;
+    font-size: 16px;
+    font-weight: 550;
+  }
+  .sous_description{
+    border: 1px solid #BEBEBE;
+    border-radius: 5px;
+    padding-top: 5px;
+    background: white;
+  }
+  .sous_description_img{
+    display: flex;
+    gap: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #909090;
+    padding-left: 20px;
+  }
+ 
+  .textarea{
+  font-size: 16px;
+  border: none;
+  outline: none;
+  padding-left: 20px;
+  padding-top: 10px;
+  padding-right: 20px;
+  padding-bottom: 25px;
+  height: 150px !important; 
+ overflow-y: auto;
+  }
+
+  .textarea ::placeholder{
+    color:#909090;
+    font-size: 12px;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  }
+  .sous_parent_main_faq_right{
+    width:calc((100% / 2) - 50px / 2);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .link{
+    width: 18px !important;
+    height: 18px !important;
+    transform: translate3d(0,-5px,0);
+    }
+    .list{
+        width: 18px !important;
+        height: 18px !important; 
+        transform: translate3d(0,-5px,0); 
+    }
+    .upload{
+      width: 18px !important;
+        height: 18px !important; 
+        transform: translate3d(0,-4px,0); 
+    }
+    .underline{
+        width: 13px !important;
+        height: 13px !important; 
+    }
+    .italique{
+        width: 6px !important;
+        height: 10px !important; 
+        object-fit: cover;
+    }
+    .police{
+        border-bottom: 2px solid black !important;
+        padding-bottom: 2px !important;
+    }
+    .img_profession{
+        width:12px;
+        height:12px;
+        cursor: pointer;
+    }
+    .text_gras{
+        font-weight: 600;
+    }
+    .text_underline{
+        text-decoration: underline;
+    }
+    .button_description{
+      text-align: center;
+      color: white;
+      background: var(--color-primary);
+      padding-top: 10px;
+      padding-bottom: 10px;
+      border-radius: 5px;
+      border: none;
+      outline: none;
+      cursor: pointer;
+    }
+    .parent_description_question{
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+    }
+    .description_question{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+    }
+    .active{
+      background: #0084FA1A;
+      border-top-left-radius: 5px;
+      border-top-right-radius: 5px;
+      border-bottom: none;
+      color:#0084FA1A;
+    }
+     .colorActive{
+      color:var(--color-primary) !important;
+    } 
+    .icons_active{
+      color:var(--color-primary) !important;
+      transform: rotate(180deg) !important;
+      width: 12px !important;
+      height: 12px !important;
+      cursor: pointer;
+    }
+    .icons_inactive{
+      color:grey !important;
+      width: 12px !important;
+      height: 12px !important;
+      transform: rotate(0deg) !important;
+      cursor: pointer;
+    }
+    .description_question_span{
+      color: grey;
+      width: 250px;
+    }
+    .description_answer{
+      width: 100%;
+      padding-left: 10px;
+      padding-right: 10px;
+      padding-bottom: 10px;
+      border-bottom-left-radius: 5px;
+      border-bottom-right-radius: 5px;
+      background: #0084FA1A;
+      color: grey;
+      border-top: none;
+      transform: translate3d(0,-16px,0);
+    }
+    .remove{
+      position: absolute;
+      width:15px;
+      height: 15px;
+      right: 10px;
+      cursor: pointer;
+      bottom: 10px;
+    }

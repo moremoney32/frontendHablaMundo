@@ -1,0 +1,66 @@
+.main_left{
+    width: 13%;
+    border-right: 2px solid #D6EBFF;
+    text-align: center;
+    padding-right: 10px;
+    padding-left: 10px;
+    padding-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap:100px;
+     /* position: fixed;
+   top: 70px; 
+    left: 0;
+    height: calc(100% - 60px);
+    z-index: 1000; */
+  }
+  .main_child_left{
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    width:fit-content;
+    width: 100%;
+  }
+  .navlink{
+    text-decoration: none !important;
+    color: inherit;
+    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out; 
+  }
+  .icon_default {
+    width:15px !important;
+    height: 25px !important;
+    color: grey;
+    transform: translate3d(0,-1px,0);
+    font-size: 18px;
+  }
+  .icon_default_black {
+    width:13px !important;
+    height: 13px !important;
+    color:black;
+     transform: translate3d(0,-1px,0); 
+    font-size: 18px;
+  }
+  
+  /* Classe pour les icônes actives */
+  .icon_active {
+    color: var(--color-primary);
+  }
+  .active{
+    border-radius: 5px !important;
+    background-color: #0084FA1A;
+    color:var(--color-primary) !important;
+    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out; 
+  }
+.deconnexion{
+  border:1px solid #D73030;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-radius: 20px;
+  color: #D73030;
+  background: white;
+  font-size: 13px;
+  cursor: pointer;
+}
+ 
