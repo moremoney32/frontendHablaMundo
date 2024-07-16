@@ -7,6 +7,7 @@ import { Messages } from './pages/messages/Messages';
 import { Faq } from './pages/faq/Faq';
 import {Deconnexion} from './pages/deconnexion/Deconnexion';
 import { Comptes } from './pages/comptes/Comptes';
+import { SousThematiques } from './pages/sousThematiques/SousThematiques';
 
 function App() {
   return (
@@ -19,7 +20,8 @@ function App() {
             <Route path="/message" element={<Messages />} />
             <Route path="/faq" element={<Faq />} />
             <Route path="/comptes" element={<Comptes />} />
-            <Route path="/" element={<Deconnexion />} />
+            <Route path="/sousThematiques" element={<SousThematiques/>}/>
+            <Route path="/" element={<Deconnexion />}/>
           </Routes>
       </div>
     </BrowserRouter>

@@ -25,24 +25,30 @@
 .input_users{
   width: 100%; 
   border-radius: 5px;
-  border: 1px solid #909090;
+  border: 1px solid #BEBEBE;
   padding-left:10px;
   padding-top: 10px;
   padding-bottom: 10px;
   outline: none;
 }
+.select{
+  display: flex;
+  flex-direction: column;
+  width: 150px;
+}
 .parent_abonnes{
   display: flex;
-  padding: 7px;
+  padding-top: 9px;
+  padding-bottom: 9px;
+  padding-left: 15px;
+  padding-right: 15px;
  justify-content: space-between;
   border: 1px solid #BEBEBE;
   outline: none;
   border-radius: 5px;
   align-items: center;
   cursor: pointer;
-  width: 150px;
-  padding-left: 15px;
-  padding-right: 15px;
+  width:100%;
 }
 .parent_abonnes span{
  font-size: 14px;
@@ -50,6 +56,41 @@
 .down_user{
   width: 14px;
   height: 14px;
+}
+
+.icon_zIndex{
+  color: #909090;
+z-index: 3000;
+}
+.option{
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  width: 150px !important;
+  display: flex;
+  flex-direction: column;
+  background:white;
+  position: absolute;
+  /* transform: translate3d(0,64px,0); */
+  border: 1px solid rgba(0,0,0,0.05);
+  z-index: 2000;
+  max-height:150px !important;
+  /* overflow-y: auto; */
+}
+.option span{
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 12px;
+  text-align: left;
+  color:black;
+  border-bottom: 1px solid #fafafa;
+   opacity: 0.8;
+   font-size: 16px;
+   transition: 1s;
+   cursor: pointer;  
+}
+.option span:hover{
+  background:var(--color-secondary);
+  color: white;
 }
 .parent_search_users{
   position:absolute;
@@ -91,6 +132,7 @@
  justify-content: space-between; 
  background: #0084FA0D;
   padding: 10px;
+  /* padding-right: 50px !important; */
   border-radius: 5px;
   align-items: center;
 }
@@ -128,15 +170,16 @@
 }
 .action{
   display:flex;
-  gap:5px;
-  justify-content:space-between;
-  background:white;
+justify-content: space-between;
+   width:120px !important;
+  background:white !important;
   align-items:center;
   padding: 5px;
   border-radius: 5px;
-  padding-left: 15px;
-  padding-right: 15px;
+  padding-left: 10px;
+  padding-right: 10px;
   cursor: pointer;
+  
 }
 .action img{
   width: 15px;

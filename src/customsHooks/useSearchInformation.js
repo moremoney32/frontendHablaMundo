@@ -20,53 +20,31 @@ export function useSearchInformation(arrayInformation) {
           });
         };
   
-        // const searchLevel = () => {
-        //   return new Promise((resolve) => {
-        //     const searchLevel = arrayInformation.filter((infos) => infos.level);
-        //     const searchNamesLevel = searchLevel.filter((infos) => {
-        //       if (infos.level.toLowerCase().includes(userInformation.toLowerCase())) {
-        //         return infos;
-        //       }
-        //     });
-        //     return resolve(searchNamesLevel);
-        //   });
-        // };
-        // const searchSkills = () => {
-        //   return new Promise((resolve) => {
-        //     const searchSkills = arrayInformation.filter((infos) => infos.skills);
-        //     const searchNamesSkills = searchSkills.filter((infos) => {
-        //       if (infos.skills.toLowerCase().includes(userInformation.toLowerCase())) {
-        //         return infos;
-        //       }
-        //     });
-        //     return resolve(searchNamesSkills);
-        //   });
-        // };
-        // const searchCity = () => {
-        //   return new Promise((resolve) => {
-        //     const searchCity = arrayInformation.filter((infos) => infos.city);
-        //     const searchNamesCity = searchCity.filter((infos) => {
-        //       if (infos.city.toLowerCase().includes(userInformation.toLowerCase())) {
-        //         return infos;
-        //       }
-        //     });
-        //     return resolve(searchNamesCity);
-        //   });
-        // };
-        // const searchEstablishment = () => {
-        //   return new Promise((resolve) => {
-        //     const searchSchool = arrayInformation.filter((school) => school.establishment);
-        //     const searchNamesEstablishment = searchSchool.filter((school) => {
-        //       if (school.establishment.toLowerCase().includes(userInformation.toLowerCase())) {
-        //         return school;
-        //       }
-        //     });
-        //     return resolve(searchNamesEstablishment);
-        //   });
-        // };
+        const searchAbonnes = () => {
+          return new Promise((resolve) => {
+            const searchnewAbonnes = arrayInformation.filter((infos) => infos.status);
+            const searchNamesAbonnes = searchnewAbonnes.filter((infos) => {
+              if (infos.status.toLowerCase().includes(userInformation.toLowerCase())) {
+                return infos;
+              }
+            });
+            return resolve(searchNamesAbonnes);
+          });
+        };
+        const allUsers = () => {
+          return new Promise((resolve) => {
+            const searchUsers = arrayInformation.filter((infos) => infos.status);
+            const searchNamesUsers = searchUsers.filter((infos) => {
+              if (infos.status.toLowerCase().includes(userInformation.toLowerCase() === false)) {
+                return searchUsers;
+              }
+            });
+            return resolve(searchNamesUsers);
+          });
+        };
   
-        Promise.all([searchName()]).then((response) => {
-          const results = [...response[0]];
+        Promise.all([searchName(),searchAbonnes(),allUsers()]).then((response) => {
+          const results = [...response[0],...response[1],...response[2]];
           const filterDoublon = [...new Set(results)];
           setSearchResults(filterDoublon);
           return resolve(filterDoublon);

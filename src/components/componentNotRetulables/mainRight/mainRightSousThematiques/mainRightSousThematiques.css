@@ -1,0 +1,19 @@
+.parent_main{
+    width:100%;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 45px;
+    display: flex;
+    flex-direction: column;
+    gap:22px;
+  }
+  .parent_header_sous_thematiques{
+    transform: translate3d(0,-10px,0);
+  }
+  .sous_parent_main_sous_theme{
+    background:white;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+  }
+ 

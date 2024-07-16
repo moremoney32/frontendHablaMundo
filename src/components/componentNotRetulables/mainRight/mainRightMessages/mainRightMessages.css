@@ -19,12 +19,12 @@
   align-items: center;
   padding: 10px;
   border-radius: 5px;
-  background: white;
+   background-color:#0084FA0D; 
   align-items: center;
 border: 1px solid #0084FA1A;
 }
-.active{
-  background-color:#0084FA0D;
+.active_message{
+   background: white !important; 
 }
 .parent_messages1{
   display: flex;
@@ -50,10 +50,8 @@ background: white;
   padding: 10px;
   border-radius: 5px;
   z-index: 2000;
-  /* height:95vh; */
   position: fixed;
   top:20px;
-  /* bottom:20px; */
   left: 0;
   right: 0;
   display: flex;
@@ -156,7 +154,7 @@ background: white;
 .answer_email_input{
   width: 100%;
   border-radius: 5px;
-  border: 1px solid #909090;
+  border: 1px solid #BEBEBE;
   padding-left:10px;
   padding-top: 10px;
   padding-bottom: 10px;

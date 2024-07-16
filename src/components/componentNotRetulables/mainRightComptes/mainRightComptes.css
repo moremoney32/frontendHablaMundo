@@ -101,7 +101,7 @@
     font-weight: 550;
   }
   .space_infos input{
-    border: 1px solid grey;
+    border: 1px solid #BEBEBE;
     padding: 10px;
     outline: none;
     cursor: pointer;

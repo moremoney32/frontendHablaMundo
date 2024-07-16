@@ -18,37 +18,44 @@ import "./mainRightUsers.css";
 import "../mainRightMessages/mainRightMessages.css";
 import { faAngleDown, faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { useSearchInformation } from "../../../../customsHooks/useSearchInformation";
+import { Select } from "../../select/Select";
 
 export const MainRightUsers = () => {
     const { register, handleSubmit, formState: { errors, isValid }, watch, setValue } = useForm();
     const dataUser = [
         { name: "Gaelle Tamho", id: "1", email: "jugalux111@gmail.com", inscription: "20/01/2023", status: "Abonné(e)" },
         { name: "Nathalie", id: "2", email: "nathalie@gmail.com", inscription: "20/07/2024", status: "Abonné(e)" },
-        { name: "Junior", id: "3", email: "Junior@gmail.com", inscription: "20/09/2024", status: "Non abonné(e)" },
+        { name: "Junior", id: "3", email: "Junior@gmail.com", inscription: "20/09/2024", status: "Non abonné" },
         { name: "Francis", id: "4", email: "nathalie@gmail.com", inscription: "20/07/2024", status: "Abonné(e)" },
-        { name: "Ludovic", id: "6", email: "nathalie@gmail.com", inscription: "20/07/2024", status: "Non abonné(e)" },
-        { name: "Nathalie", id: "7", email: "nathalie@gmail.com", inscription: "20/07/2024", status: "Abonné(e)" },
-        { name: "Junior", id: "8", email: "Junior@gmail.com", inscription: "20/09/2024", status: "Non abonné(e)" },
-        { name: "Francis", id: "9", email: "nathalie@gmail.com", inscription: "20/07/2024", status: "Abonné(e)" },
-        { name: "Ludovic", id: "10", email: "nathalie@gmail.com", inscription: "20/07/2024", status: "Non abonné(e)" },
-        { name: "Nathalie", id: "11", email: "nathalie@gmail.com", inscription: "20/07/2024", status: "Abonné(e)" },
-        { name: "Junior", id: "12", email: "Junior@gmail.com", inscription: "20/09/2024", status: "Non abonné(e)" },
-        { name: "Francis", id: "13", email: "nathalie@gmail.com", inscription: "20/07/2024", status: "Abonné(e)" },
-        { name: "Ludovic", id: "14", email: "nathalie@gmail.com", inscription: "20/07/2024", status: "Non abonné(e)" }
+        { name: "Ludovic", id: "5", email: "nathalie@gmail.com", inscription: "20/07/2024", status: "Non abonné" },
+        { name: "Nathalie", id: "6", email: "nathalie@gmail.com", inscription: "20/07/2024", status: "Abonné(e)" },
+        { name: "Junior", id: "7", email: "Junior@gmail.com", inscription: "20/09/2024", status: "Non abonné" },
+        { name: "Francis", id: "8", email: "nathalie@gmail.com", inscription: "20/07/2024", status: "Abonné(e)" },
+        { name: "Ludovic", id: "9", email: "nathalie@gmail.com", inscription: "20/07/2024", status: "Non abonné" },
+        { name: "Nathalie", id: "10", email: "nathalie@gmail.com", inscription: "20/07/2024", status: "Abonné(e)" },
+        { name: "Junior", id: "11", email: "Junior@gmail.com", inscription: "20/09/2024", status: "Non abonné" },
+        { name: "Francis", id: "12", email: "nathalie@gmail.com", inscription: "20/07/2024", status: "Abonné(e)" },
+        { name: "Ludovic", id: "13", email: "nathalie@gmail.com", inscription: "20/07/2024", status: "Non abonné" }
     ];
+    const dataSelectStatus = ["Tous", "Abonné(e)", "Non abonné"]
     const [searchResults, searchElementUser] = useSearchInformation(dataUser);
-    const [currentPage,setCurrentPage] = useState(1);
-    const [etatValue,setEtatValue] = useState(false);
-    const [name,setName] = useState(false);
-    const [mail,setMail] = useState(false);
-    const [etatMasque,setEtatMasque] = useState(false);
-    const [level,setLevel] = useState(true);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [etatValue, setEtatValue] = useState(false);
+    const [name, setName] = useState(false);
+    const [mail, setMail] = useState(false);
+    const [etatMasque, setEtatMasque] = useState(false);
+    const [etatStatut, setEtatStatut] = useState(false);
+    const [level, setLevel] = useState(true);
     const [content, setContent] = useState(null);
+    const [optionVisible, setOptionVisible] = useState(false);
+    const [optionName, setOptionName] = useState("Tous");
+    const [rotateIcon, setRotateIcon] = useState(false);
+    const selectRef = useRef(null);
     const textareaRef = useRef(null);
     const fileInputRef = useRef(null);
     const itemsPages = 4;
-    const totalPages = Math.ceil(dataUser.length/itemsPages);
-    
+    const totalPages = Math.ceil(dataUser.length / itemsPages);
+
     const handleClick = (id, name, email) => {
         console.log(name)
         // setActiveStates(prevState => {
@@ -60,8 +67,8 @@ export const MainRightUsers = () => {
         setName(name);
         setMail(email);
     };
-    const handleChangePages = (newPage)=>{
-        if(newPage>0 && newPage<= totalPages){
+    const handleChangePages = (newPage) => {
+        if (newPage > 0 && newPage <= totalPages) {
             setCurrentPage(newPage)
         }
     }
@@ -114,6 +121,38 @@ export const MainRightUsers = () => {
             fileInputRef.current.click();
         }
     };
+    const changeIcon = () => {
+        const select = selectRef.current
+        setRotateIcon(!rotateIcon);
+        if (rotateIcon) {
+            console.log(rotateIcon)
+            // Deuxième clic : masquer les options
+            select.style.borderBottomRightRadius = "5px"
+            select.style.borderBottomLeftRadius = "5px"
+            setOptionVisible(false);
+        } else {
+            console.log(rotateIcon)
+            // Premier clic : afficher les options
+            // console.log(selectRef.current.classList.toggle("bottomRaduisNone"))
+            select.style.borderBottomRightRadius = "0px"
+            select.style.borderBottomLeftRadius = "0px"
+            setOptionVisible(true);
+        }
+    };
+    const handleChildClick = (value) => {
+        const select = selectRef.current
+        setOptionName(value);
+        setOptionVisible(false);
+        setRotateIcon(!rotateIcon);
+        setEtatStatut(true)
+        setLevel(false)
+        setEtatValue(false)
+        searchElementUser(value)
+        select.style.borderBottomRightRadius = "5px"
+        select.style.borderBottomLeftRadius = "5px"
+    };
+    console.log(searchResults)
+
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];
@@ -128,11 +167,11 @@ export const MainRightUsers = () => {
                 }
             };
             reader.readAsDataURL(file);
-            
+
         }
     };
-    const startIndex = (currentPage -1) * itemsPages
-    const dataCurrent = dataUser.slice(startIndex,startIndex+itemsPages)
+    const startIndex = (currentPage - 1) * itemsPages
+    const dataCurrent = dataUser.slice(startIndex, startIndex + itemsPages)
 
     return (
         <div className="parent_main">
@@ -140,16 +179,10 @@ export const MainRightUsers = () => {
                 <HeaderTitleMain h1="Utilisateurs" />
             </div>
             <div className="sous_parent_main_users">
-            {etatMasque && <div id="masque"></div>}
-            {etatMasque && <div id="answer_client">
+                {etatMasque && <div id="masque"></div>}
+                {etatMasque && <div id="answer_client">
                     <FontAwesomeIcon icon={faClose} className="close" onClick={close} />
                     <p>Message A:<span className="answer_client_name">{name}</span></p>
-                    {/* <span className="answer_client_messages"></span> */}
-                    {/* <div className="answer_client_img">
-                        <img src="" alt="pdf" />
-                        <img src="" alt="pdf" />
-                        <img src="" alt="docs" />
-                    </div> */}
                     <form className="answer_form" onSubmit={handleSubmit(onSubmit)}>
                         <div className="objet_mail">
                             <span className="objet">Objet</span>
@@ -164,7 +197,7 @@ export const MainRightUsers = () => {
                                     <img src={gras} alt="" className="img_answer_profession" onClick={grasText} />
                                     <img src={underline} alt="" className="img_answer_profession" onClick={underlineText} />
                                     <img src={italique} alt="" className="img_answer_profession" onClick={italiqueText} />
-                                    <img src={police} alt="" className="img_answer_profession" onClick={() =>changeFontSize(4)} />
+                                    <img src={police} alt="" className="img_answer_profession" onClick={() => changeFontSize(4)} />
                                     <img src={link} alt="" className="img_answer_profession links" onClick={linkText} />
                                     <img src={list} alt="" className="img_answer_profession lists" onClick={listText} />
                                     <img src={upload} alt="" className="img_answer_profession upload" onClick={handleUploadClick} />
@@ -172,15 +205,13 @@ export const MainRightUsers = () => {
                                         type="file"
                                         ref={fileInputRef}
                                         style={{ display: 'none' }}
-                                        onChange={handleFileChange}
-                                    />
+                                        onChange={handleFileChange}/>
                                 </div>
                                 <div
                                     className="textarea_answer"
                                     contentEditable="true"
                                     placeholder="Entrez un message"
-                                    ref={textareaRef}
-                                ></div>
+                                    ref={textareaRef}></div>
                                 <input type="hidden" name="reponse" value={content} {...register("reponse")} />
                             </div>
                         </div>
@@ -192,22 +223,27 @@ export const MainRightUsers = () => {
                         <input type="text" className="input_users" placeholder="Rechercher un utilisateur" name="checkValue" onChange={(e) => {
                             setLevel(false);
                             setEtatValue(true)
-                          searchElementUser(e.target.value);
-                          if(e.target.value.length ===0){
-                            setLevel(true);
-                            setEtatValue(false)
-                          }
-                          register("checkValue").onChange(e); // Access onChange from register
+                            setEtatStatut(false)
+                            searchElementUser(e.target.value);
+                            if (e.target.value.length === 0) {
+                                setLevel(true);
+                                setEtatValue(false)
+                            }
+                            register("checkValue").onChange(e); // Access onChange from register
                         }}/>
                         <div className="parent_search_users">
-                            <img src={search} alt="" className="search_users" />
+                            <img src={search} alt="" className="search_users"/>
                         </div>
                     </div>
-
-                    <div className="parent_abonnes">
-                        <span>Abonné(e)</span>
-                        <FontAwesomeIcon icon={faAngleDown} className="down_user" />
-                    </div>
+                    <Select
+                        dataSelectStatus={dataSelectStatus}
+                        changeIcon={changeIcon}
+                        handleChildClick={handleChildClick}
+                        selectRef={selectRef}
+                        optionName={optionName}
+                        optionVisible={optionVisible}
+                        rotateIcon={rotateIcon}
+                        defautClassName="select"/>
                 </div>
                 <div className="sous_parent_main_users_information">
                     <div className="sous_parent_main_users_information-child1">
@@ -217,43 +253,78 @@ export const MainRightUsers = () => {
                         <span>Status</span>
                         <span>Action</span>
                     </div>
-                    {level && dataCurrent.map((data) => (
-                        <div className="sous_parent_main_users_information-child2" key={data.id}>
-                            <div className="prenom">
-                                <img src={message} alt="message" />
-                                <span>{data.name}</span>
+                    {level && dataCurrent.map((data) => {
+                        return (
+                            <div className="sous_parent_main_users_information-child2" key={data.id}>
+                                <div className="prenom">
+                                    <img src={message} alt="message" />
+                                    <span>{data.name}</span>
+                                </div>
+                                <div className="user_adress_mail">{data.email}</div>
+                                <div className="user_inscription">{data.inscription}</div>
+                                <div className={`status ${data.status === "Abonné(e)" ? "status-abonne" : ""}`}>
+                                    {data.status}
+                                </div>
+                                <div>
+                                <div className="action" onClick={() => handleClick(data.id, data.name, data.email)}>
+                                    <img src={messageOutlined} alt="message_outlined" />
+                                    <span>Message</span>
+                                </div>
+
+                                </div>
+                                {/* <div className="action" onClick={() => handleClick(data.id, data.name, data.email)}>
+                                    <img src={messageOutlined} alt="message_outlined" />
+                                    <span>Message</span>
+                                </div> */}
                             </div>
-                            <div className="user_adress_mail">{data.email}</div>
-                            <div className="user_inscription">{data.inscription}</div>
-                            <div className={`status ${data.status === "Abonné(e)" ? "status-abonne" : ""}`}>
-                                {data.status}
+
+                        )
+
+                    })}
+
+                    {etatValue && searchResults.map((data) => {
+                        return (
+                            <div className="sous_parent_main_users_information-child2" key={data.id}>
+                                <div className="prenom">
+                                    <img src={message} alt="message" />
+                                    <span>{data.name}</span>
+                                </div>
+                                <div className="user_adress_mail">{data.email}</div>
+                                <div className="user_inscription">{data.inscription}</div>
+                                <div className={`status ${data.status === "Abonné(e)" ? "status-abonne" : ""}`}>
+                                    {data.status}
+                                </div>
+                                <div className="action" onClick={() => handleClick(data.id, data.name, data.email)}>
+                                    <img src={messageOutlined} alt="message_outlined" />
+                                    <span>Message</span>
+                                </div>
                             </div>
-                            <div className="action" onClick={() =>handleClick(data.id,data.name,data.email)}>
-                                <img src={messageOutlined} alt="message_outlined" />
-                                <span>Message</span>
+
+                        )
+                    })}
+                    {etatStatut && searchResults.map((data) => {
+                        return (
+                            <div className="sous_parent_main_users_information-child2" key={data.id}>
+                                <div className="prenom">
+                                    <img src={message} alt="message" />
+                                    <span>{data.name}</span>
+                                </div>
+                                <div className="user_adress_mail">{data.email}</div>
+                                <div className="user_inscription">{data.inscription}</div>
+                                <div className={`status ${data.status === "Abonné(e)" ? "status-abonne" : ""}`}>
+                                    {data.status}
+                                </div>
+                                <div className="action" onClick={() => handleClick(data.id, data.name, data.email)}>
+                                    <img src={messageOutlined} alt="message_outlined" />
+                                    <span>Message</span>
+                                </div>
                             </div>
-                        </div>
-                    ))}
-                       {etatValue && searchResults.map((data) => (
-                        <div className="sous_parent_main_users_information-child2" key={data.id}>
-                            <div className="prenom">
-                                <img src={message} alt="message" />
-                                <span>{data.name}</span>
-                            </div>
-                            <div className="user_adress_mail">{data.email}</div>
-                            <div className="user_inscription">{data.inscription}</div>
-                            <div className={`status ${data.status === "Abonné(e)" ? "status-abonne" : ""}`}>
-                                {data.status}
-                            </div>
-                            <div className="action" onClick={() =>handleClick(data.id,data.name,data.email)}>
-                                <img src={messageOutlined} alt="message_outlined" />
-                                <span>Message</span>
-                            </div>
-                        </div>
-                    ))}
+
+                        )
+                    })}
                 </div>
                 <div className="pagination">
-                    {level ?<span className="pagination_nbrs_pages">{dataCurrent.length}/{dataUser.length} Utilisateurs</span>:<span className="pagination_nbrs_pages">{searchResults.length}/{dataUser.length} Utilisateurs</span>}
+                    {level ? <span className="pagination_nbrs_pages">{dataCurrent.length}/{dataUser.length} Utilisateurs</span> : <span className="pagination_nbrs_pages">{searchResults.length}/{dataUser.length} Utilisateurs</span>}
                     <div className="direction_icons">
                         <FontAwesomeIcon
                             icon={faAngleLeft}

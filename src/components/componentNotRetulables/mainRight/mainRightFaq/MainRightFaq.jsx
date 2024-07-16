@@ -60,16 +60,19 @@ export const MainRightFaq = () => {
   };
 
   const linkText = () => {
-    document.execCommand('createLink', false, null);
-  };
+    const url = prompt("Entrez l'URL du lien:");
+    if (url) {
+        document.execCommand('createLink', false, url);
+    }
+};
 
   const listText = () => {
     document.execCommand('insertUnorderedList', false, null);
   };
 
-  const policeText = () => {
-    document.execCommand('formatBlock', false, null);
-  };
+  const changeFontSize = (size) => {
+    document.execCommand('fontSize', false, size);
+};
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -116,7 +119,8 @@ export const MainRightFaq = () => {
             const fileContent = e.target.result;
             if (textareaRef.current) {
                 const div = document.createElement('div');
-                div.innerHTML = `<a href="${fileContent}" target="_blank">${file.name}</a>`;
+                 div.innerHTML = `<a href="${fileContent}" target="_blank">${file.name}</a>`;
+              
                 textareaRef.current.appendChild(div);
             }
         };
@@ -143,7 +147,7 @@ export const MainRightFaq = () => {
                 <img src={gras} alt="" className="img_profession" onClick={grasText} />
                 <img src={underline} alt="" className="img_profession" onClick={underlineText} />
                 <img src={italique} alt="" className="img_profession" onClick={italiqueText} />
-                <img src={police} alt="" className="img_profession" onClick={policeText} />
+                <img src={police} alt="" className="img_profession" onClick={() =>changeFontSize(4)} />
                 <img src={link} alt="" className="img_profession link" onClick={linkText} />
                 <img src={upload} alt="" className="img_answer_profession upload" onClick={handleUploadClick} />
                                     <input
@@ -151,7 +155,8 @@ export const MainRightFaq = () => {
                                         ref={fileInputRef}
                                         style={{ display: 'none' }}
                                         onChange={handleFileChange}
-                                    />
+                                    /> 
+                  
                 <img src={list} alt="" className="img_profession list" onClick={listText} />
               </div>
               <div

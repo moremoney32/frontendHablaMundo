@@ -10,8 +10,8 @@ export const Users = ()=>{
         <div>
              <Header/>
              <div className="parent_user">
-             <SideBar/>
-             <MainRightUsers/>
+                <SideBar/>
+                <MainRightUsers/>
              </div>
         </div>
     )

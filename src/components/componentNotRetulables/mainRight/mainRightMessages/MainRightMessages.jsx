@@ -44,7 +44,10 @@ export const MainRightMessages = () => {
     };
 
     const linkText = () => {
-        document.execCommand('createLink', false, null);
+        const url = prompt("Entrez l'URL du lien:");
+        if (url) {
+            document.execCommand('createLink', false, url);
+        }
     };
 
     const listText = () => {
@@ -194,7 +197,7 @@ export const MainRightMessages = () => {
                 {
                     data.map((info) => {
                         return (
-                            <div className={`parent_messages ${activeStates[info.id] ? 'active' : ''}`} key={info.id}>
+                            <div className={`parent_messages ${activeStates[info.id] ? 'active_message' : ''}`} key={info.id}>
                                 <div className="parent_messages1">
                                     <img src={message} alt="message" className="message" />
                                     <div className="infos_messages">
