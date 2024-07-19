@@ -13,6 +13,7 @@ import list from "../../../../assets/icons/list.png";
 import upload from "../../../../assets/icons/upload.png";
 import police from "../../../../assets/icons/police.png";
 import { faClose } from "@fortawesome/free-solid-svg-icons/faClose";
+import { useLocation } from "react-router-dom"
 import { useForm } from "react-hook-form";
 import "./mainRightUsers.css";
 import "../mainRightMessages/mainRightMessages.css";
@@ -53,16 +54,14 @@ export const MainRightUsers = () => {
     const selectRef = useRef(null);
     const textareaRef = useRef(null);
     const fileInputRef = useRef(null);
+    const location = useLocation()
     const itemsPages = 4;
     const totalPages = Math.ceil(dataUser.length / itemsPages);
+    const filterValue = location.state?.filter;
+    console.log(filterValue)
 
     const handleClick = (id, name, email) => {
         console.log(name)
-        // setActiveStates(prevState => {
-        //     const newState = { ...prevState, [id]: true };
-        //     localStorage.setItem('activeStates', JSON.stringify(newState));
-        //     return newState;
-        // });
         setEtatMasque(true);
         setName(name);
         setMail(email);
@@ -152,6 +151,7 @@ export const MainRightUsers = () => {
         select.style.borderBottomLeftRadius = "5px"
     };
     console.log(searchResults)
+    
 
 
     const handleFileChange = (event) => {
@@ -170,6 +170,14 @@ export const MainRightUsers = () => {
 
         }
     };
+    
+    useEffect(() => {
+        console.log(location.state);
+        
+        if (location.state?.filter) {
+            handleChildClick(location.state?.filter);
+        }
+    }, [location.state]);
     const startIndex = (currentPage - 1) * itemsPages
     const dataCurrent = dataUser.slice(startIndex, startIndex + itemsPages)
 
@@ -205,7 +213,7 @@ export const MainRightUsers = () => {
                                         type="file"
                                         ref={fileInputRef}
                                         style={{ display: 'none' }}
-                                        onChange={handleFileChange}/>
+                                        onChange={handleFileChange} />
                                 </div>
                                 <div
                                     className="textarea_answer"
@@ -230,9 +238,9 @@ export const MainRightUsers = () => {
                                 setEtatValue(false)
                             }
                             register("checkValue").onChange(e); // Access onChange from register
-                        }}/>
+                        }} />
                         <div className="parent_search_users">
-                            <img src={search} alt="" className="search_users"/>
+                            <img src={search} alt="" className="search_users" />
                         </div>
                     </div>
                     <Select
@@ -243,7 +251,7 @@ export const MainRightUsers = () => {
                         optionName={optionName}
                         optionVisible={optionVisible}
                         rotateIcon={rotateIcon}
-                        defautClassName="select"/>
+                        defautClassName="select" />
                 </div>
                 <div className="sous_parent_main_users_information">
                     <div className="sous_parent_main_users_information-child1">
@@ -266,10 +274,10 @@ export const MainRightUsers = () => {
                                     {data.status}
                                 </div>
                                 <div>
-                                <div className="action" onClick={() => handleClick(data.id, data.name, data.email)}>
-                                    <img src={messageOutlined} alt="message_outlined" />
-                                    <span>Message</span>
-                                </div>
+                                    <div className="action" onClick={() => handleClick(data.id, data.name, data.email)}>
+                                        <img src={messageOutlined} alt="message_outlined" />
+                                        <span>Message</span>
+                                    </div>
 
                                 </div>
                                 {/* <div className="action" onClick={() => handleClick(data.id, data.name, data.email)}>

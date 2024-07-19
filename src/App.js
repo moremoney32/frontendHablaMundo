@@ -8,11 +8,12 @@ import { Faq } from './pages/faq/Faq';
 import {Deconnexion} from './pages/deconnexion/Deconnexion';
 import { Comptes } from './pages/comptes/Comptes';
 import { SousThematiques } from './pages/sousThematiques/SousThematiques';
+import { MotsCroisés } from './pages/motsCroisés/MotsCroisés';
 
 function App() {
   return (
     <BrowserRouter>
-      <div>
+      <div id="body">
           <Routes>
             <Route path="/home" element={<Home />} />
             <Route path="/theme" element={<Theme />} />
@@ -21,6 +22,7 @@ function App() {
             <Route path="/faq" element={<Faq />} />
             <Route path="/comptes" element={<Comptes />} />
             <Route path="/sousThematiques" element={<SousThematiques/>}/>
+            <Route path="/motsCroisés" element={<MotsCroisés/>}/>
             <Route path="/" element={<Deconnexion />}/>
           </Routes>
       </div>

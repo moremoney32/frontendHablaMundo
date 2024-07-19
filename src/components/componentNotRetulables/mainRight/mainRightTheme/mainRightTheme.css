@@ -29,8 +29,58 @@
   font-weight: 550;
   transform: translate3d(0,1px,0);
 }
-.sous_parent_main{
-  background: violet;
+.alls_thematics{
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+.sous_alls_thematics{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-radius: 5px;
+   background-color:#0084FA0D; 
+  align-items: center;
+border: 1px solid #0084FA1A;
+}
+
+.parent_icons_thematics{
+  display: flex !important;
+  gap: 5px !important;
+  align-items: center;
+}
+.parent_icons_thematics_child1{
+  color: white;
+  padding: 10px;
+  width: 15px !important;
+  height: 15px !important;
+  border-radius: 50% !important;
+  background: var(--color-secondary) !important;
+}
+.parent_icons_thematics_child2{
+  color: var(--color-secondary) !important;
+  font-size: 14px !important;
+}
+.parent_icons_thematics_span{
+  font-size: 14px;
+}
+.parent_messages3_thematics{
+  border-radius: 5px;
+  display: flex;
+  gap: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 7px;
+  padding-bottom: 7px;
+  align-items: center;
+  border: 1px solid var(--color-secondary);
+  background: white;
+  cursor: pointer;
+  color: var(--color-secondary);
+}
+.repondre_thematic{
+  font-size: 14px;
 }
 #masqueTheme{
   position: fixed;
@@ -120,10 +170,6 @@ background: white;
   position: absolute;
   z-index: 2;
   top:110%;
-  left: -50px;
-  background:var(--color-primary);
-  padding: 20px;
-  padding-right: 40px;
   border-radius: 5px;
 }
 
@@ -143,6 +189,7 @@ background: white;
 .icons_font_awesome{
   width:18px;
   height:18px;
+  padding: 10px;
 }
 .close_color{
   position: absolute;

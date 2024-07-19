@@ -1,0 +1,107 @@
+.sous_parent_main_croisés{
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+}
+.title_words{
+    font-weight: 550;
+    font-size: 14px;
+    color: black;
+}
+.sous_parent_main_croisés_left{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.sous_parent_main_croisés_left_parent{
+    display:grid;
+   grid-template-columns: 1fr;
+    gap: 5px !important;
+}
+.sous_parent_main_croisés_left_1{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 10px;
+    padding-right: 150px;
+    border: none;
+    border-radius:5px;
+    background: #0084FA0D;
+    color: black;
+    font-weight: 550;
+    font-size: 14px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.sous_parent_main_croisés_left_2{
+    padding-top: 10px;
+    padding-bottom: 10px; 
+    display: flex;
+    justify-content: space-between;
+    padding-left: 10px;
+    padding-right: 150px;
+    border: none;
+    border-radius: 5px !important;
+    font-size: 14px;
+    border: 1px solid #D6EBFF;
+    background: white;
+    align-items: center;
+}
+.content{
+    color: black;
+    padding: 2px !important; 
+    padding-right: 50px !important;
+    border:none;
+    outline: none;
+}
+ .content:focus{
+    border: 1px solid #bebebe !important;
+    border-radius: 5px;
+} 
+.disable{
+    color: #909090;
+    padding: 2px;
+}
+.sous_parent_main_croisés_right{
+   display: flex;
+   gap: 20px !important;
+   flex-direction: column;
+}
+.sous_parent_main_croisés_contenair{
+    display:grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-radius: 5px;
+    border: 1px solid #D6EBFF;
+    text-align: center;
+    gap: 5px;
+    cursor: pointer;
+}
+.sous_parent_main_croisés_contenair span{
+    padding: 2px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-radius:5px;
+    border: 1px solid var(--Grey, #42444B);
+    color: #42444B;
+    outline: none;
+}
+.save{
+    text-align: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-radius: 5px;
+    color: white;
+    border: none;
+    background: var(--Secondary, #24D26D);
+    font-size: 14px;
+    cursor: pointer;
+
+}
+

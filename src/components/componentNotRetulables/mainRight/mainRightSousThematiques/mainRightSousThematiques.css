@@ -16,4 +16,43 @@
     flex-direction: column;
     gap: 25px;
   }
+  .sous_parent_main_users_main{
+    display:grid;
+   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    width: 100%;
+    gap: 20px;
+  }
+  .sous_parent_main_users_main_bloc{
+    padding:10px;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    border:1px solid #bebebe;
+  }
+  .sous_parent_main_users_main_bloc1{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .sous_parent_main_users_main_bloc1 :nth-child(1){
+    color: red;
+    font-size: 18px;
+  }
+  .sous_parent_main_users_main_bloc1 :nth-child(2){
+    
+    font-size: 12px;
+  }
+  .sous_parent_main_users_main_bloc2{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .sous_parent_main_users_main_bloc2 :nth-child(1){
+   font-size:14px;
+  }
+  .sous_parent_main_users_main_bloc2 img{
+    width:18px;
+    height:18px;
+  }
  

@@ -7,6 +7,7 @@ import { fetchData } from "../../helpers/fetchData";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye } from "@fortawesome/free-solid-svg-icons/faEye";
 import { faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { snackbbar } from "../../helpers/snackbars";
 export const Deconnexion = () => {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
@@ -16,6 +17,7 @@ export const Deconnexion = () => {
     const changesEyes = ()=>{
         setEtat(!etat)
     }
+    const message = "connexion reussie"
     const onSubmit = (data) => {
         console.log(data)
         setLoading(true)
@@ -24,9 +26,9 @@ export const Deconnexion = () => {
          
             console.log(result)
               
-            //   if(result.message === "Utilisateur créé avec succès"){
-            //     return dispatch(setAuth(result)),snackbbar(document.querySelector("#body"), "../../icons/info.svg", result.message, 5000),navigate("/login")
-            //   }
+               if(result.access_token){
+                 return snackbbar(document.querySelector("#body"), "../../assets/icons/info.svg",message, 3000),localStorage.setItem("token",result.access_token),navigate("/home")
+               }
             //   else if(result.messageError === 'cet email existe deja veuillez changer d adresse'){
             //      snackbbar(document.querySelector("#body"), "../../icons/info.svg", result.messageError, 5000)
             //   }
