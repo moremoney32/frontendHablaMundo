@@ -19,3 +19,16 @@ html, body {
   --color-primary: #0084FA;
   --color-secondary: #24D26D;
 }
+::-webkit-scrollbar {
+  width: 4px !important;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #E6D4F8 !important;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background:var(--color-secondary);
+}

@@ -50,6 +50,30 @@
   cursor: pointer;
   width:100%;
 }
+.parent_abonnes_language{
+  display: flex;
+  padding-top: 9px;
+  padding-bottom: 9px;
+  padding-left: 25px;
+  padding-right: 15px;
+ justify-content: space-between;
+  border: 1px solid #BEBEBE;
+  outline: none;
+  border-radius: 5px;
+  align-items: center;
+  cursor: pointer;
+  width:100%;
+  position: relative !important;
+}
+.icon_language_img{
+  width: 15px;
+  height: 15px;
+  position: absolute;
+  left: 5px;
+}
+.parent_abonnes_language span{
+  font-size: 12px;
+}
 .parent_abonnes span{
  font-size: 14px;
 }
@@ -76,6 +100,31 @@ z-index: 3000;
   max-height:150px !important;
   /* overflow-y: auto; */
 }
+.option_language{
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  width: 100% !important;
+  display: flex;
+  flex-direction: column;
+  background:white;
+  position: absolute;
+  /* transform: translate3d(0,64px,0); */
+  border: 1px solid rgba(0,0,0,0.05);
+  z-index: 2000;
+  max-height:150px !important;
+}
+.option_language span{
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 12px;
+  text-align: left;
+  color:black;
+  border-bottom: 1px solid #fafafa;
+   opacity: 0.8;
+   font-size: 16px;
+   transition: 1s;
+   cursor: pointer; 
+}
 .option span{
   padding-top: 8px;
   padding-bottom: 8px;
@@ -91,6 +140,10 @@ z-index: 3000;
 .option span:hover{
   background:var(--color-secondary);
   color: white;
+}
+.option_language span:hover{
+  background:var(--color-secondary);
+  color: white; 
 }
 .parent_search_users{
   position:absolute;

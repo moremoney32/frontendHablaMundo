@@ -10,40 +10,35 @@ import { faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { snackbbar } from "../../helpers/snackbars";
 export const Deconnexion = () => {
     const navigate = useNavigate();
-    const [loading, setLoading] = useState(false);
-    const [connect, setConnect] = useState(true);
+    const [connect, setConnect] = useState(false);
     const [etat, setEtat] = useState(false);
     const { register, handleSubmit, formState: { errors, isValid }, watch } = useForm();
     const changesEyes = ()=>{
         setEtat(!etat)
     }
     const message = "connexion reussie"
-    const onSubmit = (data) => {
+    const onSubmit = async (data) => {
         console.log(data)
-        setLoading(true)
-        setConnect(false)
-        fetchData("https://www.backend.habla-mundo.com/api/v1/login",data).then((result)=>{
-         
-            console.log(result)
-              
-               if(result.access_token){
-                 return snackbbar(document.querySelector("#body"), "../../assets/icons/info.svg",message, 3000),localStorage.setItem("token",result.access_token),navigate("/home")
-               }
-            //   else if(result.messageError === 'cet email existe deja veuillez changer d adresse'){
-            //      snackbbar(document.querySelector("#body"), "../../icons/info.svg", result.messageError, 5000)
-            //   }
-            //   else if(result.message === 'Erreur lors de lenvoi de le-mail de confirmation'){
-            //     return alert("probleme de connexion")
-            //   }
-              
-             })
-             .catch((error) => {
-              console.log({message:error.message});
-              
-            }).finally(()=>{
-              setLoading(false)
-              setConnect(true)
-            })
+        setConnect(true)
+        try {
+            const result = await fetchData("https://www.backend.habla-mundo.com/api/v1/login",data);
+            console.log(result);
+
+            if (result.access_token) {
+                snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg",message, 2000);
+                localStorage.setItem("token",result.access_token);
+                
+                // Attendre que la snackbar disparaisse avant de rediriger
+                setTimeout(() => {
+                    navigate("/home");
+                }, 2000);  
+            }
+        } catch (error) {
+            setEtat(true);
+            console.log({ message: error.message });
+        } finally {
+            setConnect(false);
+        }
     }
     return (
         <div className="deconnexion_compte">
@@ -72,8 +67,8 @@ export const Deconnexion = () => {
                     <div className='forgot_password'>
                         <span></span><span>mot de passe oublié</span>
                     </div>
-                    {connect && <button type="submit" className='connexion'>CONNEXION</button>}
-                    {loading && <button type="submit" className='connexion'>PATIENTEZ ....</button>}
+                    {connect ? <button type="submit" className='connexion'>PATIENTEZ ....</button>:<button type="submit" className='connexion'>CONNEXION</button>}
+
                 </form>
             </div>
 

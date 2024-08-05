@@ -24,6 +24,21 @@ export const MainRightMessages = () => {
     const [textName, setTextName] = useState(null);
     const textareaRef = useRef(null);
     const fileInputRef = useRef(null);
+    const [notification, setNotification] = useState ( '' );
+    
+      useEffect(() => {
+        const eventSource = new EventSource("http://localhost:5000/notifications"); 
+        eventSource.onmessage = (event) => {
+            console.log(event.data)
+          setNotification(event.data);
+        };
+        return () => {
+          eventSource.close();
+        };
+      }, []);
+    
+     
+    
 
     useEffect(() => {
         // Charger les états actifs depuis le localStorage

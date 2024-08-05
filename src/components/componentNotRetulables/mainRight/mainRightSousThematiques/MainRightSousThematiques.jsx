@@ -4,16 +4,52 @@ import "../mainRightUsers/mainRightUsers.css";
 import search from "../../../../assets/icons/search.png";
 import state from "../../../../assets/icons/state.png";
 import { Select } from "../../select/Select";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { NavLink } from "react-router-dom";
+import { fetchDataGet } from "../../../../helpers/fetchDataGet";
+import { fetchData } from "../../../../helpers/fetchData";
+import { getTimeNow } from "../../../../helpers/getTimeNow";
+import { formatTime } from "../../../../helpers/formatDate";
+import { CardSousThematique } from "./cardSousThematiques";
+import { useSearchNames } from "../../../../customsHooks/useSearchNames";
+import { useLocation, useNavigate } from "react-router-dom"
+import { useForm } from "react-hook-form";
+import { snackbbar } from "../../../../helpers/snackbars";
+
 
 export const MainRightSousThematiques = () => {
-    const dataSelectStatus = ["normal", "Aphébétiques"]
+    const { register, handleSubmit, formState: { errors, isValid }, watch, setValue } = useForm();
+    const dataSelectStatus = ["normal", "Aphabétiques"]
     const [optionVisible, setOptionVisible] = useState(false);
     const [optionName, setOptionName] = useState("normal");
     const [rotateIcon, setRotateIcon] = useState(false);
-    //const [searchResults, searchElementUser] = useSearchInformation(dataUser);
+    const [loading, setLoading] = useState(true);
+    const [sousThematiques, setSousThematique] = useState(null);
+    const [searchResults, searchElementUserName] = useSearchNames(sousThematiques);
+    const [etat, setEtat] = useState(false);
+    const [level, setLevel] = useState(true);
+    const dataValue = JSON.parse(localStorage.getItem('theme'))
+    console.log(dataValue)
+    const token = localStorage.getItem('token')
+    const navigate =useNavigate()
+    useEffect(() => {
+        const id = {
+            id: dataValue.id
+        }
+        console.log(id)
+
+        fetchDataGet("https://www.backend.habla-mundo.com/api/v1/crosswords").then((result) => {
+            console.log(result)
+            setSousThematique(result)
+
+        })
+
+
+    }, [])
+    const sortAlphabet= (sousThematiques) => {
+        return sousThematiques.sort((a, b) => a.name.localeCompare(b.name));
+      };
     const selectRef = useRef(null);
-    const data = JSON.parse(localStorage.getItem('theme'))
     const changeIcon = () => {
         const select = selectRef.current
         setRotateIcon(!rotateIcon);
@@ -41,15 +77,40 @@ export const MainRightSousThematiques = () => {
         select.style.borderBottomRightRadius = "5px"
         select.style.borderBottomLeftRadius = "5px"
     };
+    const handleWordls = async(id)=>{
+        console.log(id)
+        const dataId = {
+            id:id
+        }
+        try {
+            const result = await fetchData("https://www.backend.habla-mundo.com/api/v1/crossword",dataId,token);
+            console.log(result);
+            localStorage.setItem('datas', JSON.stringify(result));
+            navigate("/motsCroisés");
+        } catch (error) {
+            console.log({ message: error.message });
+        } finally {
+            
+        }
+    }
     return (
         <div className="parent_main">
             <div className="parent_header_sous_thematiques">
-                <HeaderSousThematiques theme={data.theme}/>
+                <HeaderSousThematiques theme={dataValue.name} />
             </div>
             <div className="sous_parent_main_sous_theme">
                 <div className="sous_parent_main_users_header">
                     <div className="sous_parent_main_users_header_input">
-                        <input type="text" className="input_users" placeholder="Rechercher un mot croisé" name="checkValue" />
+                        <input type="text" className="input_users" placeholder="Rechercher une sous thématique" name="checkValue" onChange={(e) => {
+                            setLevel(false);
+                            setEtat(true)
+                            searchElementUserName(e.target.value);
+                            if (e.target.value.length === 0) {
+                                setLevel(true);
+                                setEtat(false)
+                            }
+                            register("checkValue").onChange(e); // Access onChange from register
+                        }} />
                         <div className="parent_search_users">
                             <img src={search} alt="" className="search_users" />
                         </div>
@@ -65,16 +126,22 @@ export const MainRightSousThematiques = () => {
                         defautClassName="select" />
                 </div>
                 <div className="sous_parent_main_users_main">
-                    <div className="sous_parent_main_users_main_bloc">
-                        <div className="sous_parent_main_users_main_bloc1">
-                            <span>fruits</span>
-                            <span>5 min</span>
-                        </div>
-                        <div className="sous_parent_main_users_main_bloc2">
-                            <span>25 mots</span>
-                            <img src={state} alt="" />
-                        </div>
-                    </div>
+                    {
+                       level && sousThematiques?.map((thematique) => {
+                        console.log(thematique.id)
+                            return (
+                                <CardSousThematique name={thematique?.name} key={thematique?.id}  created={thematique.created_at}  onClick={() => handleWordls(thematique.id)}/>
+                            )
+                        })
+                    }
+                    {
+                       etat && searchResults?.map((thematique) => {
+                            return (
+                                <CardSousThematique name={thematique?.name} key={thematique?.id}  created={thematique.created_at}  onClick={() => handleWordls(thematique.id)}/>
+                            )
+                        })
+                    }
+                    
                 </div>
             </div>
         </div>

@@ -18,6 +18,7 @@
   display: flex !important;
   gap: 5px !important;
   align-items: center !important;
+  justify-content: space-between !important;
  }
  .header_main :nth-child(1){
  font-size:23px;
@@ -43,6 +44,11 @@
   height: 40px;
   object-fit: cover;
 }
+.header_main_left{
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
 .header_right{
   display: flex;
   gap: 25px;
@@ -51,14 +57,39 @@
 .header_main_1{
   color: grey !important;
   font-size: 14px !important;
+  cursor: pointer;
+}
+/* .header_main_1-span{
+  color: grey !important;
+   font-size: 14px !important;
+  cursor: pointer;
+  transform: translate3d(0,-15px,0) !important; 
+} */
+.header_main_sous_thematique{
+  color: grey !important;
+  font-size: 14px !important;
+  cursor: pointer;
+  display: flex;
+  gap: 5px;
+  align-items: center;
 }
 
-.header_main_2_icons{
+.header_main_2_icons_mots_croisés{
   width:12px;
   height: 12px;
-  color: grey !important;
-  transform: translate3d(-3px,3px,0);
+  color: red !important;
+  transform: translate3d(-3px,0px,0);
 }
+ .header_remove_worlds{
+  font-size: 13px !important;
+  color: #FFFFFF !important;
+  text-align: center;
+  padding: 10px !important;
+  background: #D73030;
+  border:none;
+  border-radius: 5px;
+  cursor: pointer;
+} 
 .header_main_3{
   font-size:23px;
  color: black;

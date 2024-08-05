@@ -53,32 +53,38 @@ export const MainRightHome = () => {
                     <span className="h3_home">Notifications</span>
                     <div className="parent_notifications_home">
 
-                        <div className="notifications_message">
-                            <FontAwesomeIcon icon={faCommentDots} className="icons_comments" />
-                            <div className="parents_message_notifications">
-                                <span className="new_message">Gaelle tamho has sent you</span>
-                                <span>a message</span>
+                        <NavLink to="/message" className="nav_link">
+                            <div className="notifications_message">
+                                <FontAwesomeIcon icon={faCommentDots} className="icons_comments" />
+                                <div className="parents_message_notifications">
+                                    <span className="new_message">Gaelle tamho has sent you</span>
+                                    <span>a message</span>
 
+                                </div>
                             </div>
-                        </div>
+                        </NavLink>
 
-                        <div className="notifications_message">
-                            <FontAwesomeIcon icon={faCommentDots} className="icons_comments" />
-                            <div className="parents_message_notifications">
-                                <span className="new_message">Gaelle tamho has sent you</span>
-                                <span>a message</span>
+                        <NavLink to="/message" className="nav_link">
+                            <div className="notifications_message">
+                                <FontAwesomeIcon icon={faCommentDots} className="icons_comments" />
+                                <div className="parents_message_notifications">
+                                    <span className="new_message">Gaelle tamho has sent you</span>
+                                    <span>a message</span>
 
+                                </div>
                             </div>
-                        </div>
+                        </NavLink>
 
-                        <div className="notifications_message">
-                            <FontAwesomeIcon icon={faCommentDots} className="icons_comments" />
-                            <div className="parents_message_notifications">
-                                <span className="new_message">Gaelle tamho has sent you</span>
-                                <span>a message</span>
+                        <NavLink to="/message" className="nav_link">
+                            <div className="notifications_message">
+                                <FontAwesomeIcon icon={faCommentDots} className="icons_comments" />
+                                <div className="parents_message_notifications">
+                                    <span className="new_message">Gaelle tamho has sent you</span>
+                                    <span>a message</span>
 
+                                </div>
                             </div>
-                        </div>
+                        </NavLink>
                     </div>
                 </div>
             </div>

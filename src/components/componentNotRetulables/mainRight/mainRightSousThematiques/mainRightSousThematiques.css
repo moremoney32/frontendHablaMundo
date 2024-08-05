@@ -29,6 +29,7 @@
     flex-direction: column;
     gap: 25px;
     border:1px solid #bebebe;
+    cursor: pointer;
   }
   .sous_parent_main_users_main_bloc1{
     display: flex;
@@ -42,6 +43,7 @@
   .sous_parent_main_users_main_bloc1 :nth-child(2){
     
     font-size: 12px;
+    color: grey !important;
   }
   .sous_parent_main_users_main_bloc2{
     display: flex;
@@ -50,9 +52,13 @@
   }
   .sous_parent_main_users_main_bloc2 :nth-child(1){
    font-size:14px;
+   color: grey !important;
   }
   .sous_parent_main_users_main_bloc2 img{
     width:18px;
     height:18px;
+  }
+  .nav_link{
+    text-decoration:none !important;
   }
  
