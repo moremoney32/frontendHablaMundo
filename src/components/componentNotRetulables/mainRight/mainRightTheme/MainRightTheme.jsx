@@ -26,18 +26,23 @@ export const MainRightTheme = () => {
     const [selectedIconIndex, setSelectedIconIndex] = useState(null);
     const { register, handleSubmit, formState: { errors }, setValue } = useForm();
     const [optionVisible, setOptionVisible] = useState(false);
+    const [optionVisibleVisibility,setOptionVisibleVisibility]= useState(false);
     const [optionName, setOptionName] = useState("Plus récents");
     const [rotateIcon, setRotateIcon] = useState(false);
     const [optionVisibleLanguages, setOptionVisibleLanguages] = useState(false);
     const [optionNameLanguages, setOptionNameLanguages] = useState("Anglais");
+    const [optionNameVisibility, setOptionNameVisibility] = useState("faux");
     const [rotateIconLanguages, setRotateIconLanguages] = useState(false);
+    const [rotateIconVisility, setRotateIconVisibility] = useState(false);
     const [thematiques, setThematiques] = useState([
-        { id: 1,thematique:'', crossword: '', words: [] },
+        { id: 1, thematique: '', crossword: '', words: [] },
     ]);
     const [loading, setLoading] = useState(false);
     const selectRef = useRef(null);
     const selectRefLanguages = useRef(null);
+    const selectRefVisibility = useRef(null);
     const dataSelectStatus = ["Plus récents", "Moins récents"];
+    const dataSelectVisibility = ["faux", "vrai"];
     const dataSelect = ["Anglais"];
     const location = useLocation();
     const navigate = useNavigate()
@@ -48,17 +53,29 @@ export const MainRightTheme = () => {
         setRotateIcon(!rotateIcon);
         if (rotateIcon) {
             console.log(rotateIcon)
-            // Deuxième clic : masquer les options
             select.style.borderBottomRightRadius = "5px"
             select.style.borderBottomLeftRadius = "5px"
             setOptionVisible(false);
         } else {
             console.log(rotateIcon)
-            // Premier clic : afficher les options
-            // console.log(selectRef.current.classList.toggle("bottomRaduisNone"))
             select.style.borderBottomRightRadius = "0px"
             select.style.borderBottomLeftRadius = "0px"
             setOptionVisible(true);
+        }
+    };
+    const changeIconVisibility = () => {
+        const selectVisibility = selectRefVisibility.current;
+        setRotateIconVisibility(!rotateIconVisility);
+        if (rotateIconVisility) {
+            console.log(rotateIconVisility)
+            selectVisibility.style.borderBottomRightRadius = "5px"
+            selectVisibility.style.borderBottomLeftRadius = "5px"
+            setOptionVisibleVisibility(false);
+        } else {
+            console.log(rotateIcon)
+            selectVisibility.style.borderBottomRightRadius = "0px"
+            selectVisibility.style.borderBottomLeftRadius = "0px"
+            setOptionVisibleVisibility(true);
         }
     };
     const changeIconLanguages = () => {
@@ -66,14 +83,11 @@ export const MainRightTheme = () => {
         setRotateIcon(!rotateIcon);
         if (rotateIcon) {
             console.log(rotateIcon)
-            // Deuxième clic : masquer les options
             select.style.borderBottomRightRadius = "5px"
             select.style.borderBottomLeftRadius = "5px"
             setOptionVisibleLanguages(false);
         } else {
             console.log(rotateIcon)
-            // Premier clic : afficher les options
-            // console.log(selectRef.current.classList.toggle("bottomRaduisNone"))
             select.style.borderBottomRightRadius = "0px"
             select.style.borderBottomLeftRadius = "0px"
             setOptionVisibleLanguages(true);
@@ -92,8 +106,16 @@ export const MainRightTheme = () => {
         setOptionNameLanguages(value);
         setOptionVisibleLanguages(false);
         setRotateIconLanguages(!rotateIcon);
-        select.style.borderBottomRightRadius = "5px"
-        select.style.borderBottomLeftRadius = "5px"
+        select.style.borderBottomRightRadius = "5px";
+        select.style.borderBottomLeftRadius = "5px";
+    };
+    const handleChildClickVisibility = (value) => {
+        const selectVisibility = selectRefVisibility.current
+        setOptionNameVisibility(value);
+        setOptionVisibleVisibility(false);
+        setRotateIconVisibility(!rotateIconVisility);
+        selectVisibility.style.borderBottomRightRadius = "5px";
+        selectVisibility.style.borderBottomLeftRadius = "5px";
     };
 
     const handleIconClick = (index) => {
@@ -125,10 +147,6 @@ export const MainRightTheme = () => {
         setColor(color.hex);
     };
 
-
-    const togglePicker = () => {
-        setShowPicker(!showPicker);
-    };
     const handleClickOutside = (event) => {
         if (!event.target.closest('.parent_palette_color')) {
             setShowPicker(false)
@@ -143,18 +161,37 @@ export const MainRightTheme = () => {
             setShowPicker(false);
         }
     };
+    let  checkVisibility;
     const onSubmit = async (data, event) => {
+        
         event.preventDefault();
-        console.log(data); 
-       console.log(icons[selectedIconIndex].name);
-        if (data) {
-            const dataSend ={
-                name: data.thematique,
-                 color: color,
-                 icon: icons[selectedIconIndex].name,
-                 dataCrossword:thematiques
+        console.log(data);
+        if(optionNameVisibility === "faux"){
+             checkVisibility = optionNameVisibility
+            checkVisibility=0
+        }
+        else if(optionNameVisibility === "vrai"){
+             checkVisibility = optionNameVisibility
+            checkVisibility=1
+        }
+        console.log(optionNameVisibility)
+        console.log(icons[selectedIconIndex].name);
+        for (let i = 0; i < thematiques.length; i++) {
+            const sousThemes = thematiques[i];
+            if (sousThemes.words.length % 25 !== 0) {
+                const messages = `Le nombre de mots dans la sous-thématique "${sousThemes.crossword}" doit être un multiple de 25.`
+                snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg", messages,4000);
             }
-            console.log(dataSend) 
+        }
+        if (data){
+            const dataSend = {
+                name: data.thematique,
+                color: color,
+                visibility:checkVisibility,
+                icon: icons[selectedIconIndex].name,
+                dataCrossword: thematiques
+            }
+            console.log(dataSend)
             setEtatSousTheme(true);
             setLoading(true);
 
@@ -181,6 +218,7 @@ export const MainRightTheme = () => {
                 setLoading(false);
             }
         }
+        //snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg",message, 2000)
     }
 
     useEffect(() => {
@@ -190,15 +228,6 @@ export const MainRightTheme = () => {
             setEtat(true)
         }
     }, [location.state]);
-    const handleAddChip = (id, newChip) => {
-        const newThematiques = thematiques.map(thematique => {
-            if (thematique.id === id) {
-                thematique.words.push(newChip);
-            }
-            return thematique;
-        });
-        setThematiques(newThematiques);
-    };
 
     const handleRemoveChip = (id, chipIndex) => {
         const newThematiques = thematiques.map(thematique => {
@@ -212,6 +241,16 @@ export const MainRightTheme = () => {
     const handleAddThematique = () => {
         setThematiques([...thematiques, { id: thematiques.length + 1, crossword: '', words: [] }])
     }
+    const handleAddChip = (id, value) => {
+        const updatedFormations = [...thematiques];
+        const updatedFormation = updatedFormations.find((f) => f.id === id);
+
+        // Séparer les mots par les virgules
+        const chips = value.split(',').map(chip => chip.trim()).filter(chip => chip);
+
+        updatedFormation.words = [...updatedFormation.words, ...chips];
+        setThematiques(updatedFormations);
+    };
     const handleRemoveThematique = (id) => {
         setThematiques(thematiques.filter((theme) => theme.id !== id));
     };
@@ -239,7 +278,7 @@ export const MainRightTheme = () => {
                     optionName={optionName}
                     optionVisible={optionVisible}
                     rotateIcon={rotateIcon}
-                    defautClassName="select"/>
+                    defautClassName="select" />
             </div>
 
             <div className="alls_thematics">
@@ -269,7 +308,7 @@ export const MainRightTheme = () => {
                         <div className="answer_client_theme2_child1">
                             <div className="answer_client_theme2_child1_left">
                                 <label htmlFor="">Nom de la thématique</label>
-                                <input type="text" placeholder="Entrer le nom de la thematique" name="thematique" {...register("thematique", { required: "Veuillez entrer une question" })}/>
+                                <input type="text" placeholder="Entrer le nom de la thematique" name="thematique" {...register("thematique", { required: "Veuillez entrer une question" })} />
                                 {errors.thematique && <span className="error_theme">{errors.thematique.message}</span>}
                             </div>
                             <div className="answer_client_theme2_child1_left">
@@ -300,26 +339,40 @@ export const MainRightTheme = () => {
                         </div>
 
                     </div>
-                    <div className="answer_client_theme3">
-                        <label htmlFor="">Icone:</label>
-                        <div className="answer_client_theme3_parent_input">
-                            <input type="text" placeholder="Rechercher une icone" value={searchTerm}
-                                onChange={handleSearchChange} />
-                            <div className="answer_client_theme3_search">
-                                <img src={search} alt="" className="search_theme"/>
+                    <div className="parent_answer_client_theme3_visibility">
+                        <div className="answer_client_theme3">
+                            <label htmlFor="">Icone:</label>
+                            <div className="answer_client_theme3_parent_input">
+                                <input type="text" placeholder="Rechercher une icone" value={searchTerm}
+                                    onChange={handleSearchChange} />
+                                <div className="answer_client_theme3_search">
+                                    <img src={search} alt="" className="search_theme" />
+                                </div>
                             </div>
+                        </div>
+                        <div className="visibility">
+                            <label htmlFor="">Gratuit:</label>
+                            <Select
+                    dataSelectStatus={dataSelectVisibility}
+                    selectRef={selectRefVisibility}
+                    changeIcon={changeIconVisibility}
+                    handleChildClick={handleChildClickVisibility}
+                    optionName={optionNameVisibility}
+                    optionVisible={optionVisibleVisibility}
+                    rotateIcon={rotateIconVisility}
+                    defautClassName="select" />
                         </div>
                     </div>
                     <div className="answer_client_theme4">
                         {filteredIcons.map((icon, index) => {
                             return (
-                                    <FontAwesomeIcon icon={icon.icon} onClick={() => handleIconClick(index)}
-                                        className="icons_font_awesome"
-                                        style={selectedIconIndex === index ? { backgroundColor: color, color: 'white', borderRadius: '5px' } : {}} key={index}/>
+                                <FontAwesomeIcon icon={icon.icon} onClick={() => handleIconClick(index)}
+                                    className="icons_font_awesome"
+                                    style={selectedIconIndex === index ? { backgroundColor: color, color: 'white', borderRadius: '5px' } : {}} key={index} />
                             )
                         })}
                     </div>
-                     <span className="title">CREATION DE LA SOUS THEMATIQUE</span>
+                    <span className="title">CREATION DE LA SOUS THEMATIQUE</span>
                     <div className="parent_contenair_sous_thematique">
                         {
                             thematiques?.map((sousThemes) => {
@@ -329,17 +382,26 @@ export const MainRightTheme = () => {
                                             <div className="space_contenair">
                                                 <label htmlFor="sous_thematique">Sous thématique</label>
                                                 <input type="text" placeholder="Entrer le nom de la sous thématique" name={`crossword-${sousThemes.id}`}   {...register(`crossword-${sousThemes.id}`)}
-                                                onChange={(e) => {
-                                                    const updatedFormations = [...thematiques];
-                                                    const updatedFormation = updatedFormations.find((f) => f.id === sousThemes.id);
-                                                    updatedFormation.crossword = e.target.value;
-                                                    setThematiques(updatedFormations);
-                                                    register(`crossword-${sousThemes.id}`).onChange(e); // Access onChange from register
-                                                  }}/>
+                                                    onChange={(e) => {
+                                                        const updatedFormations = [...thematiques];
+                                                        const updatedFormation = updatedFormations.find((f) => f.id === sousThemes.id);
+                                                        updatedFormation.crossword = e.target.value;
+                                                        setThematiques(updatedFormations);
+                                                        register(`crossword-${sousThemes.id}`).onChange(e); 
+                                                    }} />
                                             </div>
                                             <div className="space_contenair">
                                                 <label htmlFor="">liste des mots de la sous-thématique</label>
-                                                {
+
+                                                <div className="parent_textarea">
+                                                    <textarea className="textarea_sous_thematique" placeholder="Entrer un mot" onKeyDown={(e) => {
+                                                        if (e.key === 'Enter') {
+                                                            e.preventDefault(); 
+                                                            handleAddChip(sousThemes.id, e.target.value);
+                                                            e.target.value = '';
+                                                        }
+                                                    }}>
+                                                    </textarea>
                                                     <div className="option_chips">
                                                         {sousThemes.words.map((chip, index) => (
                                                             <div key={index} className="chip">
@@ -348,13 +410,8 @@ export const MainRightTheme = () => {
                                                             </div>
                                                         ))}
                                                     </div>
-                                                }
-                                                <textarea className="textarea_sous_thematique" placeholder="Entrer un mot" onKeyDown={(e) => {
-                                                    if (e.key === 'Enter') {
-                                                        handleAddChip(sousThemes.id, e.target.value);
-                                                        e.target.value = '';
-                                                    }
-                                                }}></textarea>
+                                                    <span className="nbre_words">Listes de mots:{sousThemes.words.length}</span>
+                                                </div>
                                             </div>
                                         </div>
                                         <div className="add_remove">
@@ -377,9 +434,9 @@ export const MainRightTheme = () => {
                                 )
                             })
                         }
-                    </div> 
+                    </div>
 
-                    {loading ? (<button className="button_theme">Patientez svp ...</button>) : (<button className="button_theme">Générer les traductions</button>)} 
+                    {loading ? (<button className="button_theme">Patientez svp ...</button>) : (<button className="button_theme">Générer les traductions</button>)}
                 </form>}
 
             </div>

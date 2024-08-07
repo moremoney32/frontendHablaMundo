@@ -14,11 +14,42 @@
     flex-direction: column;
     gap: 20px;
 }
+.title_parent{
+    font-weight: 550;
+    font-size: 14px;
+    color: #D73030;
+}
+.parent_reste{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    transform: translate3d(0,30px,0);
+    padding-bottom: 30px;
+}
+.content_title{
+    padding: 10px;
+    font-size: 14px;
+    border: none;
+    outline: none;
+}
+.content_french{
+    padding: 10px;
+    font-size: 14px;
+    border: none;
+    outline: none;
+}
+.reste{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
 
 .sous_parent_main_croisés_left_parent{
     display:grid;
    grid-template-columns: 1fr;
     gap: 5px !important;
+    height: 375px;
+    overflow-y: auto;
 }
 .sous_parent_main_croisés_left_1{
     display: flex;
@@ -42,7 +73,7 @@
     display: flex;
     justify-content: space-between;
     padding-left: 10px;
-    padding-right: 150px;
+    padding-right: 10px;
     border: none;
     border-radius: 5px !important;
     font-size: 14px;
@@ -56,11 +87,22 @@
     padding-right: 50px !important;
     border:none;
     outline: none;
+     width:200px; 
+}
+.content_words{
+    width:200px;
+   padding: 2px;
+   border:none;
+    outline: none;
 }
  .content:focus{
     border: 1px solid #bebebe !important;
     border-radius: 5px;
 } 
+.content_words:focus{
+    border: 1px solid #bebebe !important;
+    border-radius: 5px;
+}
 .disable{
     color: #909090;
     padding: 2px;
@@ -72,19 +114,17 @@
    /* background: red !important; */
 }
   .sous_parent_main_croisés_contenair{
-    display: grid;
-    grid-template-columns:1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr; 
+    /* display: grid;
+    grid-template-columns:1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;  */
     padding-left: 10px;
     padding-right: 10px;
     padding-top: 10px;
     padding-bottom: 10px;
-    border-radius: 5px;
     border: 1px solid #D6EBFF;
     text-align: center;
-    gap: px;
     cursor: pointer;
-}  
- /* .sous_parent_main_croisés_contenair {
+}
+  /*.sous_parent_main_croisés_contenair {
     width: 100%;
     display: flex;
     flex-wrap: wrap;  
@@ -92,10 +132,10 @@
     padding-right: 10px;
     padding-top: 10px;
     padding-bottom: 10px;
-    border-radius: 5px;
+     border-radius: 5px; 
     border: 1px solid #D6EBFF;
     text-align: center;
-    gap: 10px;
+    gap:px;
     cursor: pointer;
   }
   
@@ -126,7 +166,7 @@
     color: #42444B;
     outline: none;
      text-align: center;
-} 
+}
 .save{
     text-align: center;
     padding-top: 10px;

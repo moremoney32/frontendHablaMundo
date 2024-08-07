@@ -77,15 +77,18 @@ export const MainRightSousThematiques = () => {
         select.style.borderBottomRightRadius = "5px"
         select.style.borderBottomLeftRadius = "5px"
     };
-    const handleWordls = async(id)=>{
+    const handleWordls = async(id,name)=>{
         console.log(id)
+        console.log(name)
         const dataId = {
             id:id
         }
         try {
-            const result = await fetchData("https://www.backend.habla-mundo.com/api/v1/crossword",dataId,token);
+            const result = await fetchData("https://www.backend.habla-mundo.com/api/v1/word",dataId,token);
             console.log(result);
             localStorage.setItem('datas', JSON.stringify(result));
+            localStorage.setItem('name', JSON.stringify(name));
+            localStorage.setItem('id', JSON.stringify(id));
             navigate("/motsCroisés");
         } catch (error) {
             console.log({ message: error.message });
@@ -96,7 +99,7 @@ export const MainRightSousThematiques = () => {
     return (
         <div className="parent_main">
             <div className="parent_header_sous_thematiques">
-                <HeaderSousThematiques theme={dataValue.name} />
+                <HeaderSousThematiques theme={dataValue.name}/>
             </div>
             <div className="sous_parent_main_sous_theme">
                 <div className="sous_parent_main_users_header">
@@ -130,14 +133,14 @@ export const MainRightSousThematiques = () => {
                        level && sousThematiques?.map((thematique) => {
                         console.log(thematique.id)
                             return (
-                                <CardSousThematique name={thematique?.name} key={thematique?.id}  created={thematique.created_at}  onClick={() => handleWordls(thematique.id)}/>
+                                <CardSousThematique name={thematique?.name} key={thematique?.id}  created={thematique.created_at}  onClick={() => handleWordls(thematique.id,thematique.name)}/>
                             )
                         })
                     }
                     {
                        etat && searchResults?.map((thematique) => {
                             return (
-                                <CardSousThematique name={thematique?.name} key={thematique?.id}  created={thematique.created_at}  onClick={() => handleWordls(thematique.id)}/>
+                                <CardSousThematique name={thematique?.name} key={thematique?.id}  created={thematique.created_at}  onClick={() => handleWordls(thematique.id,thematique.name)}/>
                             )
                         })
                     }

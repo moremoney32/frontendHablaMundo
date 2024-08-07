@@ -95,6 +95,19 @@
  color: black;
  font-weight: 550;
  transform: translate3d(-3px,0px,0);
+ outline: none;
+}
+.update_buton{
+  background:var(--color-secondary);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  text-align: center;
+  cursor: pointer;
+  transform: translate3d(5px,0px,0);
 }
 .parent_notifications{
   width: 25px;
