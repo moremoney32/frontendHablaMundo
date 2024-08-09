@@ -1,9 +1,20 @@
+import { useEffect } from "react"
 import { MainRightHome } from "../../components/componentNotRetulables/mainRight/mainRightHome/MainRightHome"
 import { Header } from "../../components/repeatableComponents/atomes/header/Header"
 import { SideBar } from "../../components/repeatableComponents/atomes/sideBar/SideBar"
 import "./home.css"
+import {useNavigate } from "react-router-dom"
+
 
 export const Home = ()=>{
+    const navigate = useNavigate()
+    const token = localStorage.getItem('token')
+    useEffect(()=>{  
+    if(!token){
+        navigate("/")
+    }
+
+    },[])
     return(
         <div>
              <Header/>

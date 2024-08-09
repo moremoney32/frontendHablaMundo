@@ -3,7 +3,7 @@
     position: fixed;
     left: 15px;
     bottom: 15px !important;
-    background:var(--color-secondary);
+    background:#212121;
     color: #fff;
     padding: 15px;
     border-radius: 0px 3px 3px 0px;

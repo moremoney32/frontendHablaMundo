@@ -1,7 +1,9 @@
+
 import { useEffect, useRef, useState } from "react"
 import { HeaderTitleMain } from "../../../repeatableComponents/atomes/header/HeaderTitleMain"
 import { snackbbar } from "../../../../helpers/snackbars"
 import { faClose } from "@fortawesome/free-solid-svg-icons/faClose";
+import { faBookReader } from "@fortawesome/free-solid-svg-icons/faBookReader";
 import { SketchPicker } from 'react-color';
 import "./mainRightTheme.css"
 import "../mainRightUsers/mainRightUsers.css"
@@ -17,6 +19,9 @@ import { useForm } from 'react-hook-form';
 import { faAngleRight, faUserAlt } from "@fortawesome/free-solid-svg-icons";
 import { fetchData } from "../../../../helpers/fetchData";
 import { SelectLanguages } from "../../select/SelectLanguages";
+import { fetchDataGet } from "../../../../helpers/fetchDataGet";
+import { formatTime } from "../../../../helpers/formatDate";
+import { fetchDelete } from "../../../../helpers/fetchDelete";
 export const MainRightTheme = () => {
     const [etat, setEtat] = useState(false);
     const [color, setColor] = useState('#ED4C5C');
@@ -26,14 +31,15 @@ export const MainRightTheme = () => {
     const [selectedIconIndex, setSelectedIconIndex] = useState(null);
     const { register, handleSubmit, formState: { errors }, setValue } = useForm();
     const [optionVisible, setOptionVisible] = useState(false);
-    const [optionVisibleVisibility,setOptionVisibleVisibility]= useState(false);
+    const [optionVisibleVisibility, setOptionVisibleVisibility] = useState(false);
     const [optionName, setOptionName] = useState("Plus récents");
     const [rotateIcon, setRotateIcon] = useState(false);
     const [optionVisibleLanguages, setOptionVisibleLanguages] = useState(false);
     const [optionNameLanguages, setOptionNameLanguages] = useState("Anglais");
-    const [optionNameVisibility, setOptionNameVisibility] = useState("faux");
+    const [optionNameVisibility, setOptionNameVisibility] = useState("Non");
     const [rotateIconLanguages, setRotateIconLanguages] = useState(false);
     const [rotateIconVisility, setRotateIconVisibility] = useState(false);
+    const [resultAllThematiques, setResultAllThematiques] = useState(null);
     const [thematiques, setThematiques] = useState([
         { id: 1, thematique: '', crossword: '', words: [] },
     ]);
@@ -42,12 +48,11 @@ export const MainRightTheme = () => {
     const selectRefLanguages = useRef(null);
     const selectRefVisibility = useRef(null);
     const dataSelectStatus = ["Plus récents", "Moins récents"];
-    const dataSelectVisibility = ["faux", "vrai"];
+    const dataSelectVisibility = ["Non", "Oui"];
     const dataSelect = ["Anglais"];
     const location = useLocation();
     const navigate = useNavigate()
     const token = localStorage.getItem('token')
-    console.log(token)
     const changeIcon = () => {
         const select = selectRef.current;
         setRotateIcon(!rotateIcon);
@@ -161,47 +166,51 @@ export const MainRightTheme = () => {
             setShowPicker(false);
         }
     };
-    let  checkVisibility;
+    useEffect(() => {
+        fetchDataGet("https://www.backend.habla-mundo.com/api/v1/themes").then((result) => {
+            console.log(result)
+            setResultAllThematiques(result)
+        })
+    }, [])
+    let checkVisibility;
     const onSubmit = async (data, event) => {
-        
         event.preventDefault();
-        console.log(data);
-        if(optionNameVisibility === "faux"){
-             checkVisibility = optionNameVisibility
-            checkVisibility=0
+        if (selectedIconIndex === null) {
+            const messageIcons = "Veuillez choisir une icône.";
+            return snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg", messageIcons, 5000);
         }
-        else if(optionNameVisibility === "vrai"){
-             checkVisibility = optionNameVisibility
-            checkVisibility=1
+        if (optionNameVisibility === "Non") {
+            checkVisibility = optionNameVisibility
+            checkVisibility = 0
         }
-        console.log(optionNameVisibility)
-        console.log(icons[selectedIconIndex].name);
+        else if (optionNameVisibility === "Oui") {
+            checkVisibility = optionNameVisibility
+            checkVisibility = 1
+        }
         for (let i = 0; i < thematiques.length; i++) {
             const sousThemes = thematiques[i];
-            if (sousThemes.words.length % 25 !== 0) {
+            if (sousThemes.words.length % 25 !== 0  || sousThemes.words.length===0) {
                 const messages = `Le nombre de mots dans la sous-thématique "${sousThemes.crossword}" doit être un multiple de 25.`
-                snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg", messages,4000);
+                return snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg", messages, 10000);
             }
         }
-        if (data){
+        if (data) {
             const dataSend = {
                 name: data.thematique,
                 color: color,
-                visibility:checkVisibility,
+                visibility: checkVisibility,
                 icon: icons[selectedIconIndex].name,
                 dataCrossword: thematiques
             }
-            console.log(dataSend)
             setEtatSousTheme(true);
             setLoading(true);
 
             try {
                 const result = await fetchData("https://www.backend.habla-mundo.com/api/v1/themes", dataSend, token);
-                console.log(result);
-
                 if (result.message === "the thematics is created") {
                     snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg", result.message, 2000);
                     localStorage.setItem('theme', JSON.stringify(dataSend));
+                    localStorage.setItem('result', JSON.stringify(result));
 
                     // Attendre que la snackbar disparaisse avant de rediriger
                     setTimeout(() => {
@@ -209,21 +218,17 @@ export const MainRightTheme = () => {
                     }, 2000);
                 }
                 if (result.message === "Erreur de l'IA. Veuillez reessayer!!!") {
-                    snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg", result.message, 4000);
+                    return snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg", result.message, 7000);
                 }
             } catch (error) {
                 setEtat(true);
-                console.log({ message: error.message });
             } finally {
                 setLoading(false);
             }
         }
-        //snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg",message, 2000)
     }
 
     useEffect(() => {
-        console.log(location.state);
-
         if (location.state?.filter) {
             setEtat(true)
         }
@@ -241,23 +246,56 @@ export const MainRightTheme = () => {
     const handleAddThematique = () => {
         setThematiques([...thematiques, { id: thematiques.length + 1, crossword: '', words: [] }])
     }
+
     const handleAddChip = (id, value) => {
         const updatedFormations = [...thematiques];
         const updatedFormation = updatedFormations.find((f) => f.id === id);
 
         // Séparer les mots par les virgules
-        const chips = value.split(',').map(chip => chip.trim()).filter(chip => chip);
+        const chips = value.split(',')
+            .map(chip => chip.trim())
+            .filter(chip => chip);
 
+        // doublons
         updatedFormation.words = [...updatedFormation.words, ...chips];
+        updatedFormation.words = Array.from(new Set(updatedFormation.words.map(word => word.toLowerCase())))
+            .map(lowercaseWord =>
+                updatedFormation.words.find(word => word.toLowerCase() === lowercaseWord)
+            );
+
         setThematiques(updatedFormations);
     };
     const handleRemoveThematique = (id) => {
         setThematiques(thematiques.filter((theme) => theme.id !== id));
     };
+    const removeTheme = (id) => {
+        const dataSend ={
+            id:id
+        }
+        console.log(id)
+        fetchDelete("https://www.backend.habla-mundo.com/api/v1/themes", dataSend,token).then((result) => {
+            console.log(result)
+            if (result.message === "the thematique is deleted") {
+                snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg", result.message, 4000);
+                setResultAllThematiques(result.thematique);
+            }
+        }).catch((error) => {
+            console.log({ messahge: error })
+        })
+    };
+    const updateCrosswords = (id, name) => {
+        const result = { id: id }
+        const dataSend = { name: name }
+        localStorage.setItem('result', JSON.stringify(result))
+        localStorage.setItem('theme', JSON.stringify(dataSend));
+        setTimeout(() => {
+            navigate("/sousThematiques");
+        }, 500);
+    }
     return (
         <div className="parent_main">
             <div className="title_main">
-                <HeaderTitleMain h1="Thématiques" />
+                <HeaderTitleMain h1="Thématiques" /> 
                 <div className="update_theme" onClick={checkTheme}>
                     <span>+</span>
                     <span>Ajouter une thématique</span>
@@ -280,22 +318,30 @@ export const MainRightTheme = () => {
                     rotateIcon={rotateIcon}
                     defautClassName="select" />
             </div>
-
             <div className="alls_thematics">
-                <div className="sous_alls_thematics">
-                    <div className="parent_icons_thematics">
-                        <FontAwesomeIcon icon={faUserAlt} className="parent_icons_thematics_child1" />
-                        <span className="parent_icons_thematics_child2">Verbes Irreguliers</span>
-                    </div>
-                    <span className="parent_icons_thematics_span">25 Mots croisés</span>
-                    <span className="parent_icons_thematics_span">Crée le 20/30/2020</span>
-                    <div className="parent_messages3_thematics">
-                        <span className="repondre_thematic">Mots croisés</span>
-                        <FontAwesomeIcon icon={faAngleRight} className="next" />
-                    </div>
-                    <img src={remove} alt="remove_words" className="remove_words" />
-                </div>
-
+                {resultAllThematiques?.map((result) => {
+                    const iconObj = icons.find((icon) => icon.name === result.icon);
+                    if (iconObj) {
+                        const icon = iconObj.icon;
+                        return (
+                            <div className="sous_alls_thematics" key={result.id}>
+                                <div className="parent_icons_thematics">
+                                    <FontAwesomeIcon icon={icon} className="parent_icons_thematics_child1" style={{ background: result.color }} />
+                                    <span className="parent_icons_thematics_child2" style={{ color: result.color }}>{result.name}</span>
+                                </div>
+                                <span className="parent_icons_thematics_span">25 Mots croisés</span>
+                                <span className="parent_icons_thematics_span"> créé {formatTime(result.created_at)}</span>
+                                <div className="parent_messages3_thematics" style={{ border: `1px solid ${result.color}` }}>
+                                    <span className="repondre_thematic" style={{ color: result.color }} onClick={() => updateCrosswords(result.id, result.name)}>Mots croisés</span>
+                                    <FontAwesomeIcon icon={faAngleRight} className="next" style={{ color: result.color }} />
+                                </div>
+                                <img src={remove} alt="remove_words" className="remove_words" onClick={() => removeTheme(result.id)} />
+                            </div>
+                        );
+                    } else {
+                        return null;
+                    }
+                })}
             </div>
 
             <div className="sous_parent_main_thematique">
@@ -353,14 +399,14 @@ export const MainRightTheme = () => {
                         <div className="visibility">
                             <label htmlFor="">Gratuit:</label>
                             <Select
-                    dataSelectStatus={dataSelectVisibility}
-                    selectRef={selectRefVisibility}
-                    changeIcon={changeIconVisibility}
-                    handleChildClick={handleChildClickVisibility}
-                    optionName={optionNameVisibility}
-                    optionVisible={optionVisibleVisibility}
-                    rotateIcon={rotateIconVisility}
-                    defautClassName="select" />
+                                dataSelectStatus={dataSelectVisibility}
+                                selectRef={selectRefVisibility}
+                                changeIcon={changeIconVisibility}
+                                handleChildClick={handleChildClickVisibility}
+                                optionName={optionNameVisibility}
+                                optionVisible={optionVisibleVisibility}
+                                rotateIcon={rotateIconVisility}
+                                defautClassName="select" />
                         </div>
                     </div>
                     <div className="answer_client_theme4">
@@ -387,16 +433,15 @@ export const MainRightTheme = () => {
                                                         const updatedFormation = updatedFormations.find((f) => f.id === sousThemes.id);
                                                         updatedFormation.crossword = e.target.value;
                                                         setThematiques(updatedFormations);
-                                                        register(`crossword-${sousThemes.id}`).onChange(e); 
+                                                        register(`crossword-${sousThemes.id}`).onChange(e);
                                                     }} />
                                             </div>
                                             <div className="space_contenair">
                                                 <label htmlFor="">liste des mots de la sous-thématique</label>
-
                                                 <div className="parent_textarea">
                                                     <textarea className="textarea_sous_thematique" placeholder="Entrer un mot" onKeyDown={(e) => {
                                                         if (e.key === 'Enter') {
-                                                            e.preventDefault(); 
+                                                            e.preventDefault();
                                                             handleAddChip(sousThemes.id, e.target.value);
                                                             e.target.value = '';
                                                         }
@@ -443,3 +488,5 @@ export const MainRightTheme = () => {
         </div>
     )
 }
+
+ 

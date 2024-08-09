@@ -4,7 +4,13 @@ import { faCircleMinus, faHome,faCommentDots, faUser, faVectorSquare } from '@fo
 import "./sideBar.css"
 import { faUserCircle } from "@fortawesome/free-solid-svg-icons/faUserCircle";
 export const SideBar = () => {
-  let color = "grey"
+  
+  const userId = localStorage.getItem("userId")
+  console.log(userId)
+   const deconnexion = () =>{
+  localStorage.removeItem("token");
+  //https://www.backend.habla-mundo.comapi/logout/{id}
+ }
   return (
     <div className='main_left'>
       <div className='main_child_left'>
@@ -17,7 +23,7 @@ export const SideBar = () => {
         <NavLink to="/comptes"  className="navlink" activeClassName="active"><ButtonMainLeft icons={faUserCircle} name="Comptes" defaultClassName="icon_default" isActive={window.location.pathname === "/comptes"}/></NavLink>
 
       </div>
-      <NavLink to="/" ><button className='deconnexion'>Déconnexion</button></NavLink>
+      <NavLink to="/" ><button className='deconnexion' onClick={deconnexion}>Déconnexion</button></NavLink>
     </div>
   )
 }

@@ -35,8 +35,9 @@
   gap: 15px;
 }
 .sous_alls_thematics{
-  display: flex;
-  justify-content: space-between;
+  display:grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 100px;
   align-items: center;
   padding: 10px;
   padding-left: 15px;
@@ -68,28 +69,29 @@ position: relative;
   width: 15px !important;
   height: 15px !important;
   border-radius: 50% !important;
-  background: var(--color-secondary) !important;
+  /* background: var(--color-secondary) !important; */
 }
 .parent_icons_thematics_child2{
-  color: var(--color-secondary) !important;
+  /* color: var(--color-secondary) !important; */
   font-size: 14px !important;
 }
 .parent_icons_thematics_span{
   font-size: 14px;
+  text-align: left;
 }
 .parent_messages3_thematics{
   border-radius: 5px;
   display: flex;
-  gap: 10px;
+  justify-content: space-between;
   padding-left: 10px;
   padding-right: 10px;
   padding-top: 7px;
   padding-bottom: 7px;
   align-items: center;
-  border: 1px solid var(--color-secondary);
   background: white;
   cursor: pointer;
-  color: var(--color-secondary);
+  width: 120px;
+  transform: translate3d(70px,0,0);
 }
 .repondre_thematic{
   font-size: 14px;
@@ -303,6 +305,7 @@ text-decoration: underline;
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+  padding-bottom: 10px;
 }
 .chip{
   display: flex;
@@ -456,3 +459,4 @@ text-decoration: underline;
   border-radius: 5px;
   cursor: pointer;
 }
+ 

@@ -5,6 +5,8 @@ import "./mainMotsCroisés.css";
 import WordList from "./WorldList";
 import { generateCrossword} from "./generateCoordonnées";
 import WordListReste from "./WorListReste";
+import { fetchData } from "../../../../helpers/fetchData";
+import { snackbbar } from "../../../../helpers/snackbars";
 export const MainMotsCroisés = () => {
   const datasFrench = JSON.parse(localStorage.getItem('datas'));
   const translations = datasFrench.map(word => word.traduction);
@@ -22,12 +24,15 @@ const newDataCrossword ={
 }
 
   const [datas, setDatas] = useState(newDataCrossword);
-  console.log(datas)
+  const [loading, setLoading] = useState(false);
+  const [remove, setTRemove] = useState(false);
+  console.log(datas);
   const [dataswords, setDatasWords] = useState(names);
   const dataTheme = JSON.parse(localStorage.getItem('theme'));
   const name = JSON.parse(localStorage.getItem('name'))
   const id = JSON.parse(localStorage.getItem('id'));
-  //const token = localStorage.getItem('token');
+  console.log(id)
+  const token = localStorage.getItem('token');
   const handleWordChange = (index, newName) => {
     const newPositions = datas.positions.map((word, i) =>
         i === index ? { ...word, word: newName } : word
@@ -53,18 +58,14 @@ const newDataCrossword ={
 
 const handleWordChangeReste = (index, newName) => {
   console.log(newName)
-  const newReste = datas.reste.map((word, i) =>
+  let newReste = datas.reste.map((word, i) =>
     i === index ? newName : word
   );
-  console.log(newReste)
-
-const changeReste = datas.reste.push(...newReste);
-console.log(changeReste)
-const world = datas.positions.map(element =>element.word)
-const newWords = world.push(changeReste) 
-console.log(newWords)
-const generatenewGrille = generateCrossword(newWords)
-const filterName  =  datas.positions.map(word => word.name);
+ let world = datas.positions.map(element =>element.word)
+ world.push(...newReste) 
+ console.log(world)
+ const generatenewGrille = generateCrossword(world)
+ const filterName  =  datas.positions.map(word => word.name);
 const generateFRenchEnglish =  generatenewGrille.positions.map((item, index) => {
   return {
       ...item,
@@ -82,29 +83,54 @@ const handleWordChangeFrench = (index, newName) => {
   const newPositions = datas.positions.map((word, i) =>
     i === index ? { ...word, name: newName } : word
 );
-console.log(newPositions)
 const datasFrench = newPositions.map(element =>element.name)
-console.log(datasFrench)
 setDatasWords(datasFrench)
+const updatedWords = datas.positions.map((item, index) => {
+  if (index < datasFrench.length) {
+    return { ...item, name: datasFrench[index] };
+  }
+  return item;
+});
+const newDataCrossword ={
+  positions:updatedWords,
+  gridSize:datas.gridSize,
+  reste:datas.reste
+  }
+  setDatas(newDataCrossword);
  
 }
-console.log(dataswords)
 
-// const handleWordls = async(id)=>{
-//   console.log(id)
-//   const dataId = {
-//       id:id
-//   }
-//   try {
-//       const result = await fetchData("https://www.backend.habla-mundo.com/api/v1/words",dataId,token);
-//       console.log(result);
-     
-//   } catch (error) {
-//       console.log({ message: error.message });
-//   } finally {
-      
-//   }
-// }
+const handleWordlsGrille = async()=>{
+  let updatedWords = datas.positions.map((word, index) => {
+    if (index < datasFrench.length) {
+      return { ...word, id: datasFrench[index].id };
+    }
+    return word;
+  });
+  
+  updatedWords =  updatedWords.map(({ row, col,direction, ...rest }) => rest);
+ 
+  const dataPush ={
+     crosswordId:id,
+    words:updatedWords
+  }
+  setLoading(true);
+  try {
+    const result = await fetchData("https://www.backend.habla-mundo.com/api/v1/words",dataPush,token);
+    console.log(result)
+    if (result.message === "the words is created") {
+      snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg", result.message, 4000);
+  }
+    
+} catch (error) {
+  console.log(error)
+} finally {
+    setLoading(false);
+}
+  
+}
+
+
 
   return (
     <div className="parent_main">
@@ -128,7 +154,7 @@ console.log(dataswords)
         </div>
         <div className="sous_parent_main_croisés_right">
           <Grid positions={datas.positions} gridSize={datas.gridSize}/>
-          <button className="save">Sauvegarder</button>
+          {loading ?<button className="save">En Cours ....</button>:<button className="save" onClick={handleWordlsGrille}>Sauvegarder</button>}
         </div>
       </div>
     </div>

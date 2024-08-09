@@ -27,6 +27,8 @@ export const Deconnexion = () => {
             if (result.access_token) {
                 snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg",message, 2000);
                 localStorage.setItem("token",result.access_token);
+                localStorage.setItem("userId",result.user.id);
+
                 
                 // Attendre que la snackbar disparaisse avant de rediriger
                 setTimeout(() => {
