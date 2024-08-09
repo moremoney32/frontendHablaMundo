@@ -13,6 +13,7 @@ export const Deconnexion = () => {
     const [connect, setConnect] = useState(false);
     const [etat, setEtat] = useState(false);
     const { register, handleSubmit, formState: { errors, isValid }, watch } = useForm();
+    const mailFormatRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
     const changesEyes = ()=>{
         setEtat(!etat)
     }
@@ -35,6 +36,10 @@ export const Deconnexion = () => {
                     navigate("/home");
                 }, 2000);  
             }
+            
+            if (result.message === "Invalid login credentials") {
+                snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg",result.message, 3000);
+            }
         } catch (error) {
             setEtat(true);
             console.log({ message: error.message });
@@ -53,7 +58,7 @@ export const Deconnexion = () => {
                         <input type="text" placeholder='Entrer votre adresse mail' name = "email" {...register("email", {
                             required: "Veuillez entrer votre adresse e-mail",
                             pattern: {
-                                value: /^\S+@\S+$/i,
+                                value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
                                 message: "Mauvaise syntaxe d'email",
                             },
                         })} />

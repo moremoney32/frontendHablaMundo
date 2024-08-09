@@ -5,8 +5,11 @@ import "./mainRightHome.css"
 import { IconesInformations } from "../../../repeatableComponents/atomes/iconesInformation/IconesInformations"
 import { NavLink, useNavigate } from "react-router-dom"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { useEffect, useState } from "react"
+import { fetchDataGet } from "../../../../helpers/fetchDataGet"
 export const MainRightHome = () => {
     const navigate = useNavigate();
+    const[stat,setStat] = useState(null)
 
     const handleNavigate = () => {
         navigate('/user', { state: { filter: 'Abonné(e)' } });
@@ -14,6 +17,13 @@ export const MainRightHome = () => {
     const handleNavigateTheme = () => {
         navigate('/theme', { state: { filter: "etat" } });
     };
+    useEffect(() =>{
+            fetchDataGet("https://www.backend.habla-mundo.com/api/v1/statistique").then((result) =>{
+                console.log(result)
+                setStat(result)
+            })
+    },[])
+
     return (
         <div className="parent_main">
             <div>
@@ -21,10 +31,10 @@ export const MainRightHome = () => {
             </div>
             <div className="sous_parent_main_home">
                 <div className="sous_parent_main_home1">
-                    <NavLink to="/user" className="nav_link"><InformationUser defaultClassName="icons_user_img" user="Utilisateurs inscrits" icon={faUser} number="300" className="color_home" /></NavLink>
-                    <div onClick={handleNavigate} className="nav_link"><InformationUser defaultClassName="icons_user_img1" user="Utilisateurs abonnés" icon={faUser} number="290" className="color_home1" /></div>
-                    <NavLink to="/theme" className="nav_link"><InformationUser defaultClassName="icons_user_img2" user="Thématiques" icon={faCircleMinus} number="1000" className="color_home2" /></NavLink>
-                    <NavLink to="/message" className="nav_link"><InformationUser defaultClassName="icons_user_img3" user="Messages reçus" icon={faCommentDots} number="10" className="color_home3" /></NavLink>
+                    <NavLink to="/user" className="nav_link"><InformationUser defaultClassName="icons_user_img" user="Utilisateurs inscrits" icon={faUser} number={stat?.users} className="color_home" /></NavLink>
+                    <div onClick={handleNavigate} className="nav_link"><InformationUser defaultClassName="icons_user_img1" user="Utilisateurs abonnés" icon={faUser} number={stat?.suscribes} className="color_home1" /></div>
+                    <NavLink to="/theme" className="nav_link"><InformationUser defaultClassName="icons_user_img2" user="Thématiques" icon={faCircleMinus} number={stat?.thematiques} className="color_home2" /></NavLink>
+                    <NavLink to="/message" className="nav_link"><InformationUser defaultClassName="icons_user_img3" user="Messages reçus" icon={faCommentDots} number={stat?.nombres_messages} className="color_home3" /></NavLink>
                 </div>
                 <div className="sous_parent_main_home2">
                     <div className="title_main_home">

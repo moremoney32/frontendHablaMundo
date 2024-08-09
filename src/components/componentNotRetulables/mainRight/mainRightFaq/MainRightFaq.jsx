@@ -24,27 +24,27 @@ export const MainRightFaq = () => {
   const fileInputRef = useRef(null); // Pour suivre l'index de l'élément actuellement ouvert
 
   // Fonction pour obtenir le compteur global d'identifiants
-  const getNextId = () => {
-    let currentId = parseInt(localStorage.getItem('globalIdCounter')) || 1;
-    localStorage.setItem('globalIdCounter', currentId + 1);
-    return currentId;
-  };
+  // const getNextId = () => {
+  //   let currentId = parseInt(localStorage.getItem('globalIdCounter')) || 1;
+  //   localStorage.setItem('globalIdCounter', currentId + 1);
+  //   return currentId;
+  // };
   const onSubmit = (data) => {
+    console.log(data)
     const htmlContent = textareaRef.current.innerHTML;
     data.reponse = htmlContent;
-    let storedData = localStorage.getItem("datas");
-    let currentDatas = storedData ? JSON.parse(storedData) : [];
-    const newData = { ...data, id: getNextId() };
+    // let storedData = localStorage.getItem("datasTextarea");
+    // let currentDatas = storedData ? JSON.parse(storedData) : [];
+    // const newData = { ...data, id: getNextId() };
 
-    setNextId(nextId + 1);
-    currentDatas.push(newData);
-    localStorage.setItem("datas", JSON.stringify(currentDatas));
-    setDatas(currentDatas);
-    setContent("");
-    if (textareaRef.current) {
-      textareaRef.current.innerText = "";
-    }
-    console.log(currentDatas);
+    // setNextId(nextId + 1);
+    // currentDatas.push(newData);
+    // localStorage.setItem("datasTextarea", JSON.stringify(currentDatas));
+    // setDatas(currentDatas);
+    // setContent("");
+    // if (textareaRef.current) {
+    //   textareaRef.current.innerText = "";
+    // }
   };
 
   const grasText = () => {
@@ -90,7 +90,7 @@ export const MainRightFaq = () => {
   }, [setValue]);
 
   useEffect(() => {
-    const storedData = localStorage.getItem("datas");
+    const storedData = localStorage.getItem("datasTextarea");
     if (storedData) {
       setDatas(JSON.parse(storedData));
     }
@@ -103,7 +103,7 @@ export const MainRightFaq = () => {
   const handleRemoveQuestion = (id) => {
     const newData = datas.filter((data) => data.id !== id);
     setDatas(newData);
-    localStorage.setItem("datas", JSON.stringify(newData));
+    localStorage.setItem("datasTextarea", JSON.stringify(newData));
   };
   const handleUploadClick = () => {
     if (fileInputRef.current) {
@@ -183,7 +183,7 @@ export const MainRightFaq = () => {
                   </div>
                   {openIndex === info.id && (
                     <div className="description_answer">
-                      <p dangerouslySetInnerHTML={{ __html: info.reponse }} />
+                      <p dangerouslySetInnerHTML={{__html: info.reponse}}/>
                       <img src={remove} alt="" className='remove' onClick={() => handleRemoveQuestion(info.id)} />
                     </div>
                   )}

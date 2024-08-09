@@ -19,6 +19,7 @@ export function useSearchNames(arrayInformation) {
             return resolve(searchNamesInfos);
           });
         };
+       
   
        
         Promise.all([searchName()]).then((response) => {

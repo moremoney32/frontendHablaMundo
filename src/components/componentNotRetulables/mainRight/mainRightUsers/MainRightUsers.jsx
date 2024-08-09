@@ -20,32 +20,24 @@ import "../mainRightMessages/mainRightMessages.css";
 import { faAngleDown, faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { useSearchInformation } from "../../../../customsHooks/useSearchInformation";
 import { Select } from "../../select/Select";
+import { fetchDataGet } from "../../../../helpers/fetchDataGet";
+import { fetchDataGetToken } from "../../../../helpers/fetchDataGetToken";
+import { formatTime } from "../../../../helpers/formatDate";
+import { searchAbonnes } from "../../../../helpers/searchAbonnes";
+import { fetchData } from "../../../../helpers/fetchData";
+import { snackbbar } from "../../../../helpers/snackbars";
 
 export const MainRightUsers = () => {
     const { register, handleSubmit, formState: { errors, isValid }, watch, setValue } = useForm();
-    const dataUser = [
-        { name: "Gaelle Tamho", id: "1", email: "jugalux111@gmail.com", inscription: "20/01/2023", status: "Abonné(e)" },
-        { name: "Nathalie", id: "2", email: "nathalie@gmail.com", inscription: "20/07/2024", status: "Abonné(e)" },
-        { name: "Junior", id: "3", email: "Junior@gmail.com", inscription: "20/09/2024", status: "Non abonné" },
-        { name: "Francis", id: "4", email: "nathalie@gmail.com", inscription: "20/07/2024", status: "Abonné(e)" },
-        { name: "Ludovic", id: "5", email: "nathalie@gmail.com", inscription: "20/07/2024", status: "Non abonné" },
-        { name: "Nathalie", id: "6", email: "nathalie@gmail.com", inscription: "20/07/2024", status: "Abonné(e)" },
-        { name: "Junior", id: "7", email: "Junior@gmail.com", inscription: "20/09/2024", status: "Non abonné" },
-        { name: "Francis", id: "8", email: "nathalie@gmail.com", inscription: "20/07/2024", status: "Abonné(e)" },
-        { name: "Ludovic", id: "9", email: "nathalie@gmail.com", inscription: "20/07/2024", status: "Non abonné" },
-        { name: "Nathalie", id: "10", email: "nathalie@gmail.com", inscription: "20/07/2024", status: "Abonné(e)" },
-        { name: "Junior", id: "11", email: "Junior@gmail.com", inscription: "20/09/2024", status: "Non abonné" },
-        { name: "Francis", id: "12", email: "nathalie@gmail.com", inscription: "20/07/2024", status: "Abonné(e)" },
-        { name: "Ludovic", id: "13", email: "nathalie@gmail.com", inscription: "20/07/2024", status: "Non abonné" }
-    ];
     const dataSelectStatus = ["Tous", "Abonné(e)", "Non abonné"]
-    const [searchResults, searchElementUser] = useSearchInformation(dataUser);
     const [currentPage, setCurrentPage] = useState(1);
     const [etatValue, setEtatValue] = useState(false);
+    const [dataUser, setDataUser] = useState([]);
+    const [searchResults, searchElementUser] = useSearchInformation(dataUser);
     const [name, setName] = useState(false);
     const [mail, setMail] = useState(false);
+    const [id, setId] = useState(null);
     const [etatMasque, setEtatMasque] = useState(false);
-    const [etatStatut, setEtatStatut] = useState(false);
     const [level, setLevel] = useState(true);
     const [content, setContent] = useState(null);
     const [optionVisible, setOptionVisible] = useState(false);
@@ -54,17 +46,19 @@ export const MainRightUsers = () => {
     const selectRef = useRef(null);
     const textareaRef = useRef(null);
     const fileInputRef = useRef(null);
-    const location = useLocation()
-    const itemsPages = 4;
-    const totalPages = Math.ceil(dataUser.length / itemsPages);
-    const filterValue = location.state?.filter;
-    console.log(filterValue)
+    const location = useLocation();
+    const itemsPages =1;
+    const totalPages = Math.ceil(dataUser?.length / itemsPages);
+    // const token = localStorage.getItem("token")
+    const message1 = "veuillez envoyer un contenu"
 
     const handleClick = (id, name, email) => {
+        console.log(id)
         console.log(name)
         setEtatMasque(true);
         setName(name);
         setMail(email);
+        setId(id)
     };
     const handleChangePages = (newPage) => {
         if (newPage > 0 && newPage <= totalPages) {
@@ -109,11 +103,39 @@ export const MainRightUsers = () => {
             };
         }
     }, [setValue]);
+    const token = localStorage.getItem("token")
+    useEffect(() =>{
+        fetchDataGetToken("https://www.backend.habla-mundo.com/api/v1/users",token).then((result) =>{
+            console.log(result)
+            setDataUser(result)
+            localStorage.setItem('dataUser', JSON.stringify(result));
+        }).catch((error)=>{
+            console.log(error)
+        })
+},[])
     const close = () => {
         setEtatMasque(false);
     };
     const onSubmit = (data) => {
         console.log(data)
+        const htmlContent = textareaRef.current.innerHTML;
+        if(htmlContent.length === 0){
+            return snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg", message1, 4000)
+        }
+    
+    const dataSend ={
+        user_id:id,
+        message:htmlContent
+    }
+    console.log(dataSend)
+    fetchData("https://www.backend.habla-mundo.com/api/v1/send-message",dataSend,token).then((result)=>{
+        console.log(result)
+        if(result.message === "Notification sent successfully."){
+            return snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg", result.message, 4000)
+        }
+    }).catch((error)=>{
+        console.log(error);
+    })
     }
     const handleUploadClick = () => {
         if (fileInputRef.current) {
@@ -138,19 +160,52 @@ export const MainRightUsers = () => {
             setOptionVisible(true);
         }
     };
+    let status;
     const handleChildClick = (value) => {
-        const select = selectRef.current
-        setOptionName(value);
-        setOptionVisible(false);
-        setRotateIcon(!rotateIcon);
-        setEtatStatut(true)
-        setLevel(false)
-        setEtatValue(false)
-        searchElementUser(value)
-        select.style.borderBottomRightRadius = "5px"
-        select.style.borderBottomLeftRadius = "5px"
+        const dataUserLocal = JSON.parse(localStorage.getItem('dataUser'));
+        if (value === "Non abonné") {
+            status = value
+            status = 0
+            const select = selectRef.current
+            setOptionName(value);
+            setOptionVisible(false);
+            setRotateIcon(!rotateIcon);
+            setLevel(true)
+            setEtatValue(false)
+            searchAbonnes(dataUserLocal,status).then((result)=>{
+                setDataUser(result)
+            })
+            select.style.borderBottomRightRadius = "5px"
+            select.style.borderBottomLeftRadius = "5px"
+        }
+         if (value === "Abonné(e)") {
+            status = value
+            status = 1
+            const select = selectRef.current
+            setOptionName(value);
+            setOptionVisible(false);
+            setRotateIcon(!rotateIcon);
+             setLevel(true)
+            setEtatValue(false)
+            searchAbonnes(dataUserLocal,status).then((result)=>{
+                setDataUser(result)
+            })
+            select.style.borderBottomRightRadius = "5px"
+            select.style.borderBottomLeftRadius = "5px"
+        }
+        if (value === "Tous") {
+            const select = selectRef.current
+            setOptionName(value);
+            setOptionVisible(false);
+            setRotateIcon(!rotateIcon);
+             setLevel(true)
+             setEtatValue(false)
+            setDataUser(dataUserLocal)
+            select.style.borderBottomRightRadius = "5px"
+            select.style.borderBottomLeftRadius = "5px"
+        }
+       
     };
-    console.log(searchResults)
     
 
 
@@ -179,8 +234,8 @@ export const MainRightUsers = () => {
         }
     }, [location.state]);
     const startIndex = (currentPage - 1) * itemsPages
-    const dataCurrent = dataUser.slice(startIndex, startIndex + itemsPages)
-
+    const dataCurrent = dataUser?.slice(startIndex, startIndex + itemsPages)
+  
     return (
         <div className="parent_main">
             <div>
@@ -196,7 +251,7 @@ export const MainRightUsers = () => {
                             <span className="objet">Objet</span>
                             <span className="objet_mail_chil1">A:<span className="objet_mail_chil2">{mail}</span></span>
                         </div>
-                        <input type="text" name="objet" className="answer_email_input" placeholder="Entrer l'objet du message" {...register("objet", { required: "Veuillez entrer une question" })} />
+                        <input type="text" name="objet" className="answer_email_input" placeholder="Entrer l'objet du message" {...register("objet", { required: "Veuillez entrer l'objet du message" })} />
                         {errors.objet && <span className="error">{errors.objet.message}</span>}
                         <div className="answer_mail_description">
                             <label htmlFor="reponse">Réponse</label>
@@ -220,7 +275,7 @@ export const MainRightUsers = () => {
                                     contentEditable="true"
                                     placeholder="Entrez un message"
                                     ref={textareaRef}></div>
-                                <input type="hidden" name="reponse" value={content} {...register("reponse")} />
+                                <input type="hidden" name="text" value={content}/>
                             </div>
                         </div>
                         <button className="send_mail" type="submit">Envoyer par mail</button>
@@ -231,11 +286,12 @@ export const MainRightUsers = () => {
                         <input type="text" className="input_users" placeholder="Rechercher un utilisateur" name="checkValue" onChange={(e) => {
                             setLevel(false);
                             setEtatValue(true)
-                            setEtatStatut(false)
-                            searchElementUser(e.target.value);
+                             searchElementUser(e.target.value);
+                            //  handleChangePages(currentPage + 1) a regler
                             if (e.target.value.length === 0) {
                                 setLevel(true);
                                 setEtatValue(false)
+                                //setDataUser(JSON.parse(localStorage.getItem("dataUser")));
                             }
                             register("checkValue").onChange(e); // Access onChange from register
                         }} />
@@ -261,68 +317,44 @@ export const MainRightUsers = () => {
                         <span>Status</span>
                         <span>Action</span>
                     </div>
-                    {level && dataCurrent.map((data) => {
+                    {level && dataCurrent?.map((data) => {
                         return (
                             <div className="sous_parent_main_users_information-child2" key={data.id}>
                                 <div className="prenom">
                                     <img src={message} alt="message" />
-                                    <span>{data.name}</span>
+                                    <span>{data.first_name}</span>
                                 </div>
                                 <div className="user_adress_mail">{data.email}</div>
-                                <div className="user_inscription">{data.inscription}</div>
-                                <div className={`status ${data.status === "Abonné(e)" ? "status-abonne" : ""}`}>
-                                    {data.status}
-                                </div>
+                                <div className="user_inscription">{formatTime(data.created_at)}</div>
+                                 <div className={`status ${data.suscribe === "0" ? "Non abonné" : "Abonné(e)"}`}>
+                {data.suscribe === "1" ? "Abonné(e)" : "Non abonné"}
+            </div>
                                 <div>
-                                    <div className="action" onClick={() => handleClick(data.id, data.name, data.email)}>
+                                    <div className="action" onClick={() => handleClick(data.id, data.first_name, data.email)}>
                                         <img src={messageOutlined} alt="message_outlined" />
                                         <span>Message</span>
                                     </div>
 
                                 </div>
-                                {/* <div className="action" onClick={() => handleClick(data.id, data.name, data.email)}>
-                                    <img src={messageOutlined} alt="message_outlined" />
-                                    <span>Message</span>
-                                </div> */}
-                            </div>
-
-                        )
-
-                    })}
-
-                    {etatValue && searchResults.map((data) => {
-                        return (
-                            <div className="sous_parent_main_users_information-child2" key={data.id}>
-                                <div className="prenom">
-                                    <img src={message} alt="message" />
-                                    <span>{data.name}</span>
-                                </div>
-                                <div className="user_adress_mail">{data.email}</div>
-                                <div className="user_inscription">{data.inscription}</div>
-                                <div className={`status ${data.status === "Abonné(e)" ? "status-abonne" : ""}`}>
-                                    {data.status}
-                                </div>
-                                <div className="action" onClick={() => handleClick(data.id, data.name, data.email)}>
-                                    <img src={messageOutlined} alt="message_outlined" />
-                                    <span>Message</span>
-                                </div>
+                               
                             </div>
 
                         )
                     })}
-                    {etatStatut && searchResults.map((data) => {
+
+                     {etatValue && searchResults.map((data) => {
                         return (
                             <div className="sous_parent_main_users_information-child2" key={data.id}>
                                 <div className="prenom">
                                     <img src={message} alt="message" />
-                                    <span>{data.name}</span>
+                                    <span>{data.first_name}</span>
                                 </div>
                                 <div className="user_adress_mail">{data.email}</div>
-                                <div className="user_inscription">{data.inscription}</div>
-                                <div className={`status ${data.status === "Abonné(e)" ? "status-abonne" : ""}`}>
-                                    {data.status}
-                                </div>
-                                <div className="action" onClick={() => handleClick(data.id, data.name, data.email)}>
+                                <div className="user_inscription">{formatTime(data.created_at)}</div>
+                                <div className={`status ${data.suscribe === "0" ? "Non abonné" : "Abonné(e)"}`}>
+                {data.suscribe === "1" ? "Abonné(e)" : "Non abonné"}
+            </div>
+                                <div className="action" onClick={() => handleClick(data.id, data.first_name, data.email)}>
                                     <img src={messageOutlined} alt="message_outlined" />
                                     <span>Message</span>
                                 </div>
@@ -332,15 +364,15 @@ export const MainRightUsers = () => {
                     })}
                 </div>
                 <div className="pagination">
-                    {level ? <span className="pagination_nbrs_pages">{dataCurrent.length}/{dataUser.length} Utilisateurs</span> : <span className="pagination_nbrs_pages">{searchResults.length}/{dataUser.length} Utilisateurs</span>}
+                    {level ? <span className="pagination_nbrs_pages">{dataCurrent?.length}/{dataUser?.length} Utilisateurs</span> : <span className="pagination_nbrs_pages">{searchResults.length}/{dataUser.length} Utilisateurs</span>}
                     <div className="direction_icons">
                         <FontAwesomeIcon
                             icon={faAngleLeft}
                             className="icons_pagination"
-                            onClick={() => handleChangePages(currentPage - 1)}
+                             onClick={() => handleChangePages(currentPage - 1)}
                         />
-                        <div className="counter">
-                            {[...Array(totalPages)].map((_, index) => (
+                         <div className="counter">
+                              {[...Array(totalPages)].map((_, index) => (
                                 <span
                                     key={index}
                                     className={currentPage === index + 1 ? "active_page" : "non_active"}
@@ -348,16 +380,18 @@ export const MainRightUsers = () => {
                                 >
                                     {index + 1}
                                 </span>
-                            ))}
-                        </div>
-                        <FontAwesomeIcon
+                            ))}  
+                        </div> 
+                         <FontAwesomeIcon
                             icon={faAngleRight}
                             className="icons_pagination"
                             onClick={() => handleChangePages(currentPage + 1)}
-                        />
+                        /> 
                     </div>
                 </div>
             </div>
         </div>
     );
 };
+// {searchResults.length}/{dataUser.length}
+//{dataCurrent.length}/{dataUser.length}

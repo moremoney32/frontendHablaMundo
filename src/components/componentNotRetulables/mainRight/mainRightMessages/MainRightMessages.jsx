@@ -14,6 +14,9 @@ import upload from "../../../../assets/icons/upload.png";
 import police from "../../../../assets/icons/police.png";
 import { faClose } from "@fortawesome/free-solid-svg-icons/faClose";
 import { useForm } from 'react-hook-form';
+import { fetchDataGet } from "../../../../helpers/fetchDataGet";
+import { fetchData } from "../../../../helpers/fetchData";
+import { snackbbar } from "../../../../helpers/snackbars";
 
 export const MainRightMessages = () => {
     const { register, handleSubmit, formState: { errors }, setValue } = useForm();
@@ -24,21 +27,28 @@ export const MainRightMessages = () => {
     const [textName, setTextName] = useState(null);
     const textareaRef = useRef(null);
     const fileInputRef = useRef(null);
-    const [notification, setNotification] = useState ( '' );
-    
-      useEffect(() => {
-        const eventSource = new EventSource("http://localhost:5000/notifications"); 
-        eventSource.onmessage = (event) => {
-            console.log(event.data)
-          setNotification(event.data);
-        };
+    const [id, setId] = useState(null);
+    const [notification, setNotification] = useState(null);
+    const token =localStorage.getItem("token")
+    const message2 = "veuillez entrer un contenu"
+
+ 
+    useEffect(() => {
+        const eventSource = new EventSource('https://www.backend.habla-mundo.com/api/v1/notifications');
+        
+        eventSource.addEventListener('message', (event) => {
+            console.log(event.data);
+        });
+        
         return () => {
-          eventSource.close();
+            eventSource.close();
         };
-      }, []);
+    }, []);
     
-     
-    
+
+
+
+
 
     useEffect(() => {
         // Charger les états actifs depuis le localStorage
@@ -116,6 +126,7 @@ export const MainRightMessages = () => {
     }];
 
     const handleClick = (id, messageValue, name) => {
+        setId(id)
         setActiveStates(prevState => {
             const newState = { ...prevState, [id]: true };
             localStorage.setItem('activeStates', JSON.stringify(newState));
@@ -131,6 +142,25 @@ export const MainRightMessages = () => {
     };
     const onSubmit = (data) => {
         console.log(data)
+        console.log(data)
+        const htmlContent = textareaRef.current.innerHTML;
+        if(htmlContent.length === 0){
+            return snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg", message2, 4000)
+        }
+    
+    const dataSend ={
+        user_id:id,
+        message:htmlContent
+    }
+    console.log(dataSend)
+    fetchData("https://www.backend.habla-mundo.com/api/v1/send-message",dataSend,token).then((result)=>{
+        console.log(result)
+        if(result.message === "Notification sent successfully."){
+            return snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg", result.message, 4000)
+        }
+    }).catch((error)=>{
+        console.log(error);
+    })
     }
     const handleUploadClick = () => {
         if (fileInputRef.current) {
@@ -151,10 +181,10 @@ export const MainRightMessages = () => {
                 }
             };
             reader.readAsDataURL(file);
-            
+
         }
     };
-    
+
 
     return (
         <div className="parent_main">
@@ -186,7 +216,7 @@ export const MainRightMessages = () => {
                                     <img src={gras} alt="" className="img_answer_profession" onClick={grasText} />
                                     <img src={underline} alt="" className="img_answer_profession" onClick={underlineText} />
                                     <img src={italique} alt="" className="img_answer_profession" onClick={italiqueText} />
-                                    <img src={police} alt="" className="img_answer_profession" onClick={() =>changeFontSize(4)} />
+                                    <img src={police} alt="" className="img_answer_profession" onClick={() => changeFontSize(4)} />
                                     <img src={link} alt="" className="img_answer_profession links" onClick={linkText} />
                                     <img src={list} alt="" className="img_answer_profession lists" onClick={listText} />
                                     <img src={upload} alt="" className="img_answer_profession upload" onClick={handleUploadClick} />
@@ -203,7 +233,7 @@ export const MainRightMessages = () => {
                                     placeholder="Entrez un message"
                                     ref={textareaRef}
                                 ></div>
-                                <input type="hidden" name="reponse" value={content} {...register("reponse")} />
+                                <input type="hidden" name="reponse" value={content}/>
                             </div>
                         </div>
                         <button className="send_mail" type="submit">Envoyer par mail</button>

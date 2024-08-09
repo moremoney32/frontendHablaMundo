@@ -1,10 +1,11 @@
-export function fetchDataGet(url){
+export function fetchDataGetToken(url,token){
     return new Promise((resolve, reject) => {
         const dataToSend = {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json', 
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${token}` 
         }, 
         
         credentials: "include"

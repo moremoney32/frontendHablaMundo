@@ -22,6 +22,7 @@ import { SelectLanguages } from "../../select/SelectLanguages";
 import { fetchDataGet } from "../../../../helpers/fetchDataGet";
 import { formatTime } from "../../../../helpers/formatDate";
 import { fetchDelete } from "../../../../helpers/fetchDelete";
+import { useSearchNames } from "../../../../customsHooks/useSearchNames";
 export const MainRightTheme = () => {
     const [etat, setEtat] = useState(false);
     const [color, setColor] = useState('#ED4C5C');
@@ -34,12 +35,15 @@ export const MainRightTheme = () => {
     const [optionVisibleVisibility, setOptionVisibleVisibility] = useState(false);
     const [optionName, setOptionName] = useState("Plus récents");
     const [rotateIcon, setRotateIcon] = useState(false);
+    const [levelSearch, setLevelSearch] = useState(true);
+    const [etatSearch, setEtatSearch] = useState(false);
     const [optionVisibleLanguages, setOptionVisibleLanguages] = useState(false);
     const [optionNameLanguages, setOptionNameLanguages] = useState("Anglais");
     const [optionNameVisibility, setOptionNameVisibility] = useState("Non");
     const [rotateIconLanguages, setRotateIconLanguages] = useState(false);
     const [rotateIconVisility, setRotateIconVisibility] = useState(false);
     const [resultAllThematiques, setResultAllThematiques] = useState(null);
+    const [searchResults, searchElementUserName] = useSearchNames(resultAllThematiques);
     const [thematiques, setThematiques] = useState([
         { id: 1, thematique: '', crossword: '', words: [] },
     ]);
@@ -51,7 +55,7 @@ export const MainRightTheme = () => {
     const dataSelectVisibility = ["Non", "Oui"];
     const dataSelect = ["Anglais"];
     const location = useLocation();
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     const token = localStorage.getItem('token')
     const changeIcon = () => {
         const select = selectRef.current;
@@ -99,12 +103,36 @@ export const MainRightTheme = () => {
         }
     };
     const handleChildClick = (value) => {
-        const select = selectRef.current
-        setOptionName(value);
-        setOptionVisible(false);
-        setRotateIcon(!rotateIcon);
-        select.style.borderBottomRightRadius = "5px"
-        select.style.borderBottomLeftRadius = "5px"
+        if (value === "Moins récents") {
+            const select = selectRef.current
+            setOptionName(value);
+            setOptionVisible(false);
+            setRotateIcon(!rotateIcon);
+            select.style.borderBottomRightRadius = "5px"
+            select.style.borderBottomLeftRadius = "5px"
+         const compareDate =   resultAllThematiques.sort((a, b) => {
+                // Convertir les chaînes de caractères en objets Date
+                const dateA = new Date(a.created_at);
+                const dateB = new Date(b.created_at);
+               // difference
+                return dateB - dateA;
+              });
+              setResultAllThematiques(compareDate)
+        }
+        if (value === "Plus récents") {
+            const select = selectRef.current
+            setOptionName(value);
+            setOptionVisible(false);
+            setRotateIcon(!rotateIcon);
+            select.style.borderBottomRightRadius = "5px"
+            select.style.borderBottomLeftRadius = "5px"
+         const compareDate =   resultAllThematiques.sort((a, b) => {
+                const dateA = new Date(a.created_at);
+                const dateB = new Date(b.created_at);
+                return dateA - dateB;
+              });
+              setResultAllThematiques(compareDate)
+        }
     };
     const handleChildClickLanguages = (value) => {
         const select = selectRefLanguages.current
@@ -160,7 +188,7 @@ export const MainRightTheme = () => {
 
     const handleInputChange = (e) => {
         setColor(e.target.value);
-        if (e.target.value === '') {
+        if (e.target.value.length>=0) {
             setShowPicker(true);
         } else {
             setShowPicker(false);
@@ -189,7 +217,7 @@ export const MainRightTheme = () => {
         }
         for (let i = 0; i < thematiques.length; i++) {
             const sousThemes = thematiques[i];
-            if (sousThemes.words.length % 25 !== 0  || sousThemes.words.length===0) {
+            if (sousThemes.words.length % 25 !== 0 || sousThemes.words.length === 0) {
                 const messages = `Le nombre de mots dans la sous-thématique "${sousThemes.crossword}" doit être un multiple de 25.`
                 return snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg", messages, 10000);
             }
@@ -268,12 +296,15 @@ export const MainRightTheme = () => {
     const handleRemoveThematique = (id) => {
         setThematiques(thematiques.filter((theme) => theme.id !== id));
     };
+    const sortAlphabet = (sousThematiques) => {
+        return sousThematiques.sort((a, b) => a.name.localeCompare(b.name));
+    };
     const removeTheme = (id) => {
-        const dataSend ={
-            id:id
+        const dataSend = {
+            id: id
         }
         console.log(id)
-        fetchDelete("https://www.backend.habla-mundo.com/api/v1/themes", dataSend,token).then((result) => {
+        fetchDelete("https://www.backend.habla-mundo.com/api/v1/themes", dataSend, token).then((result) => {
             console.log(result)
             if (result.message === "the thematique is deleted") {
                 snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg", result.message, 4000);
@@ -295,7 +326,7 @@ export const MainRightTheme = () => {
     return (
         <div className="parent_main">
             <div className="title_main">
-                <HeaderTitleMain h1="Thématiques" /> 
+                <HeaderTitleMain h1="Thématiques" />
                 <div className="update_theme" onClick={checkTheme}>
                     <span>+</span>
                     <span>Ajouter une thématique</span>
@@ -303,7 +334,16 @@ export const MainRightTheme = () => {
             </div>
             <div className="sous_parent_main_users_header">
                 <div className="sous_parent_main_users_header_input">
-                    <input type="text" className="input_users" placeholder="Rechercher une thématique" name="checkValueThematique" />
+                    <input type="text" className="input_users" placeholder="Rechercher une thématique" name="checkValueThematique" onChange={(e) => {
+                        setLevelSearch(false);
+                        setEtatSearch(true)
+                        searchElementUserName(e.target.value);
+                        if (e.target.value.length === 0) {
+                            setLevelSearch(true);
+                            setEtatSearch(false)
+                        }
+                        register("checkValue").onChange(e);
+                    }} />
                     <div className="parent_search_users">
                         <img src={search} alt="" className="search_users" />
                     </div>
@@ -319,7 +359,30 @@ export const MainRightTheme = () => {
                     defautClassName="select" />
             </div>
             <div className="alls_thematics">
-                {resultAllThematiques?.map((result) => {
+                {levelSearch && resultAllThematiques?.map((result) => {
+                    const iconObj = icons.find((icon) => icon.name === result.icon);
+                    if (iconObj) {
+                        const icon = iconObj.icon;
+                        return (
+                            <div className="sous_alls_thematics" key={result.id}>
+                                <div className="parent_icons_thematics">
+                                    <FontAwesomeIcon icon={icon} className="parent_icons_thematics_child1" style={{ background: result.color }} />
+                                    <span className="parent_icons_thematics_child2" style={{ color: result.color }}>{result.name}</span>
+                                </div>
+                                <span className="parent_icons_thematics_span">25 Mots croisés</span>
+                                <span className="parent_icons_thematics_span"> créé {formatTime(result.created_at)}</span>
+                                <div className="parent_messages3_thematics" style={{ border: `1px solid ${result.color}` }}>
+                                    <span className="repondre_thematic" style={{ color: result.color }} onClick={() => updateCrosswords(result.id, result.name)}>Mots croisés</span>
+                                    <FontAwesomeIcon icon={faAngleRight} className="next" style={{ color: result.color }} />
+                                </div>
+                                <img src={remove} alt="remove_words" className="remove_words" onClick={() => removeTheme(result.id)} />
+                            </div>
+                        );
+                    } else {
+                        return null;
+                    }
+                })}
+                {etatSearch && searchResults?.map((result) => {
                     const iconObj = icons.find((icon) => icon.name === result.icon);
                     if (iconObj) {
                         const icon = iconObj.icon;
@@ -489,4 +552,3 @@ export const MainRightTheme = () => {
     )
 }
 
- 

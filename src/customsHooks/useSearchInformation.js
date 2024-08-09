@@ -19,32 +19,43 @@ export function useSearchInformation(arrayInformation) {
             return resolve(searchNamesInfos);
           });
         };
-  
-        const searchAbonnes = () => {
+        const searchFirsName = () => {
           return new Promise((resolve) => {
-            const searchnewAbonnes = arrayInformation.filter((infos) => infos.status);
-            const searchNamesAbonnes = searchnewAbonnes.filter((infos) => {
-              if (infos.status.toLowerCase().includes(userInformation.toLowerCase())) {
-                return infos;
+            const searchFirstName = arrayInformation.filter((info) => info.first_name);
+            const searchFirstNamesInfos = searchFirstName.filter((info) => {
+              if (info.first_name.toLowerCase().includes(userInformation.toLowerCase())){
+                return info;
               }
             });
-            return resolve(searchNamesAbonnes);
-          });
-        };
-        const allUsers = () => {
-          return new Promise((resolve) => {
-            const searchUsers = arrayInformation.filter((infos) => infos.status);
-            const searchNamesUsers = searchUsers.filter((infos) => {
-              if (infos.status.toLowerCase().includes(userInformation.toLowerCase() === false)) {
-                return searchUsers;
-              }
-            });
-            return resolve(searchNamesUsers);
+            return resolve(searchFirstNamesInfos);
           });
         };
   
-        Promise.all([searchName(),searchAbonnes(),allUsers()]).then((response) => {
-          const results = [...response[0],...response[1],...response[2]];
+        // const searchAbonnes = () => {
+        //   return new Promise((resolve) => {
+        //     const searchnewAbonnes = arrayInformation.filter((infos) => infos.suscribe);
+        //     const searchNamesAbonnes = searchnewAbonnes.filter((infos) => {
+        //       if (infos.suscribe.includes(userInformation)) {
+        //         return infos;
+        //       }
+        //     });
+        //     return resolve(searchNamesAbonnes);
+        //   });
+        // };
+        // const allUsers = () => {
+        //   return new Promise((resolve) => {
+        //     const searchUsers = arrayInformation.filter((infos) => infos.status);
+        //     const searchNamesUsers = searchUsers.filter((infos) => {
+        //       if (infos.status.toLowerCase().includes(userInformation.toLowerCase() === false)) {
+        //         return searchUsers;
+        //       }
+        //     });
+        //     return resolve(searchNamesUsers);
+        //   });
+        // };
+  
+        Promise.all([searchName(),searchFirsName()]).then((response) => {
+          const results = [...response[0],...response[1]];
           const filterDoublon = [...new Set(results)];
           setSearchResults(filterDoublon);
           return resolve(filterDoublon);

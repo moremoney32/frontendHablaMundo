@@ -13,7 +13,7 @@ import { useForm } from "react-hook-form";
 
 export const MainRightSousThematiques = () => {
     const { register, handleSubmit, formState: { errors, isValid }, watch, setValue } = useForm();
-    const dataSelectStatus = ["normal", "Aphabétiques"]
+    const dataSelectStatus = ["normal", "Aphabétiques","plus récents"]
     const [optionVisible, setOptionVisible] = useState(false);
     const [optionName, setOptionName] = useState("normal");
     const [rotateIcon, setRotateIcon] = useState(false);
@@ -55,12 +55,43 @@ export const MainRightSousThematiques = () => {
         }
     };
     const handleChildClick = (value) => {
-        const select = selectRef.current
+        if(value = "Aphabétiques"){
+            const select = selectRef.current
         setOptionName(value);
         setOptionVisible(false);
         setRotateIcon(!rotateIcon);
         select.style.borderBottomRightRadius = "5px"
         select.style.borderBottomLeftRadius = "5px"
+        const compareAphabetiques =   sousThematiques.sort((a, b) => a.name.localeCompare(b.name))
+        console.log(compareAphabetiques)
+           return setSousThematique(compareAphabetiques)
+        }
+        if(value = "normal"){
+            const select = selectRef.current
+        setOptionName(value);
+        setOptionVisible(false);
+        setRotateIcon(!rotateIcon);
+        select.style.borderBottomRightRadius = "5px"
+        select.style.borderBottomLeftRadius = "5px"
+        const compareAphabetiques =   sousThematiques.sort((a, b) => b.name.localeCompare(a.name))
+        console.log(compareAphabetiques)
+           return setSousThematique(compareAphabetiques)
+        }
+        if(value = "plus récents"){
+            const select = selectRef.current
+        setOptionName(value);
+        setOptionVisible(false);
+        setRotateIcon(!rotateIcon);
+        select.style.borderBottomRightRadius = "5px"
+        select.style.borderBottomLeftRadius = "5px"
+        const compareDate =   sousThematiques.sort((a, b) => {
+            const dateA = new Date(a.created_at);
+            const dateB = new Date(b.created_at);
+            return dateA - dateB;
+          });  
+           return setSousThematique(compareDate)
+        }
+       
     };
     const handleWordls = async(id,name)=>{
         const dataId = {

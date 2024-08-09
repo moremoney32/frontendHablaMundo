@@ -184,6 +184,10 @@ background: white;
   color:#bebebe;
   font-size: 12px;
 }
+textarea::placeholder{
+  color:#bebebe !important;
+  font-size: 14px;
+}
 .add_remove{
   display: flex;
   justify-content: space-between;
