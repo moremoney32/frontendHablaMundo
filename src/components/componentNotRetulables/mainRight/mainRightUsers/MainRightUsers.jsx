@@ -40,6 +40,7 @@ export const MainRightUsers = () => {
     const [etatMasque, setEtatMasque] = useState(false);
     const [level, setLevel] = useState(true);
     const [content, setContent] = useState(null);
+    const [loading, setLoading] = useState(false);
     const [optionVisible, setOptionVisible] = useState(false);
     const [optionName, setOptionName] = useState("Tous");
     const [rotateIcon, setRotateIcon] = useState(false);
@@ -116,7 +117,7 @@ export const MainRightUsers = () => {
     const close = () => {
         setEtatMasque(false);
     };
-    const onSubmit = (data) => {
+    const onSubmit =async (data) => {
         console.log(data)
         const htmlContent = textareaRef.current.innerHTML;
         if(htmlContent.length === 0){
@@ -128,14 +129,21 @@ export const MainRightUsers = () => {
         message:htmlContent
     }
     console.log(dataSend)
-    fetchData("https://www.backend.habla-mundo.com/api/v1/send-message",dataSend,token).then((result)=>{
-        console.log(result)
-        if(result.message === "Notification sent successfully."){
-            return snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg", result.message, 4000)
-        }
-    }).catch((error)=>{
-        console.log(error);
-    })
+    setLoading(true)
+    try{
+       const result = await fetchData("https://www.backend.habla-mundo.com/api/v1/send-message",dataSend,token)
+            console.log(result)
+            if(result.message === "Notification sent successfully."){
+                return snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg", result.message, 2000)
+            }
+       
+
+    }catch(error){
+        console.log(error)
+    }finally{
+        setLoading(false)
+        setEtatMasque(false)
+    }
     }
     const handleUploadClick = () => {
         if (fileInputRef.current) {
@@ -278,7 +286,7 @@ export const MainRightUsers = () => {
                                 <input type="hidden" name="text" value={content}/>
                             </div>
                         </div>
-                        <button className="send_mail" type="submit">Envoyer par mail</button>
+                        {loading?<button className="send_mail">En cours ...</button>:<button className="send_mail" type="submit">Envoyer par mail</button>}
                     </form>
                 </div>}
                 <div className="sous_parent_main_users_header">

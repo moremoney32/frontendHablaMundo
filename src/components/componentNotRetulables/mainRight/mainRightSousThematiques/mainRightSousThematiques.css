@@ -62,4 +62,28 @@
     text-decoration:none !important;
   }
   
-  
+  #masqueSousTheme{
+    position: fixed;
+    top: 0;
+    bottom:0;
+    left: 0;
+    right: 0;
+    background:black;
+    opacity: 0.8;
+    z-index: 5;
+    height: 100vh !important;
+    overflow-y: auto;
+  }
+  .sous_parent_main_users_header_input_sous_thematique{
+    width: calc(100% - 220px) !important;
+    position: relative;
+  }
+  .selectSousThematique{
+    display: flex;
+    flex-direction: column;
+    width: 200px;
+  }
+  .selectSousThematique option{
+    width: 200px !important;
+    background: red !important;
+  }

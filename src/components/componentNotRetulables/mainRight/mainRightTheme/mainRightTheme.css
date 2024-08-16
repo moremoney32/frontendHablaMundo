@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
 .parent_main{
   background:white;
   width:100%;
@@ -37,11 +38,13 @@
 .sous_alls_thematics{
   display:grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
-  gap: 100px;
+  width: calc(100% - 220px) !important;
+  justify-content: space-between;
+  /* width:calc((100% / 5) - 125px / 5); */
   align-items: center;
   padding: 10px;
   padding-left: 15px;
-  padding-right: 50px;
+  padding-right: 15px;
   border-radius: 5px;
    background-color:#0084FA0D; 
   align-items: center;
@@ -53,9 +56,11 @@ position: relative;
   height: 20px;
   object-fit: cover;
   cursor: pointer;
-  position: absolute;
+  display: flex;
+  margin: auto;
+  /* position: absolute;
   right:10px;
-  top: 35%;
+  top: 35%; */
 }
 
 .parent_icons_thematics{
@@ -69,16 +74,16 @@ position: relative;
   width: 15px !important;
   height: 15px !important;
   border-radius: 50% !important;
-  /* background: var(--color-secondary) !important; */
 }
 .parent_icons_thematics_child2{
-  /* color: var(--color-secondary) !important; */
   font-size: 14px !important;
+  cursor: pointer;
 }
 .parent_icons_thematics_span{
   font-size: 14px;
   text-align: left;
 }
+
 .parent_messages3_thematics{
   border-radius: 5px;
   display: flex;
@@ -186,7 +191,8 @@ background: white;
 }
 textarea::placeholder{
   color:#bebebe !important;
-  font-size: 14px;
+  font-size: 13px !important;
+  font-family: "Inter" !important;
 }
 .add_remove{
   display: flex;
@@ -384,14 +390,15 @@ text-decoration: underline;
 }
 .visibility{
   display: flex;
-  gap: 10px;
-  align-items: center;
-  width: 20%;
+  flex-direction: column;
+  gap: 5px;
+  /* width: 20%; */
 }
 .visibility label{
   font-size: 15px;
   color: #42444B;
   font-weight: 550;
+  text-align: left !important;
 }
 .answer_client_theme3{
   width: 80%;

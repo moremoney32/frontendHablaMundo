@@ -7,12 +7,12 @@ import { useEffect } from "react"
 export const MotsCroisés = ()=>{
     const navigate = useNavigate()
     const token = localStorage.getItem('token')
-    // useEffect(()=>{  
-    // if(!token){
-    //     navigate("/")
-    // }
+    useEffect(()=>{  
+    if(!token){
+        navigate("/")
+    }
 
-    // },[])
+    },[])
     return(
         <div>
              <Header/>

@@ -22,6 +22,7 @@ const newDataCrossword ={
   gridSize:generateCrossword(translations).gridSize,
   reste:generateCrossword(translations).reste
 }
+console.log(newDataCrossword)
 
   const [datas, setDatas] = useState(newDataCrossword);
   const [loading, setLoading] = useState(false);

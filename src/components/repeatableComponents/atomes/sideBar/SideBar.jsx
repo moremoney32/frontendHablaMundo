@@ -20,7 +20,7 @@ export const SideBar = () => {
         <NavLink to="/user"  className="navlink" activeClassName="active"><ButtonMainLeft icons={faUser} name="Utilisateurs" defaultClassName="icon_default_black" isActive={window.location.pathname === "/user"}/></NavLink>
         <NavLink to="/message"  className="navlink" activeClassName="active"><ButtonMainLeft icons={faCommentDots} name="Messages" defaultClassName="icon_default" isActive={window.location.pathname === "/message"}/></NavLink>
         <NavLink to="/faq"  className="navlink" activeClassName="active"><ButtonMainLeft icons={faVectorSquare} name="FAQ" defaultClassName="icon_default_black" isActive={window.location.pathname === "/faq"} /></NavLink>
-        <NavLink to="/comptes"  className="navlink" activeClassName="active"><ButtonMainLeft icons={faUserCircle} name="Comptes" defaultClassName="icon_default" isActive={window.location.pathname === "/comptes"}/></NavLink>
+        <NavLink to="/comptes"  className="navlink" activeClassName="active"><ButtonMainLeft icons={faUserCircle} name="Compte" defaultClassName="icon_default" isActive={window.location.pathname === "/comptes"}/></NavLink>
 
       </div>
       <NavLink to="/" ><button className='deconnexion' onClick={deconnexion}>Déconnexion</button></NavLink>

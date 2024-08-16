@@ -17,6 +17,8 @@ import { useForm } from 'react-hook-form';
 import { fetchDataGet } from "../../../../helpers/fetchDataGet";
 import { fetchData } from "../../../../helpers/fetchData";
 import { snackbbar } from "../../../../helpers/snackbars";
+import { fetchDataGetToken } from "../../../../helpers/fetchDataGetToken";
+import { formatTime } from "../../../../helpers/formatDate";
 
 export const MainRightMessages = () => {
     const { register, handleSubmit, formState: { errors }, setValue } = useForm();
@@ -29,22 +31,50 @@ export const MainRightMessages = () => {
     const fileInputRef = useRef(null);
     const [id, setId] = useState(null);
     const [notification, setNotification] = useState(null);
-    const token =localStorage.getItem("token")
+    const [fichiers, setFichier] = useState(null);
+    const [data, setData] = useState(null);
+    const [email, setEmail] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const token = localStorage.getItem("token");
     const message2 = "veuillez entrer un contenu"
+    useEffect(()=>{
+        localStorage.removeItem('notificationsNews');
+    },[])
 
- 
     useEffect(() => {
-        const eventSource = new EventSource('https://www.backend.habla-mundo.com/api/v1/notifications');
-        
+
+        fetchDataGetToken('https://www.backend.habla-mundo.com/api/v1/notifications', token).then((response) => {
+            console.log(response)
+            const compareDate =   response.sort((a, b) => {
+                const dateA = new Date(a.created_at);
+                const dateB = new Date(b.created_at);
+                return dateB - dateA;
+              });
+            setData(compareDate)
+        })
+
+
+        // Lire les nouveaux messages
+        const eventSource = new EventSource('https://backend.habla-mundo.com/api/v1/listen-message');
         eventSource.addEventListener('message', (event) => {
-            console.log(event.data);
+            console.log(event.data)
+            if (event.data === "nothing") {
+                console.log('rien recue');
+            }
+            else {
+                console.log(event.data)
+                const newMessages = JSON.parse(event.data);
+                console.log(newMessages)
+                console.log(data)
+                setData(prevMessages => [...prevMessages, newMessages]);
+            }
         });
-        
+
         return () => {
             eventSource.close();
         };
     }, []);
-    
+
 
 
 
@@ -98,35 +128,11 @@ export const MainRightMessages = () => {
         }
     }, [setValue]);
 
-    const data = [{
-        name: "gaelle tamho",
-        message: "Insère un élément au point d'insertion en supprimant la sélection. Une chaîne de caractère",
-        time: " A l'instant",
-        id: "1"
-    }, {
-        name: "tamho",
-        message: " élément au point d'insertion en supprimant la sélection.Une chaîne de caractère",
-        time: "A l'instant",
-        id: "2"
-    }, {
-        name: "franck",
-        message: " point d'insertion en supprimant la sélection.Une chaîne de caractère",
-        time: "11h30s",
-        id: "3"
-    }, {
-        name: "julie",
-        message: "Insère un élément au point d'insertion en supprimant la sélection.Une chaîne de caractère",
-        time: "00h34s",
-        id: "4"
-    }, {
-        name: "regis",
-        message: "Insère un élément au point d'insertion en supprimant la sélection.Une chaîne de caractère",
-        time: "A l'instant",
-        id: "5"
-    }];
 
-    const handleClick = (id, messageValue, name) => {
+    const handleClick = (id, messageValue, name, fichiers,email) => {
+        console.log(fichiers);
         setId(id)
+        setEmail(email)
         setActiveStates(prevState => {
             const newState = { ...prevState, [id]: true };
             localStorage.setItem('activeStates', JSON.stringify(newState));
@@ -135,32 +141,40 @@ export const MainRightMessages = () => {
         setEtat(true);
         setMessageText(messageValue);
         setTextName(name);
+        setFichier(fichiers)
     };
 
     const close = () => {
         setEtat(false);
     };
-    const onSubmit = (data) => {
-        console.log(data)
+    const onSubmit = async (data) => {
         console.log(data)
         const htmlContent = textareaRef.current.innerHTML;
-        if(htmlContent.length === 0){
+        if (htmlContent.length === 0) {
             return snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg", message2, 4000)
         }
-    
-    const dataSend ={
-        user_id:id,
-        message:htmlContent
-    }
-    console.log(dataSend)
-    fetchData("https://www.backend.habla-mundo.com/api/v1/send-message",dataSend,token).then((result)=>{
-        console.log(result)
-        if(result.message === "Notification sent successfully."){
-            return snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg", result.message, 4000)
+
+        const dataSend = {
+            user_id: id,
+            message: htmlContent
         }
-    }).catch((error)=>{
-        console.log(error);
-    })
+        console.log(dataSend)
+        setLoading(true)
+        try{
+           const result = await fetchData("https://www.backend.habla-mundo.com/api/v1/send-message", dataSend, token)
+                console.log(result)
+                if (result.message === "Notification sent successfully.") {
+                    return snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg", result.message, 2000)
+                }
+           
+
+        }catch(error){
+            console.log(error)
+        }finally{
+            setLoading(false)
+            setEtat(false)
+        }
+    
     }
     const handleUploadClick = () => {
         if (fileInputRef.current) {
@@ -197,15 +211,38 @@ export const MainRightMessages = () => {
                     <FontAwesomeIcon icon={faClose} className="close" onClick={close} />
                     <p>Message de:<span className="answer_client_name">{textName}</span></p>
                     <span className="answer_client_messages">{messageText}</span>
-                    <div className="answer_client_img">
-                        <img src="" alt="pdf" />
-                        <img src="" alt="pdf" />
-                        <img src="" alt="docs" />
-                    </div>
+                    {/* {
+    fichiers?.map((fichier) => {
+        const isPdf = fichier.endsWith('.pdf');
+        return (
+            <div className="answer_client_file">
+                {isPdf ? (
+                    <embed src={fichier} type="application/pdf" width="50%" height="300px" />
+                ) : (
+                    <img src={fichier} alt="" />
+                )}
+            </div>
+        );
+    })
+} */}
+{
+    fichiers?.map((fichier) => {
+        const Pdf = fichier.endsWith('.pdf');
+        return (
+            <div className="answer_client_file">
+                {Pdf ? (
+                    <a href={fichier} target="_blank" rel="noopener noreferrer">Télécharger ou ouvrir le PDF</a>
+                ) : (
+                    <img src={fichier} alt="" />
+                )}
+            </div>
+        );
+    })
+}
                     <form className="answer_form" onSubmit={handleSubmit(onSubmit)}>
                         <div className="objet_mail">
                             <span className="objet">Objet</span>
-                            <span className="objet_mail_chil1">A:<span className="objet_mail_chil2">jugalux111@gmail.com</span></span>
+                            <span className="objet_mail_chil1">A:<span className="objet_mail_chil2">{email}</span></span>
                         </div>
                         <input type="text" name="objet" className="answer_email_input" placeholder="Entrer l'objet du message" {...register("objet", { required: "Veuillez entrer une question" })} />
                         {errors.objet && <span className="error">{errors.objet.message}</span>}
@@ -233,25 +270,25 @@ export const MainRightMessages = () => {
                                     placeholder="Entrez un message"
                                     ref={textareaRef}
                                 ></div>
-                                <input type="hidden" name="reponse" value={content}/>
+                                <input type="hidden" name="reponse" value={content} />
                             </div>
                         </div>
-                        <button className="send_mail" type="submit">Envoyer par mail</button>
+                        {loading ?<button className="send_mail">En cours ...</button>:<button className="send_mail" type="submit">Envoyer par mail</button>}
                     </form>
                 </div>}
                 {
-                    data.map((info) => {
+                    data?.map((info,index) => {
                         return (
-                            <div className={`parent_messages ${activeStates[info.id] ? 'active_message' : ''}`} key={info.id}>
+                            <div className={`parent_messages ${activeStates[info.id] ? 'active_message' : ''}`} key={index}>
                                 <div className="parent_messages1">
                                     <img src={message} alt="message" className="message" />
                                     <div className="infos_messages">
-                                        <span className="infos_messages_child1">{info.name}</span>
-                                        <span className="infos_messages_child2">{info.message}</span>
+                                        <span className="infos_messages_child1">{info.username}</span>
+                                        <span className="infos_messages_child2">{info.data.body}</span>
                                     </div>
                                 </div>
-                                <span className="parent_messages2">{info.time}</span>
-                                <div className="parent_messages3" onClick={() => handleClick(info.id, info.message, info.name)}>
+                                <span className="parent_messages2">{formatTime(info.created_at)}</span>
+                                <div className="parent_messages3" onClick={() => handleClick(info.notifiable_id, info.data.body, info.username, info.data.fichier,info.email)}>
                                     <span className="repondre">Répondre</span>
                                     <img src={next} alt="next" className="next" />
                                 </div>

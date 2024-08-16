@@ -13,38 +13,37 @@ import police from "../../../../assets/icons/police.png";
 import upload from "../../../../assets/icons/upload.png";
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { fetchData } from '../../../../helpers/fetchData';
+import { fetchDataGet } from '../../../../helpers/fetchDataGet';
 
 export const MainRightFaq = () => {
   const { register, handleSubmit, formState: { errors }, setValue } = useForm();
   const textareaRef = useRef(null);
-  const [content, setContent] = useState("");
+  const [content, setContent] = useState(null);
   const [datas, setDatas] = useState([]);
-  const [nextId, setNextId] = useState(1);
   const [openIndex, setOpenIndex] = useState(null);
-  const fileInputRef = useRef(null); // Pour suivre l'index de l'élément actuellement ouvert
+  const fileInputRef = useRef(null);
+  const token = localStorage.getItem("token")
 
-  // Fonction pour obtenir le compteur global d'identifiants
-  // const getNextId = () => {
-  //   let currentId = parseInt(localStorage.getItem('globalIdCounter')) || 1;
-  //   localStorage.setItem('globalIdCounter', currentId + 1);
-  //   return currentId;
-  // };
+  useEffect(()=>{
+    fetchDataGet("https://www.backend.habla-mundo.com/api/v1/faq").then((response)=>{
+      console.log(response)
+      setDatas(response)
+    })
+
+  },[])
   const onSubmit = (data) => {
-    console.log(data)
     const htmlContent = textareaRef.current.innerHTML;
     data.reponse = htmlContent;
-    // let storedData = localStorage.getItem("datasTextarea");
-    // let currentDatas = storedData ? JSON.parse(storedData) : [];
-    // const newData = { ...data, id: getNextId() };
-
-    // setNextId(nextId + 1);
-    // currentDatas.push(newData);
-    // localStorage.setItem("datasTextarea", JSON.stringify(currentDatas));
-    // setDatas(currentDatas);
-    // setContent("");
-    // if (textareaRef.current) {
-    //   textareaRef.current.innerText = "";
-    // }
+    console.log(data)
+    fetchData("https://www.backend.habla-mundo.com/api/v1/faq",data).then((result)=>{
+      if(result.success === "FAP as created"){
+        fetchDataGet("https://www.backend.habla-mundo.com/api/v1/faq").then((response)=>{
+          setDatas(response)
+        })
+        
+      }
+    })
   };
 
   const grasText = () => {
@@ -100,11 +99,28 @@ export const MainRightFaq = () => {
     setOpenIndex(openIndex === index ? null : index);
   };
 
-  const handleRemoveQuestion = (id) => {
-    const newData = datas.filter((data) => data.id !== id);
-    setDatas(newData);
-    localStorage.setItem("datasTextarea", JSON.stringify(newData));
+  const handleRemoveQuestion = async (id) => {
+    const url = `https://www.backend.habla-mundo.com/api/v1/faq/${id}`;
+
+    try {
+        const response = await fetch(url, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        const result = await response.json();
+        if(result.success === "successful delete"){
+          const newData = datas.filter((data) => data.id !== id);
+          setDatas(newData);
+
+        }
+    } catch (error) {
+        console.error('Error deleting FAQ:', error);
+    }
   };
+  
   const handleUploadClick = () => {
     if (fileInputRef.current) {
         fileInputRef.current.click();
@@ -113,20 +129,21 @@ export const MainRightFaq = () => {
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
-    if (file) {
+    if (file){
         const reader = new FileReader();
         reader.onload = (e) => {
             const fileContent = e.target.result;
-            if (textareaRef.current) {
+            console.log(fileContent)
+            if (textareaRef.current){
                 const div = document.createElement('div');
-                 div.innerHTML = `<a href="${fileContent}" target="_blank">${file.name}</a>`;
-              
+                 div.innerHTML = `<a href="${fileContent}" target="_blank" rel="noopener noreferrer">${file.name}</a>`;
                 textareaRef.current.appendChild(div);
             }
         };
         reader.readAsDataURL(file);
     }
 };
+console.log(datas)
 
   return (
     <div className="parent_main">
@@ -172,9 +189,9 @@ export const MainRightFaq = () => {
           <button type="submit" className='button_description'>Enregistrer</button>
         </form>
         <div className="sous_parent_main_faq_right">
-          {datas.length >= 1 && (
+          {/* {datas.length >= 1 && ( */}
             <div className="parent_description_question">
-              {datas.slice().reverse().map((info) => (
+              {datas?.slice().reverse().map((info) => (
                 <div key={info.id}>
                   <div className={`description_question ${openIndex === info.id ? "active" : ""}`}
                     onClick={() => toggleOpen(info.id)}>
@@ -190,7 +207,7 @@ export const MainRightFaq = () => {
                 </div>
               ))}
             </div>
-          )}
+          {/* )} */}
         </div>
       </div>
     </div>

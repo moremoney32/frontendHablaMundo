@@ -33,7 +33,7 @@ export const MainRightTheme = () => {
     const { register, handleSubmit, formState: { errors }, setValue } = useForm();
     const [optionVisible, setOptionVisible] = useState(false);
     const [optionVisibleVisibility, setOptionVisibleVisibility] = useState(false);
-    const [optionName, setOptionName] = useState("Plus récents");
+    const [optionName, setOptionName] = useState("Ordre Aphabétique");
     const [rotateIcon, setRotateIcon] = useState(false);
     const [levelSearch, setLevelSearch] = useState(true);
     const [etatSearch, setEtatSearch] = useState(false);
@@ -51,7 +51,7 @@ export const MainRightTheme = () => {
     const selectRef = useRef(null);
     const selectRefLanguages = useRef(null);
     const selectRefVisibility = useRef(null);
-    const dataSelectStatus = ["Plus récents", "Moins récents"];
+    const dataSelectStatus =  ["Ordre Aphabétique","Plus récents","Moins récents"];
     const dataSelectVisibility = ["Non", "Oui"];
     const dataSelect = ["Anglais"];
     const location = useLocation();
@@ -103,6 +103,17 @@ export const MainRightTheme = () => {
         }
     };
     const handleChildClick = (value) => {
+        if(value = "Ordre Aphabétique"){
+            const select = selectRef.current
+        setOptionName(value);
+        setOptionVisible(false);
+        setRotateIcon(!rotateIcon);
+        select.style.borderBottomRightRadius = "5px"
+        select.style.borderBottomLeftRadius = "5px"
+        const compareAphabetiques =   resultAllThematiques.sort((a, b) => a.name.localeCompare(b.name))
+        console.log(compareAphabetiques)
+           return setResultAllThematiques(compareAphabetiques)
+        }
         if (value === "Moins récents") {
             const select = selectRef.current
             setOptionName(value);
@@ -151,25 +162,25 @@ export const MainRightTheme = () => {
         selectVisibility.style.borderBottomLeftRadius = "5px";
     };
 
-    const handleIconClick = (index) => {
-        setSelectedIconIndex(index);
-        const iconColor = {
-            icon: icons[index].name,
-            color: color
-        };
+    // const handleIconClick = (index) => {
+    //     setSelectedIconIndex(index);
+    //     const iconColor = {
+    //         icon: icons[index].name,
+    //         color: color
+    //     };
 
-        let storedIcons = JSON.parse(localStorage.getItem('selectedIconColors')) || [];
-        storedIcons.push(iconColor);
-        localStorage.setItem('selectedIconColors', JSON.stringify(storedIcons));
-    };
+    //     let storedIcons = JSON.parse(localStorage.getItem('selectedIconColors')) || [];
+    //     storedIcons.push(iconColor);
+    //     localStorage.setItem('selectedIconColors', JSON.stringify(storedIcons));
+    // };
 
-    const filteredIcons = icons.filter(icon =>
-        icon.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    // const filteredIcons = icons.filter(icon =>
+    //     icon.name.toLowerCase().includes(searchTerm.toLowerCase())
+    // );
 
-    const handleSearchChange = (e) => {
-        setSearchTerm(e.target.value);
-    };
+    // const handleSearchChange = (e) => {
+    //     setSearchTerm(e.target.value);
+    // };
     const checkTheme = () => {
         setEtat(true)
     }
@@ -203,10 +214,6 @@ export const MainRightTheme = () => {
     let checkVisibility;
     const onSubmit = async (data, event) => {
         event.preventDefault();
-        if (selectedIconIndex === null) {
-            const messageIcons = "Veuillez choisir une icône.";
-            return snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg", messageIcons, 5000);
-        }
         if (optionNameVisibility === "Non") {
             checkVisibility = optionNameVisibility
             checkVisibility = 0
@@ -217,8 +224,12 @@ export const MainRightTheme = () => {
         }
         for (let i = 0; i < thematiques.length; i++) {
             const sousThemes = thematiques[i];
+            if (sousThemes.crossword.length  === 0) {
+                const messageCrossword = ` la sous thématique  ne doit pas etre vide.`
+                return snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg", messageCrossword, 10000);
+            }
             if (sousThemes.words.length % 25 !== 0 || sousThemes.words.length === 0) {
-                const messages = `Le nombre de mots dans la sous-thématique "${sousThemes.crossword}" doit être un multiple de 25.`
+                const messages = `Le nombre de mots dans la sous thématique "${sousThemes.crossword}" doit être un multiple de 25.`
                 return snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg", messages, 10000);
             }
         }
@@ -227,9 +238,10 @@ export const MainRightTheme = () => {
                 name: data.thematique,
                 color: color,
                 visibility: checkVisibility,
-                icon: icons[selectedIconIndex].name,
+                // icon: icons[selectedIconIndex].name,
                 dataCrossword: thematiques
             }
+            console.log(dataSend);
             setEtatSousTheme(true);
             setLoading(true);
 
@@ -250,15 +262,22 @@ export const MainRightTheme = () => {
                 }
             } catch (error) {
                 setEtat(true);
+                console.log({message:error})
             } finally {
                 setLoading(false);
             }
         }
     }
 
+    // useEffect(() => {
+    //     if (location.state?.filter){
+    //         setEtat(true)
+    //     }
+    // }, [location.state]);
     useEffect(() => {
-        if (location.state?.filter) {
-            setEtat(true)
+        if (location.state?.filter){
+            setEtat(true);
+            navigate(location.pathname, { replace: true }); // Efface l'état après l'avoir utilisé
         }
     }, [location.state]);
 
@@ -295,9 +314,6 @@ export const MainRightTheme = () => {
     };
     const handleRemoveThematique = (id) => {
         setThematiques(thematiques.filter((theme) => theme.id !== id));
-    };
-    const sortAlphabet = (sousThematiques) => {
-        return sousThematiques.sort((a, b) => a.name.localeCompare(b.name));
     };
     const removeTheme = (id) => {
         const dataSend = {
@@ -366,16 +382,19 @@ export const MainRightTheme = () => {
                         return (
                             <div className="sous_alls_thematics" key={result.id}>
                                 <div className="parent_icons_thematics">
-                                    <FontAwesomeIcon icon={icon} className="parent_icons_thematics_child1" style={{ background: result.color }} />
-                                    <span className="parent_icons_thematics_child2" style={{ color: result.color }}>{result.name}</span>
+                                    {/* <FontAwesomeIcon icon={icon} className="parent_icons_thematics_child1" style={{ background: result.color }} /> */}
+                                    <span className="parent_icons_thematics_child2" style={{ color: result.color }}  onClick={() => updateCrosswords(result.id, result.name)}>{result.name}</span>
                                 </div>
                                 <span className="parent_icons_thematics_span">25 Mots croisés</span>
                                 <span className="parent_icons_thematics_span"> créé {formatTime(result.created_at)}</span>
-                                <div className="parent_messages3_thematics" style={{ border: `1px solid ${result.color}` }}>
+                                {/* <div className="parent_messages3_thematics" style={{ border: `1px solid ${result.color}` }}>
                                     <span className="repondre_thematic" style={{ color: result.color }} onClick={() => updateCrosswords(result.id, result.name)}>Mots croisés</span>
                                     <FontAwesomeIcon icon={faAngleRight} className="next" style={{ color: result.color }} />
-                                </div>
+                                </div> */}
+                                <div className="parent_icons_thematics_span">
                                 <img src={remove} alt="remove_words" className="remove_words" onClick={() => removeTheme(result.id)} />
+                                </div>
+                                
                             </div>
                         );
                     } else {
@@ -446,21 +465,8 @@ export const MainRightTheme = () => {
                                 </div>
                             )}
                         </div>
-
-                    </div>
-                    <div className="parent_answer_client_theme3_visibility">
-                        <div className="answer_client_theme3">
-                            <label htmlFor="">Icone:</label>
-                            <div className="answer_client_theme3_parent_input">
-                                <input type="text" placeholder="Rechercher une icone" value={searchTerm}
-                                    onChange={handleSearchChange} />
-                                <div className="answer_client_theme3_search">
-                                    <img src={search} alt="" className="search_theme" />
-                                </div>
-                            </div>
-                        </div>
                         <div className="visibility">
-                            <label htmlFor="">Gratuit:</label>
+                            <label htmlFor="">Gratuit</label>
                             <Select
                                 dataSelectStatus={dataSelectVisibility}
                                 selectRef={selectRefVisibility}
@@ -471,8 +477,33 @@ export const MainRightTheme = () => {
                                 rotateIcon={rotateIconVisility}
                                 defautClassName="select" />
                         </div>
+
                     </div>
-                    <div className="answer_client_theme4">
+                    {/* <div className="parent_answer_client_theme3_visibility"> */}
+                        {/* <div className="answer_client_theme3">
+                            <label htmlFor="">Icone:</label>
+                            <div className="answer_client_theme3_parent_input">
+                                <input type="text" placeholder="Rechercher une icone" value={searchTerm}
+                                    onChange={handleSearchChange} />
+                                <div className="answer_client_theme3_search">
+                                    <img src={search} alt="" className="search_theme" />
+                                </div>
+                            </div>
+                        </div> */}
+                        {/* <div className="visibility">
+                            <label htmlFor="">Gratuit:</label>
+                            <Select
+                                dataSelectStatus={dataSelectVisibility}
+                                selectRef={selectRefVisibility}
+                                changeIcon={changeIconVisibility}
+                                handleChildClick={handleChildClickVisibility}
+                                optionName={optionNameVisibility}
+                                optionVisible={optionVisibleVisibility}
+                                rotateIcon={rotateIconVisility}
+                                defautClassName="select" />
+                        </div> */}
+                    {/* </div> */}
+                    {/* <div className="answer_client_theme4">
                         {filteredIcons.map((icon, index) => {
                             return (
                                 <FontAwesomeIcon icon={icon.icon} onClick={() => handleIconClick(index)}
@@ -480,7 +511,7 @@ export const MainRightTheme = () => {
                                     style={selectedIconIndex === index ? { backgroundColor: color, color: 'white', borderRadius: '5px' } : {}} key={index} />
                             )
                         })}
-                    </div>
+                    </div> */}
                     <span className="title">CREATION DE LA SOUS THEMATIQUE</span>
                     <div className="parent_contenair_sous_thematique">
                         {

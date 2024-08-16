@@ -19,7 +19,7 @@
   gap: 20px;
 }
 .sous_parent_main_users_header_input{
-  width: calc(100% - 170px) !important;
+  width: calc(100% - 220px) !important;
   position: relative;
 }
 .input_users{
@@ -34,7 +34,7 @@
 .select{
   display: flex;
   flex-direction: column;
-  width: 150px;
+  width: 200px;
 }
 .parent_abonnes{
   display: flex;
@@ -89,7 +89,7 @@ z-index: 3000;
 .option{
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
-  width: 150px !important;
+  width: 200px !important;
   display: flex;
   flex-direction: column;
   background:white;
@@ -97,7 +97,7 @@ z-index: 3000;
   /* transform: translate3d(0,64px,0); */
   border: 1px solid rgba(0,0,0,0.05);
   z-index: 2000;
-  max-height:150px !important;
+  max-height:200px !important;
   /* overflow-y: auto; */
 }
 .option_language{

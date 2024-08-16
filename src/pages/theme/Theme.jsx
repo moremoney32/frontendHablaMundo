@@ -9,12 +9,12 @@ import { useEffect } from "react"
 export const Theme = () => {
     const navigate = useNavigate()
     const token = localStorage.getItem('token')
-    // useEffect(()=>{  
-    // if(!token){
-    //     navigate("/")
-    // }
+    useEffect(()=>{  
+    if(!token){
+        navigate("/")
+    }
 
-    // },[])
+    },[])
     return (
         <div>
             <Header />
