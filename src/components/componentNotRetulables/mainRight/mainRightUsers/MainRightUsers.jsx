@@ -17,10 +17,9 @@ import { useLocation } from "react-router-dom"
 import { useForm } from "react-hook-form";
 import "./mainRightUsers.css";
 import "../mainRightMessages/mainRightMessages.css";
-import { faAngleDown, faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
+import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { useSearchInformation } from "../../../../customsHooks/useSearchInformation";
 import { Select } from "../../select/Select";
-import { fetchDataGet } from "../../../../helpers/fetchDataGet";
 import { fetchDataGetToken } from "../../../../helpers/fetchDataGetToken";
 import { formatTime } from "../../../../helpers/formatDate";
 import { searchAbonnes } from "../../../../helpers/searchAbonnes";
@@ -29,7 +28,7 @@ import { snackbbar } from "../../../../helpers/snackbars";
 
 export const MainRightUsers = () => {
     const { register, handleSubmit, formState: { errors, isValid }, watch, setValue } = useForm();
-    const dataSelectStatus = ["Tous", "Abonné(e)", "Non abonné"]
+    const dataSelectStatus = ["Tous", "Abonné", "Non abonné"]
     const [currentPage, setCurrentPage] = useState(1);
     const [etatValue, setEtatValue] = useState(false);
     const [dataUser, setDataUser] = useState([]);
@@ -48,14 +47,11 @@ export const MainRightUsers = () => {
     const textareaRef = useRef(null);
     const fileInputRef = useRef(null);
     const location = useLocation();
-    const itemsPages =1;
+    const token = localStorage.getItem("token")
+    const itemsPages = 10;
     const totalPages = Math.ceil(dataUser?.length / itemsPages);
-    // const token = localStorage.getItem("token")
     const message1 = "veuillez envoyer un contenu"
-
     const handleClick = (id, name, email) => {
-        console.log(id)
-        console.log(name)
         setEtatMasque(true);
         setName(name);
         setMail(email);
@@ -104,10 +100,9 @@ export const MainRightUsers = () => {
             };
         }
     }, [setValue]);
-    const token = localStorage.getItem("token")
+
     useEffect(() =>{
         fetchDataGetToken("https://www.backend.habla-mundo.com/api/v1/users",token).then((result) =>{
-            console.log(result)
             setDataUser(result)
             localStorage.setItem('dataUser', JSON.stringify(result));
         }).catch((error)=>{
@@ -132,7 +127,6 @@ export const MainRightUsers = () => {
     setLoading(true)
     try{
        const result = await fetchData("https://www.backend.habla-mundo.com/api/v1/send-message",dataSend,token)
-            console.log(result)
             if(result.message === "Notification sent successfully."){
                 return snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg", result.message, 2000)
             }
@@ -154,13 +148,11 @@ export const MainRightUsers = () => {
         const select = selectRef.current
         setRotateIcon(!rotateIcon);
         if (rotateIcon) {
-            console.log(rotateIcon)
             // Deuxième clic : masquer les options
             select.style.borderBottomRightRadius = "5px"
             select.style.borderBottomLeftRadius = "5px"
             setOptionVisible(false);
         } else {
-            console.log(rotateIcon)
             // Premier clic : afficher les options
             // console.log(selectRef.current.classList.toggle("bottomRaduisNone"))
             select.style.borderBottomRightRadius = "0px"
@@ -186,7 +178,7 @@ export const MainRightUsers = () => {
             select.style.borderBottomRightRadius = "5px"
             select.style.borderBottomLeftRadius = "5px"
         }
-         if (value === "Abonné(e)") {
+         if (value === "Abonné") {
             status = value
             status = 1
             const select = selectRef.current
@@ -215,8 +207,6 @@ export const MainRightUsers = () => {
        
     };
     
-
-
     const handleFileChange = (event) => {
         const file = event.target.files[0];
         if (file) {
@@ -234,9 +224,7 @@ export const MainRightUsers = () => {
         }
     };
     
-    useEffect(() => {
-        console.log(location.state);
-        
+    useEffect(() => {   
         if (location.state?.filter) {
             handleChildClick(location.state?.filter);
         }
@@ -325,7 +313,7 @@ export const MainRightUsers = () => {
                         <span>Status</span>
                         <span>Action</span>
                     </div>
-                    {level && dataCurrent?.map((data) => {
+                    {level && dataCurrent.reverse().slice()?.map((data) => {
                         return (
                             <div className="sous_parent_main_users_information-child2" key={data.id}>
                                 <div className="prenom">
@@ -350,7 +338,7 @@ export const MainRightUsers = () => {
                         )
                     })}
 
-                     {etatValue && searchResults.map((data) => {
+                     {etatValue && searchResults.reverse().slice()?.map((data) => {
                         return (
                             <div className="sous_parent_main_users_information-child2" key={data.id}>
                                 <div className="prenom">
@@ -401,5 +389,4 @@ export const MainRightUsers = () => {
         </div>
     );
 };
-// {searchResults.length}/{dataUser.length}
-//{dataCurrent.length}/{dataUser.length}
+

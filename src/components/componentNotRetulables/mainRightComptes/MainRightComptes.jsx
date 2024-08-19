@@ -4,17 +4,13 @@ import checkpictures from "../../../assets/images/checkpictures.png"
 import edit from "../../../assets/icons/edit.png"
 import { useEffect, useState } from "react"
 import { fetchDataGetToken } from "../../../helpers/fetchDataGetToken"
-export const MainRightComptes = ({ changePicture, files }) =>{
-    const token = localStorage.getItem("token")
-    const [data,setData] = useState("")
-    // const [data, setData] = useState({
-    //     firstName: "tamho",
-    //     lastName: "gaelle",
-    //     email: "jugalux@gmail.com"
-    // })
+import { fetchData } from "../../../helpers/fetchData"
+import { snackbbar } from "../../../helpers/snackbars"
+export const MainRightComptes = () =>{
+    const token = localStorage.getItem("token");
+    const [data,setData] = useState("");
     useEffect(() =>{
         fetchDataGetToken("https://www.backend.habla-mundo.com/api/v1/user",token).then((result) =>{
-            console.log(result)
             setData(result)
         })
 },[])
@@ -32,36 +28,18 @@ export const MainRightComptes = ({ changePicture, files }) =>{
     }
     const handleEditable = () => {
         if (isEditable) {
-            if (JSON.stringify(data) !== JSON.stringify(originalData)) {
-                console.log(data)
+                fetchData("https://www.backend.habla-mundo.com/api/v1/update/users/admin",data,token).then((response)=>{
+                    if(response.message === "update successful"){
+                        return snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg", response.message, 2000)
+                    }
+                })
             }
-        }
         setIsEditable(!isEditable);
     }
-    // const handleChangeInfos = () => {
-    //     const dataSend ={
-    //         id:id,
-    //         name:theme2Ref.current.innerText
-    //     }
-    //     console.log(dataSend)
-    //     setIsEditable(!isEditable);
-    //     fetchDataPut("https://www.backend.habla-mundo.com/api/v1/crosswords",dataSend,token).then((result) => {
-    //         console.log(result)
-    //    }).catch((error)=>{
-    //     console.log({messahge:error})
-    //    })
-    // };
+
     return (
         <div className="parent_main">
           <div className="sous_parent_main_comptes">
-          
-                  {/* <div className="sous_parent_main1">
-                    {files ? <img src={URL.createObjectURL(files)} alt="" className="update_file" /> : <img src={photo} alt="photo" />}
-                    <label>
-                        <input type="file" accept=".jpg,.jpeg,.png" name="file" style={{ display: "none" }} onChange={changePicture} />
-                        <img src={checkpictures} alt="picture" className="checkpictures" />
-                    </label>
-                </div> */}
                 <div className="sous_parent_main2">
                     <div className="sous_parent_main2_header">
                         <span className="info">Informations personnelles</span>
@@ -75,12 +53,12 @@ export const MainRightComptes = ({ changePicture, files }) =>{
                     </div>
                     <div className="sous_parent_main2_main">
                         <div className="space_infos">
-                            <label htmlFor="firstName">Nom</label>
-                            <input type="text" name="firstName" value={data.first_name} onChange={handleChange} disabled={!isEditable} />
+                            <label htmlFor="last_name">Nom</label>
+                            <input type="text" name="last_name" value={data.last_name} onChange={handleChange} disabled={!isEditable} />
                         </div>
                         <div className="space_infos">
-                            <label htmlFor="lastName">Prenom</label>
-                            <input type="text" name="lastName" value={data.first_name} onChange={handleChange} disabled={!isEditable} />
+                            <label htmlFor="first_name">Prenom</label>
+                            <input type="text" name="first_name" value={data.first_name} onChange={handleChange} disabled={!isEditable} />
                         </div>
                         <div className="space_infos">
                             <label htmlFor="email">Adresse mail</label>
@@ -89,7 +67,7 @@ export const MainRightComptes = ({ changePicture, files }) =>{
                     </div>
                 </div>
                 <div className="sous_parent_main3">
-                    <a href="#">Thèmes et conditions d'utilisations</a>
+                    <a href="#">Thèmes et conditions d'utilisation</a>
                     <a href="#">Politique de confidentialité</a>
                 </div>
             </div> 

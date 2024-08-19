@@ -41,6 +41,8 @@
 }
 .error{
     color:#D73030;
+    font-size: 11px !important;
+    text-align: left;
 }
 .space_signup{
     display: flex;

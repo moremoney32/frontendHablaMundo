@@ -39,8 +39,10 @@ export const MainRightSousThematiques = () => {
             id: resultValue.id
         }
         fetchData("https://www.backend.habla-mundo.com/api/v1/theme",id).then((result) => {
+            result = result.sort((a, b) => a.name.localeCompare(b.name))
             console.log(result)
-             setSousThematique(result)
+            // console.log(result)
+            return setSousThematique(result)
         })
     }, [])
     const sortAlphabet= (sousThematiques) => {
@@ -63,7 +65,7 @@ export const MainRightSousThematiques = () => {
         }
     };
     const handleChildClick = (value) => {
-        if(value = "Ordre Aphabétique"){
+        if(value === "Ordre Aphabétique"){
             const select = selectRef.current
         setOptionName(value);
         setOptionVisible(false);
@@ -73,7 +75,7 @@ export const MainRightSousThematiques = () => {
         const compareAphabetiques =   sousThematiques.sort((a, b) => a.name.localeCompare(b.name))
            return setSousThematique(compareAphabetiques)
         }
-        if(value = "Moins récents"){
+        if(value === "Moins récents"){
             const select = selectRef.current
         setOptionName(value);
         setOptionVisible(false);
@@ -83,7 +85,7 @@ export const MainRightSousThematiques = () => {
         const compareAphabetiques =   sousThematiques.sort((a, b) => b.name.localeCompare(a.name))
            return setSousThematique(compareAphabetiques)
         }
-        if(value = "Plus récents"){
+        if(value === "Plus récents"){
             const select = selectRef.current
         setOptionName(value);
         setOptionVisible(false);
@@ -93,7 +95,7 @@ export const MainRightSousThematiques = () => {
         const compareDate =   sousThematiques.sort((a, b) => {
             const dateA = new Date(a.created_at);
             const dateB = new Date(b.created_at);
-            return dateA - dateB;
+            return dateB - dateA;
           });  
            return setSousThematique(compareDate)
         }
@@ -105,7 +107,7 @@ export const MainRightSousThematiques = () => {
         }
         try {
             const result = await fetchData("https://www.backend.habla-mundo.com/api/v1/word",dataId,token);
-            console.log(result)
+            // console.log(result)
             localStorage.setItem('datas', JSON.stringify(result));
             localStorage.setItem('name', JSON.stringify(name));
             localStorage.setItem('id', JSON.stringify(id));
@@ -176,7 +178,7 @@ export const MainRightSousThematiques = () => {
                 thematique_id:resultValue.id,
                 dataCrossword: thematiques
             }
-            console.log(dataSend)
+            // console.log(dataSend)
             setLoading(true);
             try {
                 const result = await fetchData("https://www.backend.habla-mundo.com/api/v1/themes", dataSend, token);
@@ -312,7 +314,7 @@ export const MainRightSousThematiques = () => {
                 <div className="sous_parent_main_users_main">
                     {
                        level && sousThematiques?.map((thematique) => {
-                        console.log(thematique.id)
+                        // console.log(thematique.id)
                             return (
                                 <CardSousThematique name={thematique?.name} key={thematique?.id}  created={thematique.created_at}  onClick={() => handleWordls(thematique.id,thematique.name)}/>
                             )

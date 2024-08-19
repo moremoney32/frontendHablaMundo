@@ -22,17 +22,17 @@ const newDataCrossword ={
   gridSize:generateCrossword(translations).gridSize,
   reste:generateCrossword(translations).reste
 }
-console.log(newDataCrossword)
+// console.log(newDataCrossword)
 
   const [datas, setDatas] = useState(newDataCrossword);
   const [loading, setLoading] = useState(false);
-  const [remove, setTRemove] = useState(false);
-  console.log(datas);
+  // const [remove, setTRemove] = useState(false);
+  // console.log(datas);
   const [dataswords, setDatasWords] = useState(names);
   const dataTheme = JSON.parse(localStorage.getItem('theme'));
   const name = JSON.parse(localStorage.getItem('name'))
   const id = JSON.parse(localStorage.getItem('id'));
-  console.log(id)
+  // console.log(id)
   const token = localStorage.getItem('token');
   const handleWordChange = (index, newName) => {
     const newPositions = datas.positions.map((word, i) =>

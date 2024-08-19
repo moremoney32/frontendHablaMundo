@@ -46,18 +46,28 @@ border: 1px solid #0084FA1A;
 background: white;
   width: 50%;
   margin: auto;
-  position: relative;
+  position:absolute;
   padding: 10px;
   border-radius: 5px;
   z-index: 2000;
-  position: fixed;
-  top:20px;
+  top:20px !important;
   left: 0;
   right: 0;
   display: flex;
   flex-direction: column;
   gap: 10px !important;
   padding-bottom: 100px;
+}
+.answer_client_file{
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.answer_client_file img{
+  width: 500px;
+  height: 400px;
+  object-fit: cover;
+  border-radius: 5px;
 }
 .close{
   position: absolute;
@@ -236,4 +246,14 @@ background: white;
    padding-bottom: 10px;
    color: white;
    cursor: pointer;
+  }
+  .intersection{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .observation{
+    width: 100% !important;
+  margin: auto;
+    color: var(--color-primary);
   }

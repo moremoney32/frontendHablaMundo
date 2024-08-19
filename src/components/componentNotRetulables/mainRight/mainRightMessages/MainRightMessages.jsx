@@ -14,7 +14,6 @@ import upload from "../../../../assets/icons/upload.png";
 import police from "../../../../assets/icons/police.png";
 import { faClose } from "@fortawesome/free-solid-svg-icons/faClose";
 import { useForm } from 'react-hook-form';
-import { fetchDataGet } from "../../../../helpers/fetchDataGet";
 import { fetchData } from "../../../../helpers/fetchData";
 import { snackbbar } from "../../../../helpers/snackbars";
 import { fetchDataGetToken } from "../../../../helpers/fetchDataGetToken";
@@ -30,21 +29,28 @@ export const MainRightMessages = () => {
     const textareaRef = useRef(null);
     const fileInputRef = useRef(null);
     const [id, setId] = useState(null);
-    const [notification, setNotification] = useState(null);
     const [fichiers, setFichier] = useState(null);
     const [data, setData] = useState(null);
     const [email, setEmail] = useState(null);
     const [loading, setLoading] = useState(false);
     const token = localStorage.getItem("token");
+    const [firstIndexComments, setFirstIndexComments] = useState(0);
+      const [lastIndexComments, setLastIndexComments] = useState(8);
+      const containUseref = useRef(null)
     const message2 = "veuillez entrer un contenu"
-    useEffect(()=>{
+    useEffect(() => {
         localStorage.removeItem('notificationsNews');
-    },[])
+        const isRemoved = localStorage.getItem('notificationsNews') === null;
+    
+        if (isRemoved) {
+            window.dispatchEvent(new Event('notificationsUpdate'));
+        }
+    }, []);
+    
 
     useEffect(() => {
 
         fetchDataGetToken('https://www.backend.habla-mundo.com/api/v1/notifications', token).then((response) => {
-            console.log(response)
             const compareDate =   response.sort((a, b) => {
                 const dateA = new Date(a.created_at);
                 const dateB = new Date(b.created_at);
@@ -57,20 +63,17 @@ export const MainRightMessages = () => {
         // Lire les nouveaux messages
         const eventSource = new EventSource('https://backend.habla-mundo.com/api/v1/listen-message');
         eventSource.addEventListener('message', (event) => {
-            console.log(event.data)
             if (event.data === "nothing") {
-                console.log('rien recue');
+               
+                return ;
             }
             else {
-                console.log(event.data)
                 const newMessages = JSON.parse(event.data);
-                console.log(newMessages)
-                console.log(data)
                 setData(prevMessages => [...prevMessages, newMessages]);
             }
         });
 
-        return () => {
+        return () =>{
             eventSource.close();
         };
     }, []);
@@ -148,7 +151,6 @@ export const MainRightMessages = () => {
         setEtat(false);
     };
     const onSubmit = async (data) => {
-        console.log(data)
         const htmlContent = textareaRef.current.innerHTML;
         if (htmlContent.length === 0) {
             return snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg", message2, 4000)
@@ -158,11 +160,10 @@ export const MainRightMessages = () => {
             user_id: id,
             message: htmlContent
         }
-        console.log(dataSend)
         setLoading(true)
         try{
            const result = await fetchData("https://www.backend.habla-mundo.com/api/v1/send-message", dataSend, token)
-                console.log(result)
+           console.log(result)
                 if (result.message === "Notification sent successfully.") {
                     return snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg", result.message, 2000)
                 }
@@ -198,6 +199,39 @@ export const MainRightMessages = () => {
 
         }
     };
+    /****intersection observer messages */
+    useEffect(() => {
+        if(containUseref.current && lastIndexComments < data?.length){
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        setLastIndexComments((prevIndex) => {
+                            // je charge 8 éléments
+                            const nextIndex = prevIndex + 8;
+                            if (nextIndex <= data?.length) {
+                                return nextIndex;
+                            } else {
+                                return data?.length; //  max d'éléments restants
+                            }
+                        });
+                    }
+                });
+            }, {
+                root: null,
+                rootMargin: "0px",
+                threshold: 1.0
+            });
+    
+            observer.observe(containUseref.current);
+    
+            return () => {
+                if (containUseref.current) {
+                    observer.unobserve(containUseref.current);
+                }
+            };
+        }
+    }, [containUseref.current, lastIndexComments, data?.length]);
+    //fin intersection
 
 
     return (
@@ -233,7 +267,7 @@ export const MainRightMessages = () => {
                 {Pdf ? (
                     <a href={fichier} target="_blank" rel="noopener noreferrer">Télécharger ou ouvrir le PDF</a>
                 ) : (
-                    <img src={fichier} alt="" />
+                    <img src={fichier} alt="" className="answer_client_file_img"/>
                 )}
             </div>
         );
@@ -276,8 +310,9 @@ export const MainRightMessages = () => {
                         {loading ?<button className="send_mail">En cours ...</button>:<button className="send_mail" type="submit">Envoyer par mail</button>}
                     </form>
                 </div>}
+                
                 {
-                    data?.map((info,index) => {
+                    data?.slice(firstIndexComments, lastIndexComments).map((info,index) => {
                         return (
                             <div className={`parent_messages ${activeStates[info.id] ? 'active_message' : ''}`} key={index}>
                                 <div className="parent_messages1">
@@ -296,6 +331,9 @@ export const MainRightMessages = () => {
                         );
                     })
                 }
+                {lastIndexComments < data?.length && (
+            <div className="observation" ref={containUseref}>chargement.......</div>
+        )}
             </div>
         </div>
     );

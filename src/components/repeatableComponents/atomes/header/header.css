@@ -13,6 +13,10 @@
   display: flex !important;
   gap: 5px !important;
   align-items: center !important;
+ }
+ .header_main_1{
+  display: flex !important;
+  align-items: center !important;
   justify-content: space-between !important;
  }
  .parent_notifications{
@@ -42,6 +46,16 @@
   padding-right: 4px;
   border-radius: 50%;
  }
+ .header_main_1 :nth-child(1){
+  font-size:23px;
+ color: black;
+ font-weight: 550;
+ } 
+ .header_main_1 :nth-child(2){
+  font-size:23px;
+  color:var(--color-primary);
+  font-weight: 550;
+ } 
   .header_main :nth-child(1){
  font-size:23px;
  color: black;

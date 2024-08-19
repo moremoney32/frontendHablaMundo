@@ -84,7 +84,7 @@
 
 .icon_zIndex{
   color: #909090;
-z-index: 3000;
+/* z-index: 1000; */
 }
 .option{
   border-bottom-left-radius: 5px;

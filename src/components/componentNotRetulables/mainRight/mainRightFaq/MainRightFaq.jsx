@@ -23,11 +23,11 @@ export const MainRightFaq = () => {
   const [datas, setDatas] = useState([]);
   const [openIndex, setOpenIndex] = useState(null);
   const fileInputRef = useRef(null);
-  const token = localStorage.getItem("token")
+  const token = localStorage.getItem("token");
+  // const [fileLink, setFileLink] = useState('');
 
   useEffect(()=>{
     fetchDataGet("https://www.backend.habla-mundo.com/api/v1/faq").then((response)=>{
-      console.log(response)
       setDatas(response)
     })
 
@@ -117,7 +117,7 @@ export const MainRightFaq = () => {
 
         }
     } catch (error) {
-        console.error('Error deleting FAQ:', error);
+        console.error('error delete:', error);
     }
   };
   
@@ -127,23 +127,40 @@ export const MainRightFaq = () => {
     }
 };
 
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file){
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const fileContent = e.target.result;
-            console.log(fileContent)
-            if (textareaRef.current){
-                const div = document.createElement('div');
-                 div.innerHTML = `<a href="${fileContent}" target="_blank" rel="noopener noreferrer">${file.name}</a>`;
-                textareaRef.current.appendChild(div);
-            }
-        };
-        reader.readAsDataURL(file);
-    }
+// const handleFileChange = (event) => {
+//   const file = event.target.files[0];
+//   if (file) {
+//       const reader = new FileReader();
+//       reader.onload = (e) => {
+//           const fileContent = e.target.result;
+//           setFileLink({ name: file.name, url: fileContent });
+//       };
+//       reader.readAsDataURL(file);
+//   }
+// };
+
+// useEffect(() => {
+//   if (fileLink.url && textareaRef.current) {
+//       const linkElement = `<a href="${fileLink.url}" target="_blank" rel="noopener noreferrer">${fileLink.name}</a>`;
+//       textareaRef.current.innerHTML += linkElement;
+//   }
+// }, [fileLink]);
+const handleFileChange = (event) => {
+  const file = event.target.files[0];
+  if (file){
+      const reader = new FileReader();
+      reader.onload = (e) => {
+          const fileContent = e.target.result;
+          if (textareaRef.current){
+              const div = document.createElement('div');
+               div.innerHTML = `<a href="${fileContent}" target="_blank" rel="noopener noreferrer">${file.name}</a>`;
+              textareaRef.current.appendChild(div);
+          }
+      };
+      reader.readAsDataURL(file);
+  }
 };
-console.log(datas)
+
 
   return (
     <div className="parent_main">
@@ -186,7 +203,7 @@ console.log(datas)
             </div>
             {errors.reponse && <span className="error">{errors.reponse.message}</span>}
           </div>
-          <button type="submit" className='button_description'>Enregistrer</button>
+          <button type="submit" className='button_description'>Sauvegarder</button>
         </form>
         <div className="sous_parent_main_faq_right">
           {/* {datas.length >= 1 && ( */}

@@ -1,33 +1,44 @@
 import { HeaderTitleMain } from "../../../repeatableComponents/atomes/header/HeaderTitleMain"
 import { InformationUser } from "../../../repeatableComponents/atomes/information/InformationUser"
-import { faCableCar, faCircleMinus, faCommentDots, faUser } from "@fortawesome/free-solid-svg-icons"
+import { faCableCar, faCircleMinus, faCircleUser, faComment, faCommentAlt, faCommentDots, faEllipsisV, faGripHorizontal, faGripVertical, faUser } from "@fortawesome/free-solid-svg-icons"
 import "./mainRightHome.css"
 import { IconesInformations } from "../../../repeatableComponents/atomes/iconesInformation/IconesInformations"
 import { NavLink, useNavigate } from "react-router-dom"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useEffect, useState } from "react"
 import { fetchDataGet } from "../../../../helpers/fetchDataGet"
-import { fetchDataGetToken } from "../../../../helpers/fetchDataGetToken"
+import { faCommentSlash } from "@fortawesome/free-solid-svg-icons/faCommentSlash"
+import { faCommenting } from "@fortawesome/free-solid-svg-icons/faCommenting"
+import { faCircle } from "@fortawesome/free-solid-svg-icons/faCircle"
+import { faCircleDot } from "@fortawesome/free-solid-svg-icons/faCircleDot"
+import { faEllipsis } from "@fortawesome/free-solid-svg-icons/faEllipsis"
 export const MainRightHome = () => {
     const navigate = useNavigate();
     const[stat,setStat] = useState(null)
-    const[data,setData] = useState([])
+    const[taux,setTaux] = useState(null)
+    const [data, setData] = useState(() => {
+        const storedData = localStorage.getItem('notificationsNews');
+        return storedData ? JSON.parse(storedData) : [];
+    });
     const[resultAllThematiques,setResultAllThematiques] = useState(null);
-    const token =localStorage.getItem("token");
     useEffect(() => {
         const eventSource= new EventSource('https://backend.habla-mundo.com/api/v1/listen-message');
         eventSource.addEventListener('message', (event) => {
-            console.log(event.data)
             if (event.data === "nothing") {
-                console.log('rien recue');
+                return;
             }
             else {
-                console.log(event.data)
                 const newMessages = JSON.parse(event.data);
-                console.log(newMessages)
-                console.log(data)
-                localStorage.setItem('notificationsNews', JSON.stringify(prevMessages => [...prevMessages, newMessages]));
-                setData(prevMessages => [...prevMessages, newMessages]);
+                    setData(prevMessages => {
+                        const updatedData = [...prevMessages, newMessages];
+                        localStorage.setItem('notificationsNews', JSON.stringify(updatedData));
+                    
+                        // Émettre un événement personnalisé
+                        const event = new Event('notificationsUpdated');
+                        window.dispatchEvent(event);
+                    
+                        return updatedData;
+                    });
             }
 
         });
@@ -36,6 +47,9 @@ export const MainRightHome = () => {
             eventSource.close();
         };
     }, []);
+  
+    
+  
 
     const handleNavigate = () => {
         navigate('/user', { state: { filter: 'Abonné(e)' } });
@@ -55,7 +69,6 @@ export const MainRightHome = () => {
     useEffect(() => {
         let counter = 10
         fetchDataGet("https://www.backend.habla-mundo.com/api/v1/themes").then((result) => {
-            console.log(result)
             if(result<=counter){
                 return   setResultAllThematiques(result)
             }
@@ -68,8 +81,9 @@ export const MainRightHome = () => {
     }, [])
     useEffect(() =>{
             fetchDataGet("https://www.backend.habla-mundo.com/api/v1/statistique").then((result) =>{
-                console.log(result)
-                setStat(result)
+                const pourcent = (Number(result?.suscribes) * 100) / Number(result?.users)
+                setTaux(pourcent)
+               return  setStat(result)
             })
     },[])
 
@@ -81,9 +95,10 @@ export const MainRightHome = () => {
             <div className="sous_parent_main_home">
                 <div className="sous_parent_main_home1">
                     <NavLink to="/user" className="nav_link"><InformationUser defaultClassName="icons_user_img" user="Utilisateurs inscrits" icon={faUser} number={stat?.users} className="color_home" /></NavLink>
-                    <div onClick={handleNavigate} className="nav_link"><InformationUser defaultClassName="icons_user_img1" user="Utilisateurs abonnés" icon={faUser} number={stat?.suscribes} className="color_home1" /></div>
-                    <NavLink to="/theme" className="nav_link"><InformationUser defaultClassName="icons_user_img2" user="Thématiques" icon={faCircleMinus} number={stat?.thematiques} className="color_home2" /></NavLink>
+                    <div onClick={handleNavigate} className="nav_link"><InformationUser defaultClassName="icons_user_img1" user="Utilisateurs abonnés" icon={faUser} number={stat?.suscribes} pourcent={`(${taux}%)`} className="color_home1" /></div>
+                    <NavLink to="/theme" className="nav_link"><InformationUser defaultClassName="icons_user_img2" user="Thématiques" icon={faGripHorizontal} number={stat?.thematiques} className="color_home2" /></NavLink>
                     <NavLink to="/message" className="nav_link"><InformationUser defaultClassName="icons_user_img3" user="Messages reçus" icon={faCommentDots} number={stat?.nombres_messages} className="color_home3" /></NavLink>
+                    <NavLink  className="nav_link"><InformationUser defaultClassName="icons_user_img2" user="Mots croisés" icon={faGripHorizontal} number={stat?.crosswords} className="color_home2" /></NavLink>
                 </div>
                 <div className="sous_parent_main_home2">
                     <div className="title_main_home">
@@ -96,22 +111,12 @@ export const MainRightHome = () => {
                     <div className="main_home">
                         {
                             resultAllThematiques?.map((result)=>{
-                                console.log(result.color)
                                 return(
                                     <IconesInformations style={{ backgroundColor: result.color }}  theme={result.name} key={result.id} updateCrosswords={() => updateCrosswords(result.id, result.name)}/>    
                                 )
                             })
                         }
-                        {/* <IconesInformations defaultClassName="icones_users_informations" icon={faCableCar} theme="Verbes reguliers" />
-                        <IconesInformations defaultClassName="icones_users_informations" icon={faCableCar} theme="Verbes reguliers" />
-                        <IconesInformations defaultClassName="icones_users_informations" icon={faCableCar} theme="Verbes reguliers" />
-                        <IconesInformations defaultClassName="icones_users_informations" icon={faCableCar} theme="Verbes reguliers" />
-                        <IconesInformations defaultClassName="icones_users_informations" icon={faCableCar} theme="Verbes reguliers" />
-                        <IconesInformations defaultClassName="icones_users_informations" icon={faCableCar} theme="Verbes reguliers" />
-                        <IconesInformations defaultClassName="icones_users_informations" icon={faCableCar} theme="Verbes reguliers" />
-                        <IconesInformations defaultClassName="icones_users_informations" icon={faCableCar} theme="Verbes reguliers" />
-                        <IconesInformations defaultClassName="icones_users_informations" icon={faCableCar} theme="Verbes reguliers" />
-                        <IconesInformations defaultClassName="icones_users_informations" icon={faCableCar} theme="Verbes reguliers" /> */}
+                        
                     </div>
                     <NavLink to="/theme" className="voir_plus"><span>Voir plus</span></NavLink>
 
@@ -119,8 +124,8 @@ export const MainRightHome = () => {
                 <div className="sous_parent_main_home3">
                     <span className="h3_home">Notifications</span>
                     <div className="parent_notifications_home">
-                        {/* {
-                            JSON.parse(localStorage.getItem('notificationsNews'))?.map((info,index)=>{
+                        {
+                            data?.map((info,index)=>{
                                 console.log(info)
                                 return(
                                     <NavLink to="/message" className="nav_link" key={index}>
@@ -128,47 +133,14 @@ export const MainRightHome = () => {
                                         <FontAwesomeIcon icon={faCommentDots} className="icons_comments" />
                                         <div className="parents_message_notifications">
                                             <span className="new_message">{info.username}</span>
-                                            <span>a message</span>
+                                            <span> a envoyer un message</span>
         
                                         </div>
                                     </div>
                                 </NavLink>
                                 )
                             })
-                        } */}
-
-                        {/* <NavLink to="/message" className="nav_link">
-                            <div className="notifications_message">
-                                <FontAwesomeIcon icon={faCommentDots} className="icons_comments" />
-                                <div className="parents_message_notifications">
-                                    <span className="new_message">Gaelle tamho has sent you</span>
-                                    <span>a message</span>
-
-                                </div>
-                            </div>
-                        </NavLink> */}
-
-                        {/* <NavLink to="/message" className="nav_link">
-                            <div className="notifications_message">
-                                <FontAwesomeIcon icon={faCommentDots} className="icons_comments" />
-                                <div className="parents_message_notifications">
-                                    <span className="new_message">Gaelle tamho has sent you</span>
-                                    <span>a message</span>
-
-                                </div>
-                            </div>
-                        </NavLink>
-
-                        <NavLink to="/message" className="nav_link">
-                            <div className="notifications_message">
-                                <FontAwesomeIcon icon={faCommentDots} className="icons_comments" />
-                                <div className="parents_message_notifications">
-                                    <span className="new_message">Gaelle tamho has sent you</span>
-                                    <span>a message</span>
-
-                                </div>
-                            </div>
-                        </NavLink> */}
+                        } 
                     </div>
                 </div>
             </div>

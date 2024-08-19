@@ -12,7 +12,7 @@ export const HeaderMotsCroisés = ({ theme1, theme2}) => {
     const [isEditable, setIsEditable] = useState(false)
     const [theme2Value, setTheme2Value] = useState(theme2);
     const id = JSON.parse(localStorage.getItem('id'));
-    console.log(id)
+    // console.log(id)
     const token = localStorage.getItem('token');
     let theme2Ref = useRef(null);
     const navigate = useNavigate()
@@ -56,7 +56,7 @@ export const HeaderMotsCroisés = ({ theme1, theme2}) => {
        })
     };
     return (
-        <div className="header_main">
+        <div className="header_main_1">
             <div className="header_main_left">
                 <span className="header_main_1" onClick={handleNavigateTheme}>Thématiques</span>
                 <img src={right} className="header_main_2_icons_mots_croisés" />

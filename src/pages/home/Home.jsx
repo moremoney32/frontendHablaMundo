@@ -15,9 +15,12 @@ export const Home = ()=>{
     }
 
     },[])
+    useEffect(()=>{
+
+    },[JSON.parse(localStorage.getItem("notificationsNews"))])
     return(
         <div>
-             <Header/>
+             <Header counterLength= {JSON.parse(localStorage.getItem("notificationsNews"))}/>
              <div className="parent_home">
              <SideBar/>
              <MainRightHome/>

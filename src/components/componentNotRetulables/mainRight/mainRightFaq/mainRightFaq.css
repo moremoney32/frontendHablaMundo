@@ -155,11 +155,13 @@ a:hover {
       justify-content: space-between;
       align-items: center;
       padding: 20px;
+     /* border-bottom: 1px solid #EBF5FF;
+     width: calc((100%) - 40px); */
     }
     .active{
       background: #0084FA1A;
-      border-top-left-radius: 5px;
-      border-top-right-radius: 5px;
+      border-top-left-radius: 5px !important;
+      border-top-right-radius: 5px !important;
       border-bottom: none;
       color:#0084FA1A;
     }
@@ -183,14 +185,15 @@ a:hover {
     .description_question_span{
       color: grey;
       width: 250px;
+      font-weight:bold;
     }
     .description_answer{
       width: 100%;
       padding-left: 10px;
       padding-right: 10px;
       padding-bottom: 10px;
-      border-bottom-left-radius: 5px;
-      border-bottom-right-radius: 5px;
+       border-bottom-left-radius: 5px;
+      border-bottom-right-radius: 5px; 
       background: #0084FA1A;
       color: grey;
       border-top: none;
