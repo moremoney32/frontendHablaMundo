@@ -13,17 +13,14 @@ export const Deconnexion = () => {
     const [connect, setConnect] = useState(false);
     const [etat, setEtat] = useState(false);
     const { register, handleSubmit, formState: { errors, isValid }, watch } = useForm();
-    const mailFormatRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
     const changesEyes = ()=>{
         setEtat(!etat)
     }
     const message = "connexion reussie"
     const onSubmit = async (data) => {
-        console.log(data)
         setConnect(true)
         try {
             const result = await fetchData("https://www.backend.habla-mundo.com/api/v1/login",data);
-            console.log(result);
 
             if (result.access_token) {
                 snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg",message, 2000);

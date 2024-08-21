@@ -37,6 +37,7 @@ export const MainRightFaq = () => {
     data.reponse = htmlContent;
     console.log(data)
     fetchData("https://www.backend.habla-mundo.com/api/v1/faq",data).then((result)=>{
+      console.log(result)
       if(result.success === "FAP as created"){
         fetchDataGet("https://www.backend.habla-mundo.com/api/v1/faq").then((response)=>{
           setDatas(response)

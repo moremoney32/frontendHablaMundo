@@ -22,6 +22,7 @@
   width: calc(100% - 220px) !important;
   position: relative;
 }
+
 .input_users{
   width: 100%; 
   border-radius: 5px;
@@ -169,28 +170,29 @@
   width: 100%;
 }
 .sous_parent_main_users_information-child1{
-  width: 100%;
+  width: calc(100% - 220px) !important;
   display: flex;
  justify-content: space-between; 
+ padding-left: 10px;
 }
 .sous_parent_main_users_information-child1 span{
-  width:calc((100% / 5) - 125px / 5);
+  width:calc((100% / 4) - 125px / 4);
   color: black;
   font-size:14px;
   font-weight: 550;
 }
 .sous_parent_main_users_information-child2{
-  width: 100%;
+  /* width: 100%; */
+  width: calc(100% - 220px) !important;
   display: flex;
  justify-content: space-between; 
  background: #0084FA0D;
   padding: 10px;
-  /* padding-right: 50px !important; */
   border-radius: 5px;
   align-items: center;
 }
 .sous_parent_main_users_information-child2 div{
-  width:calc((100% / 5) - 125px / 5);
+  width:calc((100% / 4) - 125px / 4);
   cursor: pointer;
 }
 .prenom{
@@ -214,9 +216,11 @@
 .user_inscription{
   color:#42444B;
   font-size: 14px;
+  transform: translate3d(7px,0,0);
 }
 .status{
   font-size: 14px;
+   transform: translate3d(7px,0,0); 
 }
 .status-abonne{
   color: var(--color-primary) !important;
@@ -232,6 +236,7 @@ justify-content: space-between;
   padding-left: 10px;
   padding-right: 10px;
   cursor: pointer;
+   transform: translate3d(5px,0,0); 
   
 }
 .action img{

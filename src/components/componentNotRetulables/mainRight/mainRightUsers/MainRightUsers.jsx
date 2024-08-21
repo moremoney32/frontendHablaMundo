@@ -287,7 +287,6 @@ export const MainRightUsers = () => {
                             if (e.target.value.length === 0) {
                                 setLevel(true);
                                 setEtatValue(false)
-                                //setDataUser(JSON.parse(localStorage.getItem("dataUser")));
                             }
                             register("checkValue").onChange(e); // Access onChange from register
                         }} />
@@ -311,27 +310,27 @@ export const MainRightUsers = () => {
                         <span>Adresse mail</span>
                         <span>Date d'inscription</span>
                         <span>Status</span>
-                        <span>Action</span>
+                        {/* <span>Action</span> */}
                     </div>
                     {level && dataCurrent.reverse().slice()?.map((data) => {
                         return (
                             <div className="sous_parent_main_users_information-child2" key={data.id}>
                                 <div className="prenom">
-                                    <img src={message} alt="message" />
+                                    {/* <img src={message} alt="message" onClick={() => handleClick(data.id, data.first_name, data.email)}/> */}
                                     <span>{data.first_name}</span>
                                 </div>
                                 <div className="user_adress_mail">{data.email}</div>
                                 <div className="user_inscription">{formatTime(data.created_at)}</div>
-                                 <div className={`status ${data.suscribe === "0" ? "Non abonné" : "Abonné(e)"}`}>
-                {data.suscribe === "1" ? "Abonné(e)" : "Non abonné"}
+                                 <div className={`status ${data.suscribe === "0" ? "Non abonné" : "Abonné"}`}>
+                {data.suscribe === "1" ? "Abonné" : "Non abonné"}
             </div>
-                                <div>
+                                {/* <div>
                                     <div className="action" onClick={() => handleClick(data.id, data.first_name, data.email)}>
                                         <img src={messageOutlined} alt="message_outlined" />
                                         <span>Message</span>
                                     </div>
 
-                                </div>
+                                </div> */}
                                
                             </div>
 
@@ -342,18 +341,22 @@ export const MainRightUsers = () => {
                         return (
                             <div className="sous_parent_main_users_information-child2" key={data.id}>
                                 <div className="prenom">
-                                    <img src={message} alt="message" />
+                                    {/* <img src={message} alt="message" /> */}
                                     <span>{data.first_name}</span>
                                 </div>
                                 <div className="user_adress_mail">{data.email}</div>
                                 <div className="user_inscription">{formatTime(data.created_at)}</div>
-                                <div className={`status ${data.suscribe === "0" ? "Non abonné" : "Abonné(e)"}`}>
-                {data.suscribe === "1" ? "Abonné(e)" : "Non abonné"}
+                                 <div className={`status ${data.suscribe === "0" ? "Non abonné" : "Abonné"}`}>
+                {data.suscribe === "1" ? "Abonné" : "Non abonné"}
             </div>
-                                <div className="action" onClick={() => handleClick(data.id, data.first_name, data.email)}>
-                                    <img src={messageOutlined} alt="message_outlined" />
-                                    <span>Message</span>
-                                </div>
+                                {/* <div>
+                                    <div className="action" onClick={() => handleClick(data.id, data.first_name, data.email)}>
+                                        <img src={messageOutlined} alt="message_outlined" />
+                                        <span>Message</span>
+                                    </div>
+
+                                </div> */}
+                               
                             </div>
 
                         )

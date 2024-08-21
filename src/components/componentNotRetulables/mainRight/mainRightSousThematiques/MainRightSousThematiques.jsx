@@ -39,7 +39,8 @@ export const MainRightSousThematiques = () => {
             id: resultValue.id
         }
         fetchData("https://www.backend.habla-mundo.com/api/v1/theme",id).then((result) => {
-            result = result.sort((a, b) => a.name.localeCompare(b.name))
+            console.log(result)
+            result = result?.sort((a, b) => a.name.localeCompare(b.name))
             console.log(result)
             // console.log(result)
             return setSousThematique(result)
@@ -217,8 +218,8 @@ export const MainRightSousThematiques = () => {
             {/*  */}
             {openSousThemes && <div id="masqueSousTheme"></div>}
             {openSousThemes && <form id="answer_client_theme" onSubmit={handleSubmit(onSubmit)}>
-                    <FontAwesomeIcon icon={faClose} className="close_theme" onClick={close} />
-                    <span className="title">CREATION DE LA SOUS THEMATIQUE</span>
+                    <FontAwesomeIcon icon={faClose} className="close_theme" onClick={close}/>
+                    <span className="title">CREATION DE LA SOUS-THEMATIQUE</span>
                     <div className="parent_contenair_sous_thematique">
                         {
                             thematiques?.map((sousThemes) => {
@@ -237,7 +238,7 @@ export const MainRightSousThematiques = () => {
                                                     }} />
                                             </div>
                                             <div className="space_contenair">
-                                                <label htmlFor="">liste des mots de la sous-thématique</label>
+                                                <label htmlFor="">Liste des mots de la sous-thématique</label>
                                                 <div className="parent_textarea">
                                                     <textarea className="textarea_sous_thematique" placeholder="Entrer un mot" onKeyDown={(e) => {
                                                         if (e.key === 'Enter') {
@@ -271,8 +272,8 @@ export const MainRightSousThematiques = () => {
 
                                             <span className="element_none">0</span>
                                             <div className="add_theme">
-                                                <span>+</span>
-                                                <span onClick={handleAddThematique}>Ajouter une sous-thématique</span>
+                                                <span className="add_theme_1">+</span>
+                                                <span onClick={handleAddThematique} className="add_theme_2">Ajouter une thématique/sous-thématique</span>
                                             </div>
                                         </div>
                                     </div>

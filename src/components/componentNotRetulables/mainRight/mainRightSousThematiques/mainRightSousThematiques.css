@@ -7,9 +7,9 @@
     flex-direction: column;
     gap:22px;
   }
-  .parent_header_sous_thematiques{
-    transform: translate3d(0,-10px,0);
-  }
+  /* .parent_header_sous_thematiques{
+    transform: translate3d(0,10px,0);
+  } */
   .sous_parent_main_sous_theme{
     background:white;
     display: flex;
@@ -61,6 +61,7 @@
   .nav_link{
     text-decoration:none !important;
   }
+   
   
   #masqueSousTheme{
     position: fixed;

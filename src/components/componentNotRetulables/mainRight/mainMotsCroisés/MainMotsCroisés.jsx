@@ -22,17 +22,13 @@ const newDataCrossword ={
   gridSize:generateCrossword(translations).gridSize,
   reste:generateCrossword(translations).reste
 }
-// console.log(newDataCrossword)
 
   const [datas, setDatas] = useState(newDataCrossword);
   const [loading, setLoading] = useState(false);
-  // const [remove, setTRemove] = useState(false);
-  // console.log(datas);
   const [dataswords, setDatasWords] = useState(names);
   const dataTheme = JSON.parse(localStorage.getItem('theme'));
   const name = JSON.parse(localStorage.getItem('name'))
   const id = JSON.parse(localStorage.getItem('id'));
-  // console.log(id)
   const token = localStorage.getItem('token');
   const handleWordChange = (index, newName) => {
     const newPositions = datas.positions.map((word, i) =>
@@ -58,13 +54,11 @@ const newDataCrossword ={
 };
 
 const handleWordChangeReste = (index, newName) => {
-  console.log(newName)
   let newReste = datas.reste.map((word, i) =>
     i === index ? newName : word
   );
  let world = datas.positions.map(element =>element.word)
  world.push(...newReste) 
- console.log(world)
  const generatenewGrille = generateCrossword(world)
  const filterName  =  datas.positions.map(word => word.name);
 const generateFRenchEnglish =  generatenewGrille.positions.map((item, index) => {
@@ -118,7 +112,7 @@ const handleWordlsGrille = async()=>{
   setLoading(true);
   try {
     const result = await fetchData("https://www.backend.habla-mundo.com/api/v1/words",dataPush,token);
-    console.log(result)
+
     if (result.message === "the words is created") {
       snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg", result.message, 4000);
   }
@@ -147,7 +141,7 @@ const handleWordlsGrille = async()=>{
           </div>
           <WordList data={datas.positions} onWordChange={handleWordChange} onWordChangeFrench={handleWordChangeFrench}/>
           {datas.reste.length>=1 && <div className="parent_reste">
-            <span className="title_parent">Mots anglais ayants plus de 12 caracteres à modifier</span>
+            <span className="title_parent">Mots anglais ayants plus de 15 caracteres à modifier</span>
             <div className="reste">
             <WordListReste data={datas.reste} onWordChange={handleWordChangeReste}/>
             </div>

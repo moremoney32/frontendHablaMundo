@@ -1,61 +1,64 @@
 import { HeaderTitleMain } from "../../../repeatableComponents/atomes/header/HeaderTitleMain"
 import { InformationUser } from "../../../repeatableComponents/atomes/information/InformationUser"
-import { faCableCar, faCircleMinus, faCircleUser, faComment, faCommentAlt, faCommentDots, faEllipsisV, faGripHorizontal, faGripVertical, faUser } from "@fortawesome/free-solid-svg-icons"
+import {  faCommentDots, faGripHorizontal, faUser } from "@fortawesome/free-solid-svg-icons"
 import "./mainRightHome.css"
 import { IconesInformations } from "../../../repeatableComponents/atomes/iconesInformation/IconesInformations"
 import { NavLink, useNavigate } from "react-router-dom"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useEffect, useState } from "react"
 import { fetchDataGet } from "../../../../helpers/fetchDataGet"
-import { faCommentSlash } from "@fortawesome/free-solid-svg-icons/faCommentSlash"
-import { faCommenting } from "@fortawesome/free-solid-svg-icons/faCommenting"
-import { faCircle } from "@fortawesome/free-solid-svg-icons/faCircle"
-import { faCircleDot } from "@fortawesome/free-solid-svg-icons/faCircleDot"
-import { faEllipsis } from "@fortawesome/free-solid-svg-icons/faEllipsis"
+import { useNotifications } from "../NotificationsProvider"
+
 export const MainRightHome = () => {
     const navigate = useNavigate();
-    const[stat,setStat] = useState(null)
-    const[taux,setTaux] = useState(null)
-    const [data, setData] = useState(() => {
-        const storedData = localStorage.getItem('notificationsNews');
-        return storedData ? JSON.parse(storedData) : [];
-    });
+    const[stat,setStat] = useState(null);
+    const[taux,setTaux] = useState(null);
+    const notificationsHeader = useNotifications();
+    const [data, setData] = useState(notificationsHeader)
+    useEffect(() =>{
+        setData(notificationsHeader)
+    },[notificationsHeader])
+    // const [data, setData] = useState(() => {
+    //     const storedData = localStorage.getItem('notificationsNews');
+    //     return storedData ? JSON.parse(storedData) : [];
+    // });
     const[resultAllThematiques,setResultAllThematiques] = useState(null);
-    useEffect(() => {
-        const eventSource= new EventSource('https://backend.habla-mundo.com/api/v1/listen-message');
-        eventSource.addEventListener('message', (event) => {
-            if (event.data === "nothing") {
-                return;
-            }
-            else {
-                const newMessages = JSON.parse(event.data);
-                    setData(prevMessages => {
-                        const updatedData = [...prevMessages, newMessages];
-                        localStorage.setItem('notificationsNews', JSON.stringify(updatedData));
+    // useEffect(() => {
+    //     const eventSource= new EventSource('https://backend.habla-mundo.com/api/v1/listen-message');
+    //     eventSource.addEventListener('message', (event) => {
+    //         if (event.data === "nothing") {
+    //             return;
+    //         }
+    //         else {
+    //             const newMessages = JSON.parse(event.data);
+    //                 setData(prevMessages => {
+    //                     const updatedData = [...prevMessages, newMessages];
+    //                     localStorage.setItem('notificationsNews', JSON.stringify(updatedData));
                     
-                        // Émettre un événement personnalisé
-                        const event = new Event('notificationsUpdated');
-                        window.dispatchEvent(event);
+    //                     // Émettre un événement personnalisé
+    //                     const event = new Event('notificationsUpdated');
+    //                     window.dispatchEvent(event);
                     
-                        return updatedData;
-                    });
-            }
+    //                     return updatedData;
+    //                 });
+    //         }
 
-        });
+    //     });
 
-        return () => {
-            eventSource.close();
-        };
-    }, []);
+    //     return () => {
+    //         eventSource.close();
+    //     };
+    // }, []);
   
     
   
 
     const handleNavigate = () => {
-        navigate('/user', { state: { filter: 'Abonné(e)' } });
+        navigate('/user');
     };
+ 
     const handleNavigateTheme = () => {
-        navigate('/theme', { state: { filter: "etat" } });
+        navigate('/theme', { state: { filter: "etat", fromHome: true } });
     };
     const updateCrosswords = (id, name) => {
         const result = { id: id }
@@ -66,8 +69,8 @@ export const MainRightHome = () => {
             navigate("/sousThematiques");
         }, 500);
     }
+    let counter = 10
     useEffect(() => {
-        let counter = 10
         fetchDataGet("https://www.backend.habla-mundo.com/api/v1/themes").then((result) => {
             if(result<=counter){
                 return   setResultAllThematiques(result)
@@ -81,7 +84,7 @@ export const MainRightHome = () => {
     }, [])
     useEffect(() =>{
             fetchDataGet("https://www.backend.habla-mundo.com/api/v1/statistique").then((result) =>{
-                const pourcent = (Number(result?.suscribes) * 100) / Number(result?.users)
+                const pourcent = (result?.suscribes * 100) / result?.users
                 setTaux(pourcent)
                return  setStat(result)
             })
@@ -97,8 +100,8 @@ export const MainRightHome = () => {
                     <NavLink to="/user" className="nav_link"><InformationUser defaultClassName="icons_user_img" user="Utilisateurs inscrits" icon={faUser} number={stat?.users} className="color_home" /></NavLink>
                     <div onClick={handleNavigate} className="nav_link"><InformationUser defaultClassName="icons_user_img1" user="Utilisateurs abonnés" icon={faUser} number={stat?.suscribes} pourcent={`(${taux}%)`} className="color_home1" /></div>
                     <NavLink to="/theme" className="nav_link"><InformationUser defaultClassName="icons_user_img2" user="Thématiques" icon={faGripHorizontal} number={stat?.thematiques} className="color_home2" /></NavLink>
+                    <InformationUser defaultClassName="icons_user_img2" user="Mots croisés" icon={faGripHorizontal} number={stat?.crosswords} className="color_home2" />
                     <NavLink to="/message" className="nav_link"><InformationUser defaultClassName="icons_user_img3" user="Messages reçus" icon={faCommentDots} number={stat?.nombres_messages} className="color_home3" /></NavLink>
-                    <NavLink  className="nav_link"><InformationUser defaultClassName="icons_user_img2" user="Mots croisés" icon={faGripHorizontal} number={stat?.crosswords} className="color_home2" /></NavLink>
                 </div>
                 <div className="sous_parent_main_home2">
                     <div className="title_main_home">
@@ -111,8 +114,8 @@ export const MainRightHome = () => {
                     <div className="main_home">
                         {
                             resultAllThematiques?.map((result)=>{
-                                return(
-                                    <IconesInformations style={{ backgroundColor: result.color }}  theme={result.name} key={result.id} updateCrosswords={() => updateCrosswords(result.id, result.name)}/>    
+                                return(   
+                                    <IconesInformations style={{ backgroundColor: result.color }}  theme={result.name} crossword={result.crosswords_count} key={result.id} updateCrosswords={() => updateCrosswords(result.id, result.name)}/>    
                                 )
                             })
                         }
@@ -126,7 +129,6 @@ export const MainRightHome = () => {
                     <div className="parent_notifications_home">
                         {
                             data?.map((info,index)=>{
-                                console.log(info)
                                 return(
                                     <NavLink to="/message" className="nav_link" key={index}>
                                     <div className="notifications_message">

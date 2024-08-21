@@ -18,6 +18,7 @@ import { fetchData } from "../../../../helpers/fetchData";
 import { snackbbar } from "../../../../helpers/snackbars";
 import { fetchDataGetToken } from "../../../../helpers/fetchDataGetToken";
 import { formatTime } from "../../../../helpers/formatDate";
+import { useNotifications } from "../NotificationsProvider";
 
 export const MainRightMessages = () => {
     const { register, handleSubmit, formState: { errors }, setValue } = useForm();
@@ -37,19 +38,14 @@ export const MainRightMessages = () => {
     const [firstIndexComments, setFirstIndexComments] = useState(0);
       const [lastIndexComments, setLastIndexComments] = useState(8);
       const containUseref = useRef(null)
+      const notificationsHeader = useNotifications();
     const message2 = "veuillez entrer un contenu"
-    useEffect(() => {
-        localStorage.removeItem('notificationsNews');
-        const isRemoved = localStorage.getItem('notificationsNews') === null;
-    
-        if (isRemoved) {
-            window.dispatchEvent(new Event('notificationsUpdate'));
-        }
-    }, []);
+    // useEffect(()=>{
+    //     return localStorage.removeItem('notificationsNews');
+    // },[])
     
 
     useEffect(() => {
-
         fetchDataGetToken('https://www.backend.habla-mundo.com/api/v1/notifications', token).then((response) => {
             const compareDate =   response.sort((a, b) => {
                 const dateA = new Date(a.created_at);
@@ -58,25 +54,8 @@ export const MainRightMessages = () => {
               });
             setData(compareDate)
         })
-
-
-        // Lire les nouveaux messages
-        const eventSource = new EventSource('https://backend.habla-mundo.com/api/v1/listen-message');
-        eventSource.addEventListener('message', (event) => {
-            if (event.data === "nothing") {
-               
-                return ;
-            }
-            else {
-                const newMessages = JSON.parse(event.data);
-                setData(prevMessages => [...prevMessages, newMessages]);
-            }
-        });
-
-        return () =>{
-            eventSource.close();
-        };
-    }, []);
+        localStorage.removeItem('notificationsNews');
+    }, [notificationsHeader]);
 
 
 
@@ -312,21 +291,21 @@ export const MainRightMessages = () => {
                 </div>}
                 
                 {
-                    data?.slice(firstIndexComments, lastIndexComments).map((info,index) => {
+                    data?.reverse().slice(firstIndexComments, lastIndexComments).map((info,index) => {
                         return (
                             <div className={`parent_messages ${activeStates[info.id] ? 'active_message' : ''}`} key={index}>
                                 <div className="parent_messages1">
-                                    <img src={message} alt="message" className="message" />
+                                    <img src={message} alt="message" className="message" onClick={() => handleClick(info.notifiable_id, info.data.body, info.username, info.data.fichier,info.email)}/>
                                     <div className="infos_messages">
                                         <span className="infos_messages_child1">{info.username}</span>
                                         <span className="infos_messages_child2">{info.data.body}</span>
                                     </div>
                                 </div>
                                 <span className="parent_messages2">{formatTime(info.created_at)}</span>
-                                <div className="parent_messages3" onClick={() => handleClick(info.notifiable_id, info.data.body, info.username, info.data.fichier,info.email)}>
+                                {/* <div className="parent_messages3" onClick={() => handleClick(info.notifiable_id, info.data.body, info.username, info.data.fichier,info.email)}>
                                     <span className="repondre">Répondre</span>
                                     <img src={next} alt="next" className="next" />
-                                </div>
+                                </div> */}
                             </div>
                         );
                     })

@@ -32,6 +32,7 @@
 .parent_notifications img{
   width: 15px;
   height: 15px;
+  cursor: pointer;
 }
 
  .counter_notifications{
@@ -130,10 +131,10 @@
   border-radius: 5px;
   padding: 10px;
   cursor: pointer;
-  font-size: 13px;
+  /* font-size: 1px; */
 }
 .update_theme_sous_thematique :nth-child(1){
-  font-size:18px;
+   font-size:18px; 
   font-weight: 550;
   transform: translate3d(0,1px,0);
 }
@@ -148,6 +149,8 @@
   border: none;
   cursor: pointer;
 }
+
+
 
 .header_main_2_icons_mots_croisés{
   width:12px;

@@ -4,10 +4,10 @@ import { snackbbar } from "../../../../helpers/snackbars";
 function WordList({ data, onWordChange,onWordChangeFrench }) {
   const handleInputChange = (e, index) => {
     const newName = e.target.innerText;
-    const dataMessage = "Le mot anglais ne doit pas dépasser 12 caractères."
-    if (newName.length > 13) {
+    const dataMessage = "Le mot anglais ne doit pas dépasser 15 caractères."
+    if (newName.length > 15) {
      snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg", dataMessage,4000)
-      e.target.innerText = newName.slice(0, 12); 
+      e.target.innerText = newName.slice(0, 15); 
     } else {
       onWordChange(index, newName);
     }

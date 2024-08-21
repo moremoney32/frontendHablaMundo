@@ -264,9 +264,8 @@ export const MainRightTheme = () => {
     }
 
     useEffect(() => {
-        if (location.state?.filter){
+        if (location.state?.fromHome && location.state?.filter) {
             setEtat(true);
-            navigate(location.pathname, { replace: true }); // Efface l'état après l'avoir utilisé
         }
     }, [location.state]);
 
@@ -371,7 +370,7 @@ export const MainRightTheme = () => {
                                 <div className="parent_icons_thematics">
                                     <span className="parent_icons_thematics_child2" style={{ color: result.color }}  onClick={() => updateCrosswords(result.id, result.name)}>{result.name}</span>
                                 </div>
-                                <span className="parent_icons_thematics_span">25 Mots croisés</span>
+                                <span className="parent_icons_thematics_span">{result.crosswords_count} Mots croisés</span>
                                 <span className="parent_icons_thematics_span"> créé {formatTime(result.created_at)}</span>
                                 <div className="parent_icons_thematics_span">
                                 <img src={remove} alt="remove_words" className="remove_words" onClick={() => removeTheme(result.id)} />
@@ -387,7 +386,7 @@ export const MainRightTheme = () => {
                                 <div className="parent_icons_thematics">
                                     <span className="parent_icons_thematics_child2" style={{ color: result.color }}  onClick={() => updateCrosswords(result.id, result.name)}>{result.name}</span>
                                 </div>
-                                <span className="parent_icons_thematics_span">25 Mots croisés</span>
+                                <span className="parent_icons_thematics_span">{result.crosswords_count} Mots croisés</span>
                                 <span className="parent_icons_thematics_span"> créé {formatTime(result.created_at)}</span>
                                 <div className="parent_icons_thematics_span">
                                 <img src={remove} alt="remove_words" className="remove_words" onClick={() => removeTheme(result.id)} />
