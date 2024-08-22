@@ -13,6 +13,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { snackbbar } from "../../../../helpers/snackbars";
+import infos from "../../../../assets/icons/infos.svg";
 
 
 export const MainRightSousThematiques = () => {
@@ -33,6 +34,8 @@ export const MainRightSousThematiques = () => {
     const dataValue = JSON.parse(localStorage.getItem('theme'))
     const resultValue = JSON.parse(localStorage.getItem('result'))
     const token = localStorage.getItem('token')
+    let message1 = "Demande prise en compte"
+    let message2 = "Demande non prise en compte"
     const navigate =useNavigate();
     useEffect(() => {
         const id = {
@@ -40,10 +43,15 @@ export const MainRightSousThematiques = () => {
         }
         fetchData("https://www.backend.habla-mundo.com/api/v1/theme",id).then((result) => {
             console.log(result)
-            result = result?.sort((a, b) => a.name.localeCompare(b.name))
-            console.log(result)
-            // console.log(result)
-            return setSousThematique(result)
+            if(result.message === "this thematic dont have a crossword"){
+               // return  snackbbar(document.querySelector("#body"), "../../../../assets/icons/infos.svg", result.message, 2000);
+                navigate("/theme")
+            }
+            else{
+                result = result?.sort((a, b) => a.name.localeCompare(b.name))
+                return setSousThematique(result)
+            }
+            
         })
     }, [])
     const sortAlphabet= (sousThematiques) => {
@@ -158,20 +166,18 @@ export const MainRightSousThematiques = () => {
         setThematiques(newThematiques);
     };
     const onSubmit =  async (data) => {
-        //setLoading(true)
-        console.log(data)
-        console.log(thematiques)
         for (let i = 0; i < thematiques.length; i++) {
             const sousThemes = thematiques[i];
             console.log(sousThemes)
             if (sousThemes.crossword.length  === 0) {
                 console.log(true)
                  const messageCrosswords = "la sous thématique  ne doit pas etre vide."
-                 return snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg",messageCrosswords, 10000);
+                 return snackbbar(document.querySelector("#body"), infos,message2, 2000);
+                // return snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg",messageCrosswords, 2000);
             }
             if (sousThemes.words.length % 25 !== 0 || sousThemes.words.length === 0) {
-                const messages = `Le nombre de mots dans la sous thématique "${sousThemes.crossword}" doit être un multiple de 25.`
-                return snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg", messages, 10000);
+                // const messages = `Le nombre de mots dans la sous thématique "${sousThemes.crossword}" doit être un multiple de 25.`
+                       return  snackbbar(document.querySelector("#body"), infos, message2, 2000);
             }    
         }
         if (data) {
@@ -184,9 +190,8 @@ export const MainRightSousThematiques = () => {
             try {
                 const result = await fetchData("https://www.backend.habla-mundo.com/api/v1/themes", dataSend, token);
                 if (result.message === "the thematics is created") {
-                    snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg", result.message, 2000);
-                    // localStorage.setItem('theme', JSON.stringify(dataSend));
-                    // localStorage.setItem('result', JSON.stringify(result));
+                    snackbbar(document.querySelector("#body"), infos,message1, 2000);
+            
 
                     
                     setTimeout(() => {
@@ -199,7 +204,7 @@ export const MainRightSousThematiques = () => {
                     }, 2000);
                 }
                 if (result.message === "Erreur de l'IA. Veuillez reessayer!!!") {
-                    return snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg", result.message, 7000);
+                    return snackbbar(document.querySelector("#body"),infos ,message2, 7000);
                 }
             } catch (error) {
                 // setEtat(true);
@@ -273,7 +278,7 @@ export const MainRightSousThematiques = () => {
                                             <span className="element_none">0</span>
                                             <div className="add_theme">
                                                 <span className="add_theme_1">+</span>
-                                                <span onClick={handleAddThematique} className="add_theme_2">Ajouter une thématique/sous-thématique</span>
+                                                <span onClick={handleAddThematique} className="add_theme_2">Ajouter une sous-thématique</span>
                                             </div>
                                         </div>
                                     </div>

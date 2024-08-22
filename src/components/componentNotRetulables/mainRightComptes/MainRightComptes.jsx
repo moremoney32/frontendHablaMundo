@@ -1,14 +1,14 @@
 import "./mainRightComptes.css"
-import photo from "../../../assets/images/photo.png"
-import checkpictures from "../../../assets/images/checkpictures.png"
 import edit from "../../../assets/icons/edit.png"
 import { useEffect, useState } from "react"
 import { fetchDataGetToken } from "../../../helpers/fetchDataGetToken"
 import { fetchData } from "../../../helpers/fetchData"
 import { snackbbar } from "../../../helpers/snackbars"
+import infos from "../../../assets/icons/infos.svg"
 export const MainRightComptes = () =>{
     const token = localStorage.getItem("token");
     const [data,setData] = useState("");
+      let message1 = "Demande prise en compte"
     useEffect(() =>{
         fetchDataGetToken("https://www.backend.habla-mundo.com/api/v1/user",token).then((result) =>{
             setData(result)
@@ -30,7 +30,7 @@ export const MainRightComptes = () =>{
         if (isEditable) {
                 fetchData("https://www.backend.habla-mundo.com/api/v1/update/users/admin",data,token).then((response)=>{
                     if(response.message === "update successful"){
-                        return snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg", response.message, 2000)
+                        return snackbbar(document.querySelector("#body"), infos,message1, 2000)
                     }
                 })
             }

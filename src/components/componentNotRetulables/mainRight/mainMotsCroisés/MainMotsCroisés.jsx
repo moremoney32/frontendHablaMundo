@@ -7,6 +7,7 @@ import { generateCrossword} from "./generateCoordonnées";
 import WordListReste from "./WorListReste";
 import { fetchData } from "../../../../helpers/fetchData";
 import { snackbbar } from "../../../../helpers/snackbars";
+import infos from "../../../../assets/icons/infos.svg";
 export const MainMotsCroisés = () => {
   const datasFrench = JSON.parse(localStorage.getItem('datas'));
   const translations = datasFrench.map(word => word.traduction);
@@ -22,7 +23,8 @@ const newDataCrossword ={
   gridSize:generateCrossword(translations).gridSize,
   reste:generateCrossword(translations).reste
 }
-
+    let message1 = "Demande prise en compte"
+    let message2 = "Demande non prise en compte"
   const [datas, setDatas] = useState(newDataCrossword);
   const [loading, setLoading] = useState(false);
   const [dataswords, setDatasWords] = useState(names);
@@ -114,7 +116,7 @@ const handleWordlsGrille = async()=>{
     const result = await fetchData("https://www.backend.habla-mundo.com/api/v1/words",dataPush,token);
 
     if (result.message === "the words is created") {
-      snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg", result.message, 4000);
+      snackbbar(document.querySelector("#body"), infos,message1, 4000);
   }
     
 } catch (error) {

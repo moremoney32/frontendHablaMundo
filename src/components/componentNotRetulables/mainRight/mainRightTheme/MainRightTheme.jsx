@@ -22,6 +22,7 @@ import { fetchDataGet } from "../../../../helpers/fetchDataGet";
 import { formatTime } from "../../../../helpers/formatDate";
 import { fetchDelete } from "../../../../helpers/fetchDelete";
 import { useSearchNames } from "../../../../customsHooks/useSearchNames";
+import infos from "../../../../assets/icons/infos.svg";
 export const MainRightTheme = () => {
     const [etat, setEtat] = useState(false);
     const [color, setColor] = useState('#ED4C5C');
@@ -41,6 +42,8 @@ export const MainRightTheme = () => {
     const [rotateIconVisility, setRotateIconVisibility] = useState(false);
     const [resultAllThematiques, setResultAllThematiques] = useState(null);
     const [searchResults, searchElementUserName] = useSearchNames(resultAllThematiques);
+      let message1 = "Demande prise en compte"
+    let message2 = "Demande non prise en compte"
     const [thematiques, setThematiques] = useState([
         { id: 1, thematique: '', crossword: '', words: [] },
     ]);
@@ -221,11 +224,13 @@ export const MainRightTheme = () => {
             const sousThemes = thematiques[i];
             if (sousThemes.crossword.length  === 0) {
                 const messageCrossword = ` la sous thématique  ne doit pas etre vide.`
-                return snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg", messageCrossword, 4000);
+               // return snackbbar(document.querySelector("#body"), "../../../../assets/icons/infos.svg", messageCrossword, 4000);
+               return snackbbar(document.querySelector("#body"), infos, message2, 4000);
             }
             if (sousThemes.words.length % 25 !== 0 || sousThemes.words.length === 0) {
                 const messages = `Le nombre de mots dans la sous thématique "${sousThemes.crossword}" doit être un multiple de 25.`
-                return snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg", messages, 4000);
+               // return snackbbar(document.querySelector("#body"), infos, messages, 4000);
+               return snackbbar(document.querySelector("#body"), infos,message2, 4000);
             }
         }
         if (data) {
@@ -242,7 +247,8 @@ export const MainRightTheme = () => {
             try {
                 const result = await fetchData("https://www.backend.habla-mundo.com/api/v1/themes", dataSend, token);
                 if (result.message === "the thematics is created") {
-                    snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg", result.message, 2000);
+                   // snackbbar(document.querySelector("#body"), infos, result.message, 2000);
+                    snackbbar(document.querySelector("#body"), infos, message1, 2000);
                     localStorage.setItem('theme', JSON.stringify(dataSend));
                     localStorage.setItem('result', JSON.stringify(result));
 
@@ -252,7 +258,8 @@ export const MainRightTheme = () => {
                     }, 2000);
                 }
                 if (result.message === "Erreur de l'IA. Veuillez reessayer!!!") {
-                    return snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg", result.message, 7000);
+                    //return snackbbar(document.querySelector("#body"), infos, result.message, 7000);
+                    return snackbbar(document.querySelector("#body"), infos, message2, 4000);
                 }
             } catch (error) {
                 setEtat(true);
@@ -311,7 +318,8 @@ export const MainRightTheme = () => {
         fetchDelete("https://www.backend.habla-mundo.com/api/v1/themes", dataSend, token).then((result) => {
             console.log(result)
             if (result.message === "the thematique is deleted") {
-                snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg", result.message, 4000);
+                //snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg", result.message, 4000);
+                 snackbbar(document.querySelector("#body"), infos, message1, 4000);
                 setResultAllThematiques(result.thematique);
             }
         }).catch((error) => {
@@ -408,7 +416,7 @@ export const MainRightTheme = () => {
                         <div className="answer_client_theme2_child1">
                             <div className="answer_client_theme2_child1_left">
                                 <label htmlFor="">Nom de la thématique</label>
-                                <input type="text" placeholder="Entrer le nom de la thematique" name="thematique" {...register("thematique", { required: "Veuillez entrer une question" })} />
+                                <input type="text" placeholder="Entrer le nom de la thematique" name="thematique" {...register("thematique", { required: "Veuillez entrer une thématique" })} />
                                 {errors.thematique && <span className="error_theme">{errors.thematique.message}</span>}
                             </div>
                             <div className="answer_client_theme2_child1_left">
@@ -505,7 +513,7 @@ export const MainRightTheme = () => {
                                             <span className="element_none">0</span>
                                             <div className="add_theme">
                                                 <span>+</span>
-                                                <span onClick={handleAddThematique}>Ajouter une thématique/sous-thématique</span>
+                                                <span onClick={handleAddThematique}>Ajouter une sous-thématique</span>
                                             </div>
                                         </div>
                                     </div>

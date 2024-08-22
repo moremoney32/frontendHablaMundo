@@ -84,7 +84,9 @@ export const MainRightHome = () => {
     }, [])
     useEffect(() =>{
             fetchDataGet("https://www.backend.habla-mundo.com/api/v1/statistique").then((result) =>{
-                const pourcent = (result?.suscribes * 100) / result?.users
+               // const pourcent = (result?.suscribes * 100) / result?.users
+               //const pourcent = Math.ceil((result?.suscribes * 100) / result?.users);
+               const pourcent = Math.floor((result?.suscribes * 100) / result?.users);
                 setTaux(pourcent)
                return  setStat(result)
             })

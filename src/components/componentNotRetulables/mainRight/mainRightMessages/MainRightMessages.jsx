@@ -19,9 +19,10 @@ import { snackbbar } from "../../../../helpers/snackbars";
 import { fetchDataGetToken } from "../../../../helpers/fetchDataGetToken";
 import { formatTime } from "../../../../helpers/formatDate";
 import { useNotifications } from "../NotificationsProvider";
+import infos from "../../../../assets/icons/infos.svg";
 
 export const MainRightMessages = () => {
-    const { register, handleSubmit, formState: { errors }, setValue } = useForm();
+    const { register, handleSubmit, formState: { errors }, setValue,reset } = useForm();
     const [etat, setEtat] = useState(false);
     const [activeStates, setActiveStates] = useState({});
     const [content, setContent] = useState(null);
@@ -30,6 +31,7 @@ export const MainRightMessages = () => {
     const textareaRef = useRef(null);
     const fileInputRef = useRef(null);
     const [id, setId] = useState(null);
+    const [idMessages, setIdMessages] = useState(null);
     const [fichiers, setFichier] = useState(null);
     const [data, setData] = useState(null);
     const [email, setEmail] = useState(null);
@@ -39,14 +41,14 @@ export const MainRightMessages = () => {
       const [lastIndexComments, setLastIndexComments] = useState(8);
       const containUseref = useRef(null)
       const notificationsHeader = useNotifications();
-    const message2 = "veuillez entrer un contenu"
-    // useEffect(()=>{
-    //     return localStorage.removeItem('notificationsNews');
-    // },[])
+    let message1 = "Demande prise en compte";
+    let message2 = "Demande non prise en compte";
+
     
 
     useEffect(() => {
         fetchDataGetToken('https://www.backend.habla-mundo.com/api/v1/notifications', token).then((response) => {
+            //console.log(response)
             const compareDate =   response.sort((a, b) => {
                 const dateA = new Date(a.created_at);
                 const dateB = new Date(b.created_at);
@@ -58,15 +60,6 @@ export const MainRightMessages = () => {
     }, [notificationsHeader]);
 
 
-
-
-
-
-    useEffect(() => {
-        // Charger les états actifs depuis le localStorage
-        const savedActiveStates = JSON.parse(localStorage.getItem('activeStates')) || {};
-        setActiveStates(savedActiveStates);
-    }, []);
 
     const grasText = () => {
         document.execCommand('bold', false, null);
@@ -111,19 +104,26 @@ export const MainRightMessages = () => {
     }, [setValue]);
 
 
-    const handleClick = (id, messageValue, name, fichiers,email) => {
-        console.log(fichiers);
+    const handleClick = (id, messageValue, name, fichiers,email,idMessages) => {
         setId(id)
         setEmail(email)
-        setActiveStates(prevState => {
-            const newState = { ...prevState, [id]: true };
-            localStorage.setItem('activeStates', JSON.stringify(newState));
-            return newState;
-        });
+        setIdMessages(idMessages)
         setEtat(true);
         setMessageText(messageValue);
         setTextName(name);
         setFichier(fichiers)
+        const dataSend ={
+            id:idMessages
+        }
+        fetchData("https://www.backend.habla-mundo.com/api/v1/notifications/read",dataSend,token).then((response)=>{
+            if(response.message === "Notification marked as read"){
+                console.log(true)
+                setActiveStates((prevState) => ({
+                    ...prevState,
+                    [idMessages]: true,
+                }));
+            }
+        })
     };
 
     const close = () => {
@@ -132,7 +132,7 @@ export const MainRightMessages = () => {
     const onSubmit = async (data) => {
         const htmlContent = textareaRef.current.innerHTML;
         if (htmlContent.length === 0) {
-            return snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg", message2, 4000)
+           return snackbbar(document.querySelector("#body"), infos,message2, 2000);
         }
 
         const dataSend = {
@@ -142,9 +142,11 @@ export const MainRightMessages = () => {
         setLoading(true)
         try{
            const result = await fetchData("https://www.backend.habla-mundo.com/api/v1/send-message", dataSend, token)
-           console.log(result)
                 if (result.message === "Notification sent successfully.") {
-                    return snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg", result.message, 2000)
+                    snackbbar(document.querySelector("#body"), infos,message1, 2000);
+                    reset();
+                    setContent('');
+                    textareaRef.current.innerHTML = '';
                 }
            
 
@@ -292,20 +294,17 @@ export const MainRightMessages = () => {
                 
                 {
                     data?.reverse().slice(firstIndexComments, lastIndexComments).map((info,index) => {
+                        const isActive = activeStates[info.id] || info.read_at !== null;
                         return (
-                            <div className={`parent_messages ${activeStates[info.id] ? 'active_message' : ''}`} key={index}>
+                            <div  className={`parent_messages ${isActive ? 'active_message' : ''}`} key={index}>
                                 <div className="parent_messages1">
-                                    <img src={message} alt="message" className="message" onClick={() => handleClick(info.notifiable_id, info.data.body, info.username, info.data.fichier,info.email)}/>
+                                    <img src={message} alt="message" className="message" onClick={() => handleClick(info.notifiable_id, info.data.body, info.username, info.data.fichier,info.email,info.id)}/>
                                     <div className="infos_messages">
                                         <span className="infos_messages_child1">{info.username}</span>
                                         <span className="infos_messages_child2">{info.data.body}</span>
                                     </div>
                                 </div>
                                 <span className="parent_messages2">{formatTime(info.created_at)}</span>
-                                {/* <div className="parent_messages3" onClick={() => handleClick(info.notifiable_id, info.data.body, info.username, info.data.fichier,info.email)}>
-                                    <span className="repondre">Répondre</span>
-                                    <img src={next} alt="next" className="next" />
-                                </div> */}
                             </div>
                         );
                     })

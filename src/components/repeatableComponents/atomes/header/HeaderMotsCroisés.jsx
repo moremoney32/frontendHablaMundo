@@ -1,19 +1,21 @@
-import { faAngleRight } from "@fortawesome/free-solid-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+
 import { NavLink, useNavigate } from "react-router-dom"
 import right from "../../../../assets/icons/right.svg"
 import "./header.css"
-import { useEffect, useRef, useState } from "react"
+import { useRef, useState } from "react"
 import { fetchDataPut } from "../../../../helpers/fetchDataPut"
 import { fetchDelete } from "../../../../helpers/fetchDelete"
 import { snackbbar } from "../../../../helpers/snackbars"
+import infos from "../../../../assets/icons/infos.svg"
 
 export const HeaderMotsCroisés = ({ theme1, theme2}) => {
-    const [isEditable, setIsEditable] = useState(false)
+    const [isEditable, setIsEditable] = useState(false);
     const [theme2Value, setTheme2Value] = useState(theme2);
     const id = JSON.parse(localStorage.getItem('id'));
     // console.log(id)
     const token = localStorage.getItem('token');
+     let message1 = "Demande prise en compte"
+    let message2 = "Demande non prise en compte"
     let theme2Ref = useRef(null);
     const navigate = useNavigate()
     const handleNavigateTheme = () => {
@@ -31,7 +33,7 @@ export const HeaderMotsCroisés = ({ theme1, theme2}) => {
         fetchDelete("https://www.backend.habla-mundo.com/api/v1/crosswords",dataSend,token).then((result) =>{
             console.log(result)
             if (result.message === "the crossword is deleted") {
-                snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg", result.message, 2000);
+                snackbbar(document.querySelector("#body"), infos,message1, 2000);
                 setTimeout(() => {
                     navigate("/sousThematiques");
                 }, 2000);
@@ -43,14 +45,16 @@ export const HeaderMotsCroisés = ({ theme1, theme2}) => {
 
     
     const handleChange = () => {
-        const dataSend ={
+        const dataSend = {
             id:id,
             name:theme2Ref.current.innerText
         }
-        console.log(dataSend)
         setIsEditable(!isEditable);
         fetchDataPut("https://www.backend.habla-mundo.com/api/v1/crosswords",dataSend,token).then((result) => {
             console.log(result)
+            if(result.message === "Updated successfully"){
+                snackbbar(document.querySelector("#body"),infos,message1, 2000);  
+            }
        }).catch((error)=>{
         console.log({messahge:error})
        })

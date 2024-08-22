@@ -8,22 +8,25 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye } from "@fortawesome/free-solid-svg-icons/faEye";
 import { faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { snackbbar } from "../../helpers/snackbars";
+import infos  from  "../../assets/icons/infos.svg"
 export const Deconnexion = () => {
     const navigate = useNavigate();
     const [connect, setConnect] = useState(false);
     const [etat, setEtat] = useState(false);
     const { register, handleSubmit, formState: { errors, isValid }, watch } = useForm();
+    let message1 = "Demande prise en compte";
+    let message2 = "Demande non prise en compte";
     const changesEyes = ()=>{
         setEtat(!etat)
     }
-    const message = "connexion reussie"
+    console.log(infos)
     const onSubmit = async (data) => {
         setConnect(true)
         try {
             const result = await fetchData("https://www.backend.habla-mundo.com/api/v1/login",data);
 
             if (result.access_token) {
-                snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg",message, 2000);
+                snackbbar(document.querySelector("#body"), infos,message1, 2000);
                 localStorage.setItem("token",result.access_token);
                 localStorage.setItem("userId",result.user.id);
 
@@ -35,7 +38,7 @@ export const Deconnexion = () => {
             }
             
             if (result.message === "Invalid login credentials") {
-                snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg",result.message, 3000);
+                snackbbar(document.querySelector("#body"), infos,message2, 3000);
             }
         } catch (error) {
             setEtat(true);

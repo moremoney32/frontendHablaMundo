@@ -11,7 +11,6 @@ export const Comptes = ()=>{
         if (selectedFile) {
           const TypesImages = ["image/jpeg", "image/png", "image/jpg"];
           if (TypesImages.includes(selectedFile.type)) {
-            console.log(selectedFile)
             setFile(selectedFile);
           } else {
             alert("Veuillez sélectionner un fichier au format .jpg, .jpeg ou .png.");

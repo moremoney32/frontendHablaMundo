@@ -2,11 +2,13 @@ import { snackbbar } from "../../../../helpers/snackbars";
 
 
 function WordList({ data, onWordChange,onWordChangeFrench }) {
+   let message1 = "Demande prise en compte"
+    let message2 = "Demande non prise en compte"
   const handleInputChange = (e, index) => {
     const newName = e.target.innerText;
     const dataMessage = "Le mot anglais ne doit pas dépasser 15 caractères."
     if (newName.length > 15) {
-     snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg", dataMessage,4000)
+     snackbbar(document.querySelector("#body"),  "../../../../assets/icons/infos.svg", message2,4000)
       e.target.innerText = newName.slice(0, 15); 
     } else {
       onWordChange(index, newName);

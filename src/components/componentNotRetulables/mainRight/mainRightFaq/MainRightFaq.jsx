@@ -15,16 +15,18 @@ import { faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { fetchData } from '../../../../helpers/fetchData';
 import { fetchDataGet } from '../../../../helpers/fetchDataGet';
+import { snackbbar } from '../../../../helpers/snackbars';
+import infos from "../../../../assets/icons/infos.svg";
 
 export const MainRightFaq = () => {
-  const { register, handleSubmit, formState: { errors }, setValue } = useForm();
+  const { register, handleSubmit, formState: { errors }, setValue, reset } = useForm();
   const textareaRef = useRef(null);
   const [content, setContent] = useState(null);
   const [datas, setDatas] = useState([]);
   const [openIndex, setOpenIndex] = useState(null);
   const fileInputRef = useRef(null);
   const token = localStorage.getItem("token");
-  // const [fileLink, setFileLink] = useState('');
+   let message1 = "Demande prise en compte";
 
   useEffect(()=>{
     fetchDataGet("https://www.backend.habla-mundo.com/api/v1/faq").then((response)=>{
@@ -37,11 +39,15 @@ export const MainRightFaq = () => {
     data.reponse = htmlContent;
     console.log(data)
     fetchData("https://www.backend.habla-mundo.com/api/v1/faq",data).then((result)=>{
-      console.log(result)
       if(result.success === "FAP as created"){
+        snackbbar(document.querySelector("#body"), infos,message1, 2000);
+        setDatas(null)
         fetchDataGet("https://www.backend.habla-mundo.com/api/v1/faq").then((response)=>{
           setDatas(response)
         })
+        reset();
+        setContent('');
+        textareaRef.current.innerHTML = '';
         
       }
     })
@@ -112,7 +118,9 @@ export const MainRightFaq = () => {
             }
         });
         const result = await response.json();
-        if(result.success === "successful delete"){
+        console.log(result)
+        if(result.success === "successfully deleted"){
+          snackbbar(document.querySelector("#body"), infos,message1, 2000);
           const newData = datas.filter((data) => data.id !== id);
           setDatas(newData);
 
@@ -128,24 +136,6 @@ export const MainRightFaq = () => {
     }
 };
 
-// const handleFileChange = (event) => {
-//   const file = event.target.files[0];
-//   if (file) {
-//       const reader = new FileReader();
-//       reader.onload = (e) => {
-//           const fileContent = e.target.result;
-//           setFileLink({ name: file.name, url: fileContent });
-//       };
-//       reader.readAsDataURL(file);
-//   }
-// };
-
-// useEffect(() => {
-//   if (fileLink.url && textareaRef.current) {
-//       const linkElement = `<a href="${fileLink.url}" target="_blank" rel="noopener noreferrer">${fileLink.name}</a>`;
-//       textareaRef.current.innerHTML += linkElement;
-//   }
-// }, [fileLink]);
 const handleFileChange = (event) => {
   const file = event.target.files[0];
   if (file){
@@ -155,12 +145,15 @@ const handleFileChange = (event) => {
           if (textareaRef.current){
               const div = document.createElement('div');
                div.innerHTML = `<a href="${fileContent}" target="_blank" rel="noopener noreferrer">${file.name}</a>`;
+              
               textareaRef.current.appendChild(div);
           }
       };
       reader.readAsDataURL(file);
   }
 };
+
+
 
 
   return (
