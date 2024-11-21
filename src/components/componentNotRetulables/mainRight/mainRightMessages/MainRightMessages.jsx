@@ -20,9 +20,11 @@ import { fetchDataGetToken } from "../../../../helpers/fetchDataGetToken";
 import { formatTime } from "../../../../helpers/formatDate";
 import { useNotifications } from "../NotificationsProvider";
 import infos from "../../../../assets/icons/infos.svg";
+import remove from "../../../../assets/icons/remove.png";
+import { fetchDelete } from "../../../../helpers/fetchDelete";
 
 export const MainRightMessages = () => {
-    const { register, handleSubmit, formState: { errors }, setValue,reset } = useForm();
+    const { register, handleSubmit, formState: { errors }, setValue, reset } = useForm();
     const [etat, setEtat] = useState(false);
     const [activeStates, setActiveStates] = useState({});
     const [content, setContent] = useState(null);
@@ -33,27 +35,28 @@ export const MainRightMessages = () => {
     const [id, setId] = useState(null);
     const [idMessages, setIdMessages] = useState(null);
     const [fichiers, setFichier] = useState(null);
-    const [data, setData] = useState(null);
+    const [data, setData] = useState([]);
     const [email, setEmail] = useState(null);
     const [loading, setLoading] = useState(false);
     const token = localStorage.getItem("token");
+    const [selectedMessages, setSelectedMessages] = useState([]);
     const [firstIndexComments, setFirstIndexComments] = useState(0);
-      const [lastIndexComments, setLastIndexComments] = useState(8);
-      const containUseref = useRef(null)
-      const notificationsHeader = useNotifications();
+    const [lastIndexComments, setLastIndexComments] = useState(8);
+    const containUseref = useRef(null)
+    const notificationsHeader = useNotifications();
     let message1 = "Demande prise en compte";
     let message2 = "Demande non prise en compte";
 
-    
+
 
     useEffect(() => {
         fetchDataGetToken('https://www.backend.habla-mundo.com/api/v1/notifications', token).then((response) => {
             //console.log(response)
-            const compareDate =   response.sort((a, b) => {
+            const compareDate = response.sort((a, b) => {
                 const dateA = new Date(a.created_at);
                 const dateB = new Date(b.created_at);
                 return dateB - dateA;
-              });
+            });
             setData(compareDate)
         })
         localStorage.removeItem('notificationsNews');
@@ -104,7 +107,7 @@ export const MainRightMessages = () => {
     }, [setValue]);
 
 
-    const handleClick = (id, messageValue, name, fichiers,email,idMessages) => {
+    const handleClick = (id, messageValue, name, fichiers, email, idMessages) => {
         setId(id)
         setEmail(email)
         setIdMessages(idMessages)
@@ -112,11 +115,11 @@ export const MainRightMessages = () => {
         setMessageText(messageValue);
         setTextName(name);
         setFichier(fichiers)
-        const dataSend ={
-            id:idMessages
+        const dataSend = {
+            id: idMessages
         }
-        fetchData("https://www.backend.habla-mundo.com/api/v1/notifications/read",dataSend,token).then((response)=>{
-            if(response.message === "Notification marked as read"){
+        fetchData("https://www.backend.habla-mundo.com/api/v1/notifications/read", dataSend, token).then((response) => {
+            if (response.message === "Notification marked as read") {
                 console.log(true)
                 setActiveStates((prevState) => ({
                     ...prevState,
@@ -132,7 +135,7 @@ export const MainRightMessages = () => {
     const onSubmit = async (data) => {
         const htmlContent = textareaRef.current.innerHTML;
         if (htmlContent.length === 0) {
-           return snackbbar(document.querySelector("#body"), infos,message2, 2000);
+            return snackbbar(document.querySelector("#body"), infos, message2, 2000);
         }
 
         const dataSend = {
@@ -140,23 +143,23 @@ export const MainRightMessages = () => {
             message: htmlContent
         }
         setLoading(true)
-        try{
-           const result = await fetchData("https://www.backend.habla-mundo.com/api/v1/send-message", dataSend, token)
-                if (result.message === "Notification sent successfully.") {
-                    snackbbar(document.querySelector("#body"), infos,message1, 2000);
-                    reset();
-                    setContent('');
-                    textareaRef.current.innerHTML = '';
-                }
-           
+        try {
+            const result = await fetchData("https://www.backend.habla-mundo.com/api/v1/send-message", dataSend, token)
+            if (result.message === "Notification sent successfully.") {
+                snackbbar(document.querySelector("#body"), infos, message1, 2000);
+                reset();
+                setContent('');
+                textareaRef.current.innerHTML = '';
+            }
 
-        }catch(error){
+
+        } catch (error) {
             console.log(error)
-        }finally{
+        } finally {
             setLoading(false)
             setEtat(false)
         }
-    
+
     }
     const handleUploadClick = () => {
         if (fileInputRef.current) {
@@ -182,7 +185,7 @@ export const MainRightMessages = () => {
     };
     /****intersection observer messages */
     useEffect(() => {
-        if(containUseref.current && lastIndexComments < data?.length){
+        if (containUseref.current && lastIndexComments < data?.length) {
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach((entry) => {
                     if (entry.isIntersecting) {
@@ -202,9 +205,9 @@ export const MainRightMessages = () => {
                 rootMargin: "0px",
                 threshold: 1.0
             });
-    
+
             observer.observe(containUseref.current);
-    
+
             return () => {
                 if (containUseref.current) {
                     observer.unobserve(containUseref.current);
@@ -213,12 +216,84 @@ export const MainRightMessages = () => {
         }
     }, [containUseref.current, lastIndexComments, data?.length]);
     //fin intersection
-
+    const handleRemove = (dataId) => {
+        console.log(dataId);
+      const data = {
+        id:[dataId]
+      }
+      console.log(data)
+        fetchDelete("https://www.backend.habla-mundo.com/api/v1/notifications", data, token).then((response) => {
+            console.log(response)
+            if(response.status === "200"){
+               snackbbar(document.querySelector("#body"), infos, message1, 2000);
+               setTimeout(() => {
+                fetchDataGetToken('https://www.backend.habla-mundo.com/api/v1/notifications', token).then((response) => {
+                    //console.log(response)
+                    const compareDate = response.sort((a, b) => {
+                        const dateA = new Date(a.created_at);
+                        const dateB = new Date(b.created_at);
+                        return dateB - dateA;
+                    });
+                    setData(compareDate)
+                })
+                
+            }, 2000);
+            }
+        })
+    }
+    const handleCheckboxChange = (id) => {
+        setSelectedMessages(prevSelected => {
+            if (prevSelected.includes(id)) {
+                return prevSelected.filter(messageId => messageId !== id);
+            } else {
+                return [...prevSelected, id];
+            }
+        });
+    };
+    
+    const handleSelectAll = () => {
+        if (selectedMessages?.length === data.length){
+            setSelectedMessages([]); 
+        } 
+        else {
+            setSelectedMessages(data.map(info => info.id)); 
+        }
+    };
+    const handleDeleteSelected = () => {
+        const data ={
+            id:selectedMessages
+        }
+        console.log(data)
+        console.log(selectedMessages)
+        fetchDelete("https://www.backend.habla-mundo.com/api/v1/notifications", data, token).then((response) => {
+            console.log(response)
+            if(response.status === "200"){
+               snackbbar(document.querySelector("#body"), infos, message1, 2000);
+               setTimeout(() => {
+                fetchDataGetToken('https://www.backend.habla-mundo.com/api/v1/notifications', token).then((response) => {
+                    const compareDate = response.sort((a, b) => {
+                        const dateA = new Date(a.created_at);
+                        const dateB = new Date(b.created_at);
+                        return dateB - dateA;
+                    });
+                    setData(compareDate)
+                })
+                
+            }, 2000);
+            }
+        })
+    };
+    console.log(selectedMessages)
 
     return (
         <div className="parent_main">
-            <div>
+            <div className="justifyContent">
                 <HeaderTitleMain h1="Messages" />
+                {selectedMessages.length === 0 ?<button   disabled={selectedMessages.length === 0} className="buttonSelectNone">
+                    Supprimer les messages sélectionnés
+                </button>:<button onClick={handleDeleteSelected}   className="buttonSelect">
+                    Supprimer les messages sélectionnés
+                </button>}
             </div>
             <div className="sous_parent_main_messages">
                 {etat && <div id="masque"></div>}
@@ -240,20 +315,20 @@ export const MainRightMessages = () => {
         );
     })
 } */}
-{
-    fichiers?.map((fichier) => {
-        const Pdf = fichier.endsWith('.pdf');
-        return (
-            <div className="answer_client_file">
-                {Pdf ? (
-                    <a href={fichier} target="_blank" rel="noopener noreferrer">Télécharger ou ouvrir le PDF</a>
-                ) : (
-                    <img src={fichier} alt="" className="answer_client_file_img"/>
-                )}
-            </div>
-        );
-    })
-}
+                    {
+                        fichiers?.map((fichier) => {
+                            const Pdf = fichier.endsWith('.pdf');
+                            return (
+                                <div className="answer_client_file">
+                                    {Pdf ? (
+                                        <a href={fichier} target="_blank" rel="noopener noreferrer">Télécharger ou ouvrir le PDF</a>
+                                    ) : (
+                                        <img src={fichier} alt="" className="answer_client_file_img" />
+                                    )}
+                                </div>
+                            );
+                        })
+                    }
                     <form className="answer_form" onSubmit={handleSubmit(onSubmit)}>
                         <div className="objet_mail">
                             <span className="objet">Objet</span>
@@ -288,30 +363,48 @@ export const MainRightMessages = () => {
                                 <input type="hidden" name="reponse" value={content} />
                             </div>
                         </div>
-                        {loading ?<button className="send_mail">En cours ...</button>:<button className="send_mail" type="submit">Envoyer par mail</button>}
+                        {loading ? <button className="send_mail">En cours ...</button> : <button className="send_mail" type="submit">Envoyer par mail</button>}
                     </form>
                 </div>}
-                
+                <div>
+                    <input
+                        type="checkbox"
+                        onChange={handleSelectAll}
+                        checked={selectedMessages?.length === data.length}
+                    />
+                    <span>Tout sélectionner</span>
+                </div>
+
                 {
-                    data?.reverse().slice(firstIndexComments, lastIndexComments).map((info,index) => {
+
+                    data?.reverse().slice(firstIndexComments, lastIndexComments).map((info, index) => {
                         const isActive = activeStates[info.id] || info.read_at !== null;
+                        const isSelected = selectedMessages?.includes(info.id);
+                        console.log(isSelected)
                         return (
-                            <div  className={`parent_messages ${isActive ? 'active_message' : ''}`} key={index}>
+                            <div className={`parent_messages ${isActive ? 'active_message' : ''}`} key={index}>
+
                                 <div className="parent_messages1">
-                                    <img src={message} alt="message" className="message" onClick={() => handleClick(info.notifiable_id, info.data.body, info.username, info.data.fichier,info.email,info.id)}/>
+                                    <img src={message} alt="message" className="message" onClick={() => handleClick(info.notifiable_id, info.data.body, info.username, info.data.fichier, info.email, info.id)} />
                                     <div className="infos_messages">
                                         <span className="infos_messages_child1">{info.username}</span>
                                         <span className="infos_messages_child2">{info.data.body}</span>
                                     </div>
                                 </div>
                                 <span className="parent_messages2">{formatTime(info.created_at)}</span>
+                                <input
+                                    type="checkbox"
+                                    checked={isSelected}
+                                    onChange={() => handleCheckboxChange(info.id)}
+                                />
+                                <img src={remove} alt="remove" className="remove_words_words" onClick={() => handleRemove(info.id)} />
                             </div>
                         );
                     })
                 }
                 {lastIndexComments < data?.length && (
-            <div className="observation" ref={containUseref}>chargement.......</div>
-        )}
+                    <div className="observation" ref={containUseref}>chargement.......</div>
+                )}
             </div>
         </div>
     );

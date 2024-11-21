@@ -11,33 +11,11 @@ import { SousThematiques } from './pages/sousThematiques/SousThematiques';
 import { MotsCroisés } from './pages/motsCroisés/MotsCroisés';
 import { NotificationsProvider } from './components/componentNotRetulables/mainRight/NotificationsProvider';
 
-// function App() {
-//   return (
-//     <NotificationsProvider>
-//     <BrowserRouter>
-//       <div id="body">
-//           <Routes>
-//             <Route path="/home" element={<Home />} />
-//             <Route path="/theme" element={<Theme />} />
-//             <Route path="/user" element={<Users />} />
-//             <Route path="/message" element={<Messages />} />
-//             <Route path="/faq" element={<Faq />} />
-//             <Route path="/comptes" element={<Comptes />} />
-//             <Route path="/sousThematiques" element={<SousThematiques/>}/>
-//             <Route path="/motsCroisés" element={<MotsCroisés/>}/>
-//             <Route path="/" element={<Deconnexion />}/>
-//           </Routes>
-//       </div>
-//     </BrowserRouter>
-//     </NotificationsProvider>
-//   );
-// }
 
-// export default App;
 function App() {
   return (
     <BrowserRouter>
-      <NotificationsProvider>
+       <NotificationsProvider> 
         <div id="body">
             <Routes>
               <Route path="/home" element={<Home />} />
@@ -51,7 +29,7 @@ function App() {
               <Route path="/" element={<Deconnexion />}/>
             </Routes>
         </div>
-      </NotificationsProvider>
+       </NotificationsProvider> 
     </BrowserRouter>
   );
 }

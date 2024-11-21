@@ -9,10 +9,10 @@ import { useNotifications } from "../../../componentNotRetulables/mainRight/Noti
 
 export const Header = () => {
     const navigate = useNavigate()
-    const notificationsHeader = useNotifications()
-    const [notificationsCount, setNotificationsCount] = useState(notificationsHeader)
+    const notificationsHeader = useNotifications();
+    const [notificationsCount, setNotificationsCount] = useState(notificationsHeader);
      useEffect(() =>{
-     return   setNotificationsCount(notificationsHeader)
+     return   setNotificationsCount(notificationsHeader);
      },[notificationsHeader])
 
     const notificationsImg= ()=>{

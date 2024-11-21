@@ -24,7 +24,7 @@ export function formatTime(dateTimeString) {
       const year = dateTime.getFullYear();
       const weekdays = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
       const weekday = weekdays[dateTime.getDay() - 1];
-          return `${weekday} ${day}/${month}/${year}`;
+          return ` ${day}/${month}/${year}`;
   }
 }
 

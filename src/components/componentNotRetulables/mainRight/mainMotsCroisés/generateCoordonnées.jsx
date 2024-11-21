@@ -1,97 +1,139 @@
- import { calculateGridSize } from "./calculGrillesLength";
+//   import { calculateGridSize } from "./calculGrillesLength";
+
+
+
+// export const generateCrossword = (words) => {
+//     const gridSize = calculateGridSize(words);
+//     const grid = Array(gridSize).fill(null).map(() => Array(gridSize).fill(''));
+//     const positions = [];
+//     const reste = [];
+
+//     // Filtrer les mots de plus de 15 caractères
+//     const filteredWords = words.filter(word => {
+//         if (word.length > 15) {
+//             reste.push(word);
+//             return false;
+//         }
+//         return true;
+//     });
+ 
+
+//     const canPlaceWord = (word, row, col, direction) => {
+//         if (direction === 'horizontal') {
+//             if (col + word.length > gridSize) return false;
+//             for (let i = 0; i < word.length; i++) {
+//                 if (grid[row][col + i] && grid[row][col + i] !== word[i]) return false;
+//             }
+//         } else if (direction === 'vertical') {
+//             if (row + word.length > gridSize) return false;
+//             for (let i = 0; i < word.length; i++) {
+//                 if (grid[row + i][col] && grid[row + i][col] !== word[i]) return false;
+//             }
+//         }
+//         return true;
+//     };
+
+//     const placeWord = (word, row, col, direction) => {
+//         if (direction === 'horizontal') {
+//             for (let i = 0; i < word.length; i++) {
+//                 grid[row][col + i] = word[i];
+//             }
+//         } else if (direction === 'vertical') {
+//             for (let i = 0; i < word.length; i++) {
+//                 grid[row + i][col] = word[i];
+//             }
+//         }
+//         positions.push({ word, row, col, direction });
+//     };
+
+//     filteredWords.forEach((word, index) => {
+//         let placed = false;
+//         for (let i = 0; i < gridSize && !placed; i++) {
+//             for (let j = 0; j < gridSize && !placed; j++) {
+//                 const directions = ['horizontal', 'vertical'];
+//                 for (let direction of directions) {
+//                     if (canPlaceWord(word, i, j, direction)) {
+//                         // Vérifier si cette position est déjà utilisée par un autre mot identique
+//                         if (!positions.some(pos => pos.word === word && pos.row === i && pos.col === j && pos.direction === direction)) {
+//                             placeWord(word, i, j, direction);
+//                             placed = true;
+//                             break;
+//                         }
+//                     }
+//                 }
+//             }
+//         }
+
+//         // Si le mot n'a pas pu être placé, l'ajouter à la liste des restes
+//         if (!placed) {
+//           return  reste.push(word);
+//         }
+//     });
+
+//     return { positions, gridSize, reste };
+// };
+
+
+
+import { calculateGridSize } from "./calculGrillesLength";
+
 export const generateCrossword = (words) => {
-   
     const gridSize = calculateGridSize(words);
     const grid = Array(gridSize).fill(null).map(() => Array(gridSize).fill(''));
     const positions = [];
-    const reste = []; // Tableau pour les mots trop longs
-  
+    const reste = [];
+
     // Filtrer les mots de plus de 15 caractères
     const filteredWords = words.filter(word => {
-      if (word.length > 15) {
-        reste.push(word); // Ajouter les mots trop longs au tableau reste
-        return false; // Exclure ces mots du traitement
-      }
-      return true;
+        if (word.length > 15) {
+            reste.push(word);
+            return false;
+        }
+        return true;
     });
-  
+
+    // Vérifie si un mot peut être placé à une position donnée
     const canPlaceWord = (word, row, col, direction) => {
-      if (direction === 'horizontal') {
-          if (col + word.length > gridSize) return false;
-          for (let i = 0; i < word.length; i++) {
-              if (grid[row][col + i] && grid[row][col + i] !== word[i]) return false;
-          }
-      } else if (direction === 'vertical') {
-          if (row + word.length > gridSize) return false;
-          for (let i = 0; i < word.length; i++) {
-              if (grid[row + i][col] && grid[row + i][col] !== word[i]) return false;
-          }
-      }
-      return true;
+        if (direction === 'horizontal') {
+            if (col + word.length > gridSize) return false;
+            // Vérifier si les cellules sont libres
+            for (let i = 0; i < word.length; i++) {
+                if (grid[row][col + i] !== '') return false;
+            }
+        } else if (direction === 'vertical') {
+            if (row + word.length > gridSize) return false;
+            for (let i = 0; i < word.length; i++) {
+                if (grid[row + i][col] !== '') return false;
+            }
+        }
+        return true;
     };
-    /****je viens de mettre en commentazire */
-    // const canPlaceWord = (word, row, col, direction) => {
-    //     let hasIntersection = false;
-    //     let canPlace = true;
-    
-    //     if (direction === 'horizontal') {
-    //         if (col + word.length > gridSize) return false;
-    //         for (let i = 0; i < word.length; i++) {
-    //             const currentChar = grid[row][col + i];
-    //             if (currentChar && currentChar !== word[i]) {
-    //                 return false;
-    //             }
-    //             if (currentChar && currentChar === word[i]) {
-    //                 hasIntersection = true;
-    //             }
-    //         }
-    //     } else if (direction === 'vertical') {
-    //         if (row + word.length > gridSize) return false;
-    //         for (let i = 0; i < word.length; i++) {
-    //             const currentChar = grid[row + i][col];
-    //             if (currentChar && currentChar !== word[i]) {
-    //                 return false;
-    //             }
-    //             if (currentChar && currentChar === word[i]) {
-    //                 hasIntersection = true;
-    //             }
-    //         }
-    //     }
-    
-    //     // Si aucune intersection significative, séparer les mots par un espace
-    //     if (!hasIntersection) {
-    //         if (direction === 'horizontal') {
-    //             if (col > 0 && grid[row][col - 1] !== '') canPlace = false;
-    //             if (col + word.length < gridSize && grid[row][col + word.length] !== '') canPlace = false;
-    //         } else if (direction === 'vertical') {
-    //             if (row > 0 && grid[row - 1][col] !== '') canPlace = false;
-    //             if (row + word.length < gridSize && grid[row + word.length][col] !== '') canPlace = false;
-    //         }
-    //     }
-    
-    //     return canPlace;
-    // };
-  
+
+    // Place un mot dans la grille
     const placeWord = (word, row, col, direction) => {
-      if (direction === 'horizontal') {
-          for (let i = 0; i < word.length; i++) {
-              grid[row][col + i] = word[i];
-          }
-      } else if (direction === 'vertical') {
-          for (let i = 0; i < word.length; i++) {
-              grid[row + i][col] = word[i];
-          }
-      }
-      positions.push({ word, row, col, direction });
+        if (direction === 'horizontal') {
+            for (let i = 0; i < word.length; i++) {
+                grid[row][col + i] = word[i];
+            }
+        } else if (direction === 'vertical') {
+            for (let i = 0; i < word.length; i++) {
+                grid[row + i][col] = word[i];
+            }
+        }
+        positions.push({ word, row, col, direction });
     };
-  
-    filteredWords.forEach(word => {
+
+    // Placer les mots dans la grille
+    filteredWords.forEach((word, index) => {
         let placed = false;
+        
         for (let i = 0; i < gridSize && !placed; i++) {
             for (let j = 0; j < gridSize && !placed; j++) {
                 const directions = ['horizontal', 'vertical'];
                 for (let direction of directions) {
-                    if (canPlaceWord(word, i, j, direction)) {
+                    // Vérifie si le mot peut être placé et s'il n'a pas été déjà placé aux mêmes coordonnées
+                    if (canPlaceWord(word, i, j, direction) &&
+                        !positions.some(pos => pos.word === word && pos.row === i && pos.col === j && pos.direction === direction)) {
                         placeWord(word, i, j, direction);
                         placed = true;
                         break;
@@ -99,71 +141,13 @@ export const generateCrossword = (words) => {
                 }
             }
         }
+
+        // Si le mot n'a pas pu être placé, l'ajouter à la liste des restes
+        if (!placed) {
+            reste.push(word);
+        }
     });
-  
-    return { positions, gridSize, reste }; // Retourner le tableau reste avec les mots non traités
-  };
-//   export const generateCrosswordName = (words) => {
-//     const names = words.map(word => word.word);
-//     const gridSize = calculateGridSize(names);
-//     const grid = Array(gridSize).fill(null).map(() => Array(gridSize).fill(''));
-//     const positions = [];
-//     const reste = []; // Tableau pour les mots trop longs
-  
-//     // Filtrer les mots de plus de 12 caractères
-//     const filteredWords = names.filter(word => {
-//       if (word.length > 12) {
-//         reste.push(word); // Ajouter les mots trop longs au tableau reste
-//         return false; // Exclure ces mots du traitement
-//       }
-//       return true;
-//     });
-  
-//     const canPlaceWord = (word, row, col, direction) => {
-//       if (direction === 'horizontal') {
-//           if (col + word.length > gridSize) return false;
-//           for (let i = 0; i < word.length; i++) {
-//               if (grid[row][col + i] && grid[row][col + i] !== word[i]) return false;
-//           }
-//       } else if (direction === 'vertical') {
-//           if (row + word.length > gridSize) return false;
-//           for (let i = 0; i < word.length; i++) {
-//               if (grid[row + i][col] && grid[row + i][col] !== word[i]) return false;
-//           }
-//       }
-//       return true;
-//     };
-  
-//     const placeWord = (word, row, col, direction) => {
-//       if (direction === 'horizontal') {
-//           for (let i = 0; i < word.length; i++) {
-//               grid[row][col + i] = word[i];
-//           }
-//       } else if (direction === 'vertical') {
-//           for (let i = 0; i < word.length; i++) {
-//               grid[row + i][col] = word[i];
-//           }
-//       }
-//       positions.push({ word, row, col, direction });
-//     };
-  
-//     filteredWords.forEach(word => {
-//         let placed = false;
-//         for (let i = 0; i < gridSize && !placed; i++) {
-//             for (let j = 0; j < gridSize && !placed; j++) {
-//                 const directions = ['horizontal', 'vertical'];
-//                 for (let direction of directions) {
-//                     if (canPlaceWord(word, i, j, direction)) {
-//                         placeWord(word, i, j, direction);
-//                         placed = true;
-//                         break;
-//                     }
-//                 }
-//             }
-//         }
-//     });
-  
-//     return { positions, gridSize, reste }; // Retourner le tableau reste avec les mots non traités
-//   };
-  
-  
+
+    // Retourne la grille, les positions des mots, et les restes
+    return { positions, gridSize, reste };
+};

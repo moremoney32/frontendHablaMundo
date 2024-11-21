@@ -1,6 +1,6 @@
 import { HeaderTitleMain } from "../../../repeatableComponents/atomes/header/HeaderTitleMain"
 import { InformationUser } from "../../../repeatableComponents/atomes/information/InformationUser"
-import {  faCommentDots, faGripHorizontal, faUser } from "@fortawesome/free-solid-svg-icons"
+import {  faCommentDots, faGripHorizontal, faUser,faAlphabetical, faSchool } from "@fortawesome/free-solid-svg-icons"
 import "./mainRightHome.css"
 import { IconesInformations } from "../../../repeatableComponents/atomes/iconesInformation/IconesInformations"
 import { NavLink, useNavigate } from "react-router-dom"
@@ -23,32 +23,32 @@ export const MainRightHome = () => {
     //     return storedData ? JSON.parse(storedData) : [];
     // });
     const[resultAllThematiques,setResultAllThematiques] = useState(null);
-    // useEffect(() => {
-    //     const eventSource= new EventSource('https://backend.habla-mundo.com/api/v1/listen-message');
-    //     eventSource.addEventListener('message', (event) => {
-    //         if (event.data === "nothing") {
-    //             return;
-    //         }
-    //         else {
-    //             const newMessages = JSON.parse(event.data);
-    //                 setData(prevMessages => {
-    //                     const updatedData = [...prevMessages, newMessages];
-    //                     localStorage.setItem('notificationsNews', JSON.stringify(updatedData));
+    useEffect(() => {
+        const eventSource= new EventSource('https://backend.habla-mundo.com/api/v1/listen-message');
+        eventSource.addEventListener('message', (event) => {
+            if (event.data === "nothing") {
+                return;
+            }
+            else {
+                const newMessages = JSON.parse(event.data);
+                    setData(prevMessages => {
+                        const updatedData = [...prevMessages, newMessages];
+                        localStorage.setItem('notificationsNews', JSON.stringify(updatedData));
                     
-    //                     // Émettre un événement personnalisé
-    //                     const event = new Event('notificationsUpdated');
-    //                     window.dispatchEvent(event);
+                        // Émettre un événement personnalisé
+                        const event = new Event('notificationsUpdated');
+                        window.dispatchEvent(event);
                     
-    //                     return updatedData;
-    //                 });
-    //         }
+                        return updatedData;
+                    });
+            }
 
-    //     });
+        });
 
-    //     return () => {
-    //         eventSource.close();
-    //     };
-    // }, []);
+        return () => {
+            eventSource.close();
+        };
+    }, []);
   
     
   
@@ -70,22 +70,35 @@ export const MainRightHome = () => {
         }, 500);
     }
     let counter = 10
+    // useEffect(() => {
+    //     fetchDataGet("https://www.backend.habla-mundo.com/api/v1/themes").then((result) => {
+    //         if(result<=counter){
+    //             return   setResultAllThematiques(result)
+    //         }
+    //         else{
+    //             result.slice(-counter)
+    //             return  setResultAllThematiques(result)
+    //         }
+           
+    //     })
+    // }, [])
     useEffect(() => {
         fetchDataGet("https://www.backend.habla-mundo.com/api/v1/themes").then((result) => {
-            if(result<=counter){
-                return   setResultAllThematiques(result)
+            if (result.length <= counter) {
+                // Si le tableau a moins ou exactement "counter" éléments, afficher tout
+                return setResultAllThematiques(result.reverse().slice());
+            } else {
+                // Sinon, afficher uniquement les 10 derniers éléments
+                const lastItems = result.reverse().slice(-counter);
+                return setResultAllThematiques(lastItems);
             }
-            else{
-                result.slice(-counter)
-                return  setResultAllThematiques(result)
-            }
-           
-        })
-    }, [])
+        });
+    }, [counter]);
     useEffect(() =>{
             fetchDataGet("https://www.backend.habla-mundo.com/api/v1/statistique").then((result) =>{
                // const pourcent = (result?.suscribes * 100) / result?.users
                //const pourcent = Math.ceil((result?.suscribes * 100) / result?.users);
+            //    console.log(result)
                const pourcent = Math.floor((result?.suscribes * 100) / result?.users);
                 setTaux(pourcent)
                return  setStat(result)
@@ -103,6 +116,7 @@ export const MainRightHome = () => {
                     <div onClick={handleNavigate} className="nav_link"><InformationUser defaultClassName="icons_user_img1" user="Utilisateurs abonnés" icon={faUser} number={stat?.suscribes} pourcent={`(${taux}%)`} className="color_home1" /></div>
                     <NavLink to="/theme" className="nav_link"><InformationUser defaultClassName="icons_user_img2" user="Thématiques" icon={faGripHorizontal} number={stat?.thematiques} className="color_home2" /></NavLink>
                     <InformationUser defaultClassName="icons_user_img2" user="Mots croisés" icon={faGripHorizontal} number={stat?.crosswords} className="color_home2" />
+                    <InformationUser defaultClassName="icons_user_img1" user="Listes de mots" icon={faSchool} number={stat?.words} className="color_home2" />
                     <NavLink to="/message" className="nav_link"><InformationUser defaultClassName="icons_user_img3" user="Messages reçus" icon={faCommentDots} number={stat?.nombres_messages} className="color_home3" /></NavLink>
                 </div>
                 <div className="sous_parent_main_home2">

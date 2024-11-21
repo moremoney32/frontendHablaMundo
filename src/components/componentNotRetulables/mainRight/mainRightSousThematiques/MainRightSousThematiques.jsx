@@ -91,8 +91,14 @@ export const MainRightSousThematiques = () => {
         setRotateIcon(!rotateIcon);
         select.style.borderBottomRightRadius = "5px"
         select.style.borderBottomLeftRadius = "5px"
-        const compareAphabetiques =   sousThematiques.sort((a, b) => b.name.localeCompare(a.name))
-           return setSousThematique(compareAphabetiques)
+        // const compareAphabetiques =   sousThematiques.sort((a, b) => b.name.localeCompare(a.name))
+        //    return setSousThematique(compareAphabetiques)
+        const compareDate =   sousThematiques.sort((a, b) => {
+            const dateA = new Date(a.created_at);
+            const dateB = new Date(b.created_at);
+            return dateA - dateB;
+          });  
+           return setSousThematique(compareDate)
         }
         if(value === "Plus récents"){
             const select = selectRef.current
@@ -116,7 +122,7 @@ export const MainRightSousThematiques = () => {
         }
         try {
             const result = await fetchData("https://www.backend.habla-mundo.com/api/v1/word",dataId,token);
-            // console.log(result)
+             console.log(result)
             localStorage.setItem('datas', JSON.stringify(result));
             localStorage.setItem('name', JSON.stringify(name));
             localStorage.setItem('id', JSON.stringify(id));
@@ -139,10 +145,10 @@ export const MainRightSousThematiques = () => {
 
         // doublons
         updatedFormation.words = [...updatedFormation.words, ...chips];
-        updatedFormation.words = Array.from(new Set(updatedFormation.words.map(word => word.toLowerCase())))
-            .map(lowercaseWord =>
-                updatedFormation.words.find(word => word.toLowerCase() === lowercaseWord)
-            );
+        // updatedFormation.words = Array.from(new Set(updatedFormation.words.map(word => word.toLowerCase())))
+        //     .map(lowercaseWord =>
+        //         updatedFormation.words.find(word => word.toLowerCase() === lowercaseWord)
+        //     );
 
         setThematiques(updatedFormations);
     };
@@ -168,7 +174,6 @@ export const MainRightSousThematiques = () => {
     const onSubmit =  async (data) => {
         for (let i = 0; i < thematiques.length; i++) {
             const sousThemes = thematiques[i];
-            console.log(sousThemes)
             if (sousThemes.crossword.length  === 0) {
                 console.log(true)
                  const messageCrosswords = "la sous thématique  ne doit pas etre vide."

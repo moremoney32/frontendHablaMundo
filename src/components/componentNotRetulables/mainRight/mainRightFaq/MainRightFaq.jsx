@@ -26,29 +26,29 @@ export const MainRightFaq = () => {
   const [openIndex, setOpenIndex] = useState(null);
   const fileInputRef = useRef(null);
   const token = localStorage.getItem("token");
-   let message1 = "Demande prise en compte";
+  let message1 = "Demande prise en compte";
 
-  useEffect(()=>{
-    fetchDataGet("https://www.backend.habla-mundo.com/api/v1/faq").then((response)=>{
+  useEffect(() => {
+    fetchDataGet("https://www.backend.habla-mundo.com/api/v1/faq").then((response) => {
       setDatas(response)
     })
 
-  },[])
+  }, [])
   const onSubmit = (data) => {
     const htmlContent = textareaRef.current.innerHTML;
     data.reponse = htmlContent;
     console.log(data)
-    fetchData("https://www.backend.habla-mundo.com/api/v1/faq",data).then((result)=>{
-      if(result.success === "FAP as created"){
-        snackbbar(document.querySelector("#body"), infos,message1, 2000);
+    fetchData("https://www.backend.habla-mundo.com/api/v1/faq", data).then((result) => {
+      if (result.success === "FAP as created") {
+        snackbbar(document.querySelector("#body"), infos, message1, 2000);
         setDatas(null)
-        fetchDataGet("https://www.backend.habla-mundo.com/api/v1/faq").then((response)=>{
+        fetchDataGet("https://www.backend.habla-mundo.com/api/v1/faq").then((response) => {
           setDatas(response)
         })
         reset();
         setContent('');
         textareaRef.current.innerHTML = '';
-        
+
       }
     })
   };
@@ -68,9 +68,9 @@ export const MainRightFaq = () => {
   const linkText = () => {
     const url = prompt("Entrez l'URL du lien:");
     if (url) {
-        document.execCommand('createLink', false, url);
+      document.execCommand('createLink', false, url);
     }
-};
+  };
 
   const listText = () => {
     document.execCommand('insertUnorderedList', false, null);
@@ -78,7 +78,7 @@ export const MainRightFaq = () => {
 
   const changeFontSize = (size) => {
     document.execCommand('fontSize', false, size);
-};
+  };
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -110,48 +110,48 @@ export const MainRightFaq = () => {
     const url = `https://www.backend.habla-mundo.com/api/v1/faq/${id}`;
 
     try {
-        const response = await fetch(url, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            }
-        });
-        const result = await response.json();
-        console.log(result)
-        if(result.success === "successfully deleted"){
-          snackbbar(document.querySelector("#body"), infos,message1, 2000);
-          const newData = datas.filter((data) => data.id !== id);
-          setDatas(newData);
-
+      const response = await fetch(url, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         }
+      });
+      const result = await response.json();
+      console.log(result)
+      if (result.success === "successfully deleted") {
+        snackbbar(document.querySelector("#body"), infos, message1, 2000);
+        const newData = datas.filter((data) => data.id !== id);
+        setDatas(newData);
+
+      }
     } catch (error) {
-        console.error('error delete:', error);
+      console.error('error delete:', error)
     }
   };
-  
+
   const handleUploadClick = () => {
     if (fileInputRef.current) {
-        fileInputRef.current.click();
+      fileInputRef.current.click();
     }
-};
+  };
 
-const handleFileChange = (event) => {
-  const file = event.target.files[0];
-  if (file){
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
-          const fileContent = e.target.result;
-          if (textareaRef.current){
-              const div = document.createElement('div');
-               div.innerHTML = `<a href="${fileContent}" target="_blank" rel="noopener noreferrer">${file.name}</a>`;
-              
-              textareaRef.current.appendChild(div);
-          }
+        const fileContent = e.target.result;
+        if (textareaRef.current) {
+          const div = document.createElement('div');
+          div.innerHTML = `<a href="${fileContent}" target="_blank" rel="noopener noreferrer">${file.name}</a>`;
+
+          textareaRef.current.appendChild(div);
+        }
       };
       reader.readAsDataURL(file);
-  }
-};
+    }
+  };
 
 
 
@@ -175,16 +175,16 @@ const handleFileChange = (event) => {
                 <img src={gras} alt="" className="img_profession" onClick={grasText} />
                 <img src={underline} alt="" className="img_profession" onClick={underlineText} />
                 <img src={italique} alt="" className="img_profession" onClick={italiqueText} />
-                <img src={police} alt="" className="img_profession" onClick={() =>changeFontSize(4)} />
+                <img src={police} alt="" className="img_profession" onClick={() => changeFontSize(4)} />
                 <img src={link} alt="" className="img_profession link" onClick={linkText} />
                 <img src={upload} alt="" className="img_answer_profession upload" onClick={handleUploadClick} />
-                                    <input
-                                        type="file"
-                                        ref={fileInputRef}
-                                        style={{ display: 'none' }}
-                                        onChange={handleFileChange}
-                                    /> 
-                  
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  style={{ display: 'none' }}
+                  onChange={handleFileChange}
+                />
+
                 <img src={list} alt="" className="img_profession list" onClick={listText} />
               </div>
               <div
@@ -201,23 +201,23 @@ const handleFileChange = (event) => {
         </form>
         <div className="sous_parent_main_faq_right">
           {/* {datas.length >= 1 && ( */}
-            <div className="parent_description_question">
-              {datas?.slice().reverse().map((info) => (
-                <div key={info.id}>
-                  <div className={`description_question ${openIndex === info.id ? "active" : ""}`}
-                    onClick={() => toggleOpen(info.id)}>
-                    <span className={`description_question_span ${openIndex === info.id ? "colorActive" : ""}`}>{info.question}</span>
-                    <FontAwesomeIcon icon={faAngleDown} className={openIndex === info.id ? "icons_active" : "icons_inactive"} />
-                  </div>
-                  {openIndex === info.id && (
-                    <div className="description_answer">
-                      <p dangerouslySetInnerHTML={{__html: info.reponse}}/>
-                      <img src={remove} alt="" className='remove' onClick={() => handleRemoveQuestion(info.id)} />
-                    </div>
-                  )}
+          <div className="parent_description_question">
+            {datas?.slice().reverse().map((info) => (
+              <div key={info.id}>
+                <div className={`description_question ${openIndex === info.id ? "active" : ""}`}
+                  onClick={() => toggleOpen(info.id)}>
+                  <span className={`description_question_span ${openIndex === info.id ? "colorActive" : ""}`}>{info.question}</span>
+                  <FontAwesomeIcon icon={faAngleDown} className={openIndex === info.id ? "icons_active" : "icons_inactive"} />
                 </div>
-              ))}
-            </div>
+                {openIndex === info.id && (
+                  <div className="description_answer">
+                    <p dangerouslySetInnerHTML={{ __html: info.reponse }} />
+                    <img src={remove} alt="" className='remove' onClick={() => handleRemoveQuestion(info.id)} />
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
           {/* )} */}
         </div>
       </div>

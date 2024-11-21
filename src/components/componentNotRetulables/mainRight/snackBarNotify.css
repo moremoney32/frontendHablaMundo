@@ -1,0 +1,32 @@
+#snackbar {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background:#212121;
+    color: #fff;
+    padding: 16px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transform: scale3d(0, 0, 0);
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  #snackbar.snackbar-visible {
+    transform: scale3d(1, 1, 1);
+  }
+  
+  #snackbarImg {
+    margin-right: 10px;
+  }
+  
+  #actionSnackbar {
+    text-align: right;
+    color: #D73030;
+    margin-left: 50px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: inline-block !important;
+    text-transform: uppercase;
+  }

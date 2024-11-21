@@ -15,7 +15,7 @@ import state from "../../../../assets/icons/state.png";
 import { icons } from '../../../../helpers/icons';
 import { Select } from "../../select/Select";
 import { useForm } from 'react-hook-form';
-import { faAngleRight} from "@fortawesome/free-solid-svg-icons";
+import { faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { fetchData } from "../../../../helpers/fetchData";
 import { SelectLanguages } from "../../select/SelectLanguages";
 import { fetchDataGet } from "../../../../helpers/fetchDataGet";
@@ -23,6 +23,7 @@ import { formatTime } from "../../../../helpers/formatDate";
 import { fetchDelete } from "../../../../helpers/fetchDelete";
 import { useSearchNames } from "../../../../customsHooks/useSearchNames";
 import infos from "../../../../assets/icons/infos.svg";
+import { faEdit } from "@fortawesome/free-solid-svg-icons/faEdit";
 export const MainRightTheme = () => {
     const [etat, setEtat] = useState(false);
     const [color, setColor] = useState('#ED4C5C');
@@ -42,7 +43,111 @@ export const MainRightTheme = () => {
     const [rotateIconVisility, setRotateIconVisibility] = useState(false);
     const [resultAllThematiques, setResultAllThematiques] = useState(null);
     const [searchResults, searchElementUserName] = useSearchNames(resultAllThematiques);
-      let message1 = "Demande prise en compte"
+    /******edit Name */
+    const [etatEdit, setEtatEdit] = useState(false);
+    const [editingId, setEditingId] = useState(null); // ID de l'élément en édition
+    const [editingData, setEditingData] = useState({ name: "", color: "" });
+
+    // Fonction pour ouvrir la popup avec les données actuelles
+    const handleEdit = (id, name, color) => {
+        setEditingId(id);
+        setEditingData({ name, color });
+        setEtatEdit(true);
+    };
+
+    // Fonction pour sauvegarder les changements
+    const handleSave = async() => {
+        setResultAllThematiques((prev) =>
+            prev.map((item) =>
+                item.id === editingId
+                    ? { ...item, name: editingData.name, color: editingData.color }
+                    : item
+            )
+        );
+        const dataSend = {
+            editingId:editingId,
+            name:editingData.name,
+            color:editingData.color
+        }
+        console.log(dataSend)
+        try {
+                  const response = await fetchData(
+                    "https://www.backend.habla-mundo.com/api/v1/themes",
+                    'PUT',
+                    dataSend,
+                    token
+                  );
+        
+                  if (response.message === 'Thématique mise à jour') {
+                    snackbbar(document.querySelector('#body'), infos, 'Mise à jour réussie', 3000);
+        
+                    // Mettre à jour la liste localement
+                    // setResultAllThematiques((prevThematiques) =>
+                    //   prevThematiques.map((theme) =>
+                    //     theme.id === editingId
+                    //       ? { ...theme, name: editingData.name, color: editingData.color }
+                    //       : theme
+                    //   )
+                    // );
+        
+                    // setEditingId(null); // Quitter le mode édition
+                    setEtatEdit(false);
+                  }
+                } catch (error) {
+                  console.error(error);
+                }
+        
+         // Fermer la popup
+    };
+
+    // Fonction pour fermer la popup
+    const handleClose = () => {
+        setEtatEdit(false);
+        setEditingId(null);
+    };
+
+    //   // Fonction pour démarrer l'édition
+    //   const handleEdit = (id, name, color) => {
+    //     setEditingId(id);
+    //     setEditingData({ name, color });
+    //   };
+    //   // Fonction pour sauvegarder
+    //   const handleSave = async () => {
+    //     if (!editingId) return;
+    //     const dataSend = {
+    //       id:editingId,
+    //       name:editingData.name,
+    //       color:editingData.color,
+    //};
+
+    //     try {
+    //       const response = await fetchData(
+    //         `https://www.backend.habla-mundo.com/api/v1/themes/${editingId}`,
+    //         'PUT',
+    //         dataSend,
+    //         token
+    //       );
+
+    //       if (response.message === 'Thématique mise à jour') {
+    //         snackbbar(document.querySelector('#body'), infos, 'Mise à jour réussie', 3000);
+
+    //         // Mettre à jour la liste localement
+    //         setResultAllThematiques((prevThematiques) =>
+    //           prevThematiques.map((theme) =>
+    //             theme.id === editingId
+    //               ? { ...theme, name: editingData.name, color: editingData.color }
+    //               : theme
+    //           )
+    //         );
+
+    //         setEditingId(null); // Quitter le mode édition
+    //       }
+    //     } catch (error) {
+    //       console.error(error);
+    //     }
+    //   };
+    /*****fin editName */
+    let message1 = "Demande prise en compte"
     let message2 = "Demande non prise en compte"
     const [thematiques, setThematiques] = useState([
         { id: 1, thematique: '', crossword: '', words: [] },
@@ -51,7 +156,7 @@ export const MainRightTheme = () => {
     const selectRef = useRef(null);
     const selectRefLanguages = useRef(null);
     const selectRefVisibility = useRef(null);
-    const dataSelectStatus =  ["Ordre Aphabétique","Plus récents","Moins récents"];
+    const dataSelectStatus = ["Ordre Aphabétique", "Plus récents", "Moins récents"];
     const dataSelectVisibility = ["Non", "Oui"];
     const dataSelect = ["Anglais"];
     const location = useLocation();
@@ -99,16 +204,16 @@ export const MainRightTheme = () => {
         }
     };
     const handleChildClick = (value) => {
-        if(value === "Ordre Aphabétique"){
+        if (value === "Ordre Aphabétique") {
             const select = selectRef.current
-        setOptionName(value);
-        setOptionVisible(false);
-        setRotateIcon(!rotateIcon);
-        select.style.borderBottomRightRadius = "5px"
-        select.style.borderBottomLeftRadius = "5px"
-        const compareAphabetiques =   resultAllThematiques.sort((a, b) => a.name.localeCompare(b.name))
-        console.log(compareAphabetiques)
-           return setResultAllThematiques(compareAphabetiques)
+            setOptionName(value);
+            setOptionVisible(false);
+            setRotateIcon(!rotateIcon);
+            select.style.borderBottomRightRadius = "5px"
+            select.style.borderBottomLeftRadius = "5px"
+            const compareAphabetiques = resultAllThematiques.sort((a, b) => a.name.localeCompare(b.name))
+            console.log(compareAphabetiques)
+            return setResultAllThematiques(compareAphabetiques)
         }
         if (value === "Moins récents") {
             const select = selectRef.current
@@ -117,15 +222,15 @@ export const MainRightTheme = () => {
             setRotateIcon(!rotateIcon);
             select.style.borderBottomRightRadius = "5px"
             select.style.borderBottomLeftRadius = "5px"
-         const compareDate =   resultAllThematiques.sort((a, b) => {
+            const compareDate = resultAllThematiques.sort((a, b) => {
                 // Convertir les chaînes de caractères en objets Date
                 const dateA = new Date(a.created_at);
                 const dateB = new Date(b.created_at);
-               // difference
+                // difference
                 return dateA - dateB;
-              });
-              console.log(compareDate)
-              setResultAllThematiques(compareDate)
+            });
+            console.log(compareDate)
+            setResultAllThematiques(compareDate)
         }
         if (value === "Plus récents") {
             const select = selectRef.current
@@ -134,13 +239,13 @@ export const MainRightTheme = () => {
             setRotateIcon(!rotateIcon);
             select.style.borderBottomRightRadius = "5px"
             select.style.borderBottomLeftRadius = "5px"
-         const compareDate =   resultAllThematiques.sort((a, b) => {
+            const compareDate = resultAllThematiques.sort((a, b) => {
                 const dateA = new Date(a.created_at);
                 const dateB = new Date(b.created_at);
                 return dateB - dateA;
-              });
-              console.log(compareDate)
-              setResultAllThematiques(compareDate)
+            });
+            console.log(compareDate)
+            setResultAllThematiques(compareDate)
         }
     };
     const handleChildClickLanguages = (value) => {
@@ -160,25 +265,6 @@ export const MainRightTheme = () => {
         selectVisibility.style.borderBottomLeftRadius = "5px";
     };
 
-    // const handleIconClick = (index) => {
-    //     setSelectedIconIndex(index);
-    //     const iconColor = {
-    //         icon: icons[index].name,
-    //         color: color
-    //     };
-
-    //     let storedIcons = JSON.parse(localStorage.getItem('selectedIconColors')) || [];
-    //     storedIcons.push(iconColor);
-    //     localStorage.setItem('selectedIconColors', JSON.stringify(storedIcons));
-    // };
-
-    // const filteredIcons = icons.filter(icon =>
-    //     icon.name.toLowerCase().includes(searchTerm.toLowerCase())
-    // );
-
-    // const handleSearchChange = (e) => {
-    //     setSearchTerm(e.target.value);
-    // };
     const checkTheme = () => {
         setEtat(true)
     }
@@ -197,7 +283,7 @@ export const MainRightTheme = () => {
 
     const handleInputChange = (e) => {
         setColor(e.target.value);
-        if (e.target.value.length>=0) {
+        if (e.target.value.length >= 0) {
             setShowPicker(true);
         } else {
             setShowPicker(false);
@@ -205,6 +291,7 @@ export const MainRightTheme = () => {
     };
     useEffect(() => {
         fetchDataGet("https://www.backend.habla-mundo.com/api/v1/themes").then((result) => {
+            console.log(result)
             const response = result.sort((a, b) => a.name.localeCompare(b.name))
             setResultAllThematiques(response)
         })
@@ -222,15 +309,15 @@ export const MainRightTheme = () => {
         }
         for (let i = 0; i < thematiques.length; i++) {
             const sousThemes = thematiques[i];
-            if (sousThemes.crossword.length  === 0) {
+            if (sousThemes.crossword.length === 0) {
                 const messageCrossword = ` la sous thématique  ne doit pas etre vide.`
-               // return snackbbar(document.querySelector("#body"), "../../../../assets/icons/infos.svg", messageCrossword, 4000);
-               return snackbbar(document.querySelector("#body"), infos, message2, 4000);
+                // return snackbbar(document.querySelector("#body"), "../../../../assets/icons/infos.svg", messageCrossword, 4000);
+                return snackbbar(document.querySelector("#body"), infos, message2, 4000);
             }
             if (sousThemes.words.length % 25 !== 0 || sousThemes.words.length === 0) {
                 const messages = `Le nombre de mots dans la sous thématique "${sousThemes.crossword}" doit être un multiple de 25.`
-               // return snackbbar(document.querySelector("#body"), infos, messages, 4000);
-               return snackbbar(document.querySelector("#body"), infos,message2, 4000);
+                // return snackbbar(document.querySelector("#body"), infos, messages, 4000);
+                return snackbbar(document.querySelector("#body"), infos, message2, 4000);
             }
         }
         if (data) {
@@ -247,7 +334,7 @@ export const MainRightTheme = () => {
             try {
                 const result = await fetchData("https://www.backend.habla-mundo.com/api/v1/themes", dataSend, token);
                 if (result.message === "the thematics is created") {
-                   // snackbbar(document.querySelector("#body"), infos, result.message, 2000);
+                    // snackbbar(document.querySelector("#body"), infos, result.message, 2000);
                     snackbbar(document.querySelector("#body"), infos, message1, 2000);
                     localStorage.setItem('theme', JSON.stringify(dataSend));
                     localStorage.setItem('result', JSON.stringify(result));
@@ -263,7 +350,7 @@ export const MainRightTheme = () => {
                 }
             } catch (error) {
                 setEtat(true);
-                console.log({message:error})
+                console.log({ message: error })
             } finally {
                 setLoading(false);
             }
@@ -300,10 +387,10 @@ export const MainRightTheme = () => {
 
         // doublons
         updatedFormation.words = [...updatedFormation.words, ...chips];
-        updatedFormation.words = Array.from(new Set(updatedFormation.words.map(word => word.toLowerCase())))
-            .map(lowercaseWord =>
-                updatedFormation.words.find(word => word.toLowerCase() === lowercaseWord)
-            );
+        // updatedFormation.words = Array.from(new Set(updatedFormation.words.map(word => word.toLowerCase())))
+        //     .map(lowercaseWord =>
+        //         updatedFormation.words.find(word => word.toLowerCase() === lowercaseWord)
+        //     );
 
         setThematiques(updatedFormations);
     };
@@ -316,10 +403,10 @@ export const MainRightTheme = () => {
         }
         console.log(id)
         fetchDelete("https://www.backend.habla-mundo.com/api/v1/themes", dataSend, token).then((result) => {
-            console.log(result)
+            // console.log(result)
             if (result.message === "the thematique is deleted") {
                 //snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg", result.message, 4000);
-                 snackbbar(document.querySelector("#body"), infos, message1, 4000);
+                snackbbar(document.querySelector("#body"), infos, message1, 4000);
                 setResultAllThematiques(result.thematique);
             }
         }).catch((error) => {
@@ -370,44 +457,105 @@ export const MainRightTheme = () => {
                     rotateIcon={rotateIcon}
                     defautClassName="select" />
             </div>
+          
             <div className="alls_thematics">
-                {levelSearch && resultAllThematiques?.map((result) => {
-                   
-                        return (
-                            <div className="sous_alls_thematics" key={result.id}>
-                                <div className="parent_icons_thematics">
-                                    <span className="parent_icons_thematics_child2" style={{ color: result.color }}  onClick={() => updateCrosswords(result.id, result.name)}>{result.name}</span>
-                                </div>
-                                <span className="parent_icons_thematics_span">{result.crosswords_count} Mots croisés</span>
-                                <span className="parent_icons_thematics_span"> créé {formatTime(result.created_at)}</span>
-                                <div className="parent_icons_thematics_span">
+                {/* Liste des thématiques */}
+                {levelSearch && resultAllThematiques?.map((result) => (
+                    <div
+                        key={result.id}
+                        className="sous_alls_thematics"
+                    >
+                        <div className="parent_icons_thematics">
+                            <span
+                                className="parent_icons_thematics_child2"
+                                style={{ color: result.color }}
+                                onClick={() => updateCrosswords(result.id, result.name)}
+                            >
+                                {result.name}
+                            </span>
+                        </div>
+                        <span className="parent_icons_thematics_span">
+                            {result.crosswords_count} Mots croisés
+                        </span>
+                        <span className="parent_icons_thematics_span">
+                            {result.words_count} Mots
+                        </span>
+                        <span className="parent_icons_thematics_span">
+                            créé {formatTime(result.created_at)}
+                        </span>
+                        <FontAwesomeIcon icon={faEdit} className="edit_icon"  onClick={() => handleEdit(result.id, result.name, result.color)} />
+                        <div className="parent_icons_thematics_span">
                                 <img src={remove} alt="remove_words" className="remove_words" onClick={() => removeTheme(result.id)} />
                                 </div>
-                                
-                            </div>
-                        );
-                  
-                })}
-                {etatSearch && searchResults?.map((result) => {
-                        return (
-                            <div className="sous_alls_thematics" key={result.id}>
-                                <div className="parent_icons_thematics">
-                                    <span className="parent_icons_thematics_child2" style={{ color: result.color }}  onClick={() => updateCrosswords(result.id, result.name)}>{result.name}</span>
+                    </div>
+                ))}
+                   {etatSearch && searchResults?.map((result) => (
+                    <div
+                        key={result.id}
+                        className="sous_alls_thematics"
+                    >
+                        <div className="parent_icons_thematics">
+                            <span
+                                className="parent_icons_thematics_child2"
+                                style={{ color: result.color }}
+                                onClick={() => updateCrosswords(result.id, result.name)}
+                            >
+                                {result.name}
+                            </span>
+                        </div>
+                        <span className="parent_icons_thematics_span">
+                            {result.crosswords_count} Mots croisés
+                        </span>
+                        <span className="parent_icons_thematics_span">
+                            {result.words_count} Mots
+                        </span>
+                        <span className="parent_icons_thematics_span">
+                            créé {formatTime(result.created_at)}
+                        </span>
+                        <FontAwesomeIcon icon={faEdit} className="edit_icon"  onClick={() => handleEdit(result.id, result.name, result.color)}/>
+                        <div className="parent_icons_thematics_span">
+                                <img src={remove} alt="remove_words" className="remove_words" onClick={() => removeTheme(result.id)}/>
                                 </div>
-                                <span className="parent_icons_thematics_span">{result.crosswords_count} Mots croisés</span>
-                                <span className="parent_icons_thematics_span"> créé {formatTime(result.created_at)}</span>
-                                <div className="parent_icons_thematics_span">
-                                <img src={remove} alt="remove_words" className="remove_words" onClick={() => removeTheme(result.id)} />
-                                </div>
-                                
+                    </div>
+                ))}
+
+                {/* Popup modale */}
+                {etatEdit && (
+                    <div className="modal">
+                        <div className="modal_content">
+                           <div className="headerEdit">
+                           <span className="title">MODIFIER LA THEMATIQUE</span>
+                           </div>
+                           <div className="paletteEdit">
+                           <input
+                            className="inputEdit"
+                                type="text"
+                                value={editingData.name}
+                                onChange={(e) =>
+                                    setEditingData((prev) => ({ ...prev, name: e.target.value }))
+                                }
+                            />
+                            <SketchPicker
+                                color={editingData.color}
+                                onChangeComplete={(color) =>
+                                    setEditingData((prev) => ({ ...prev, color: color.hex }))
+                                }
+                            />
+                           </div>
+                            <div className="modal_actions">
+                                <button onClick={handleClose} className="cancel_button">
+                                    Annuler
+                                </button>
+                                <button onClick={handleSave} className="save_button">
+                                    Sauvegarder
+                                </button>
                             </div>
-                        );
-                    
-                })}
+                        </div>
+                    </div>
+                )}
             </div>
 
             <div className="sous_parent_main_thematique">
-
                 {etat && <div id="masqueTheme"></div>}
                 {etat && <form id="answer_client_theme" onSubmit={handleSubmit(onSubmit)} onClick={handleClickOutside}>
                     <FontAwesomeIcon icon={faClose} className="close_theme" onClick={close} />
@@ -475,7 +623,7 @@ export const MainRightTheme = () => {
                                                         updatedFormation.crossword = e.target.value;
                                                         setThematiques(updatedFormations);
                                                         register(`crossword-${sousThemes.id}`).onChange(e);
-                                                    }}/>
+                                                    }} />
                                             </div>
                                             <div className="space_contenair">
                                                 <label htmlFor=""> Liste de mots de la sous-thématique</label>

@@ -11,12 +11,12 @@ export function fetchData(url, data, token) {
           credentials: "include"
       };
 
-      fetch(url, dataToSend).then((response) => {
+      fetch(url, dataToSend).then((response)=>{
           return response.json();
       }).then((result) => {
           return resolve(result);
       }).catch((error) => {
-          reject({ message: error.message });
+          reject({message: error.message});
       });
   });
 }

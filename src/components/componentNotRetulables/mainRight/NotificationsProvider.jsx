@@ -1,4 +1,46 @@
 
+// import React, { createContext, useState, useEffect, useContext } from 'react';
+// import { SnackBarNotify } from './SnackBarNotify';
+ 
+
+// const NotificationsContext = createContext();
+
+// export const NotificationsProvider = ({ children }) => {
+//   const [notification, setNotification] = useState(null);
+
+//   useEffect(() => {
+//     const eventSource = new EventSource('https://backend.habla-mundo.com/api/v1/listen-message');
+
+//     eventSource.addEventListener('message', (event) => {
+//       if (event.data === "nothing") {
+//         return;
+//       } else {
+//         console.log(event.data)
+//         setNotification(event.data);
+//       }
+//     });
+
+//     return () => {
+//       eventSource.close();
+//     };
+//   }, []);
+
+//   const closeNotification = () => {
+//     setNotification(null); 
+//   };
+
+//   return (
+//     <NotificationsContext.Provider value={{}}>
+//       {children}
+//       {notification && (
+//         <SnackBarNotify message={notification} onClose={closeNotification} />
+//       )}
+//     </NotificationsContext.Provider>
+//   );
+// };
+
+// export const useNotifications = () => useContext(NotificationsContext);
+
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { useLocation} from "react-router-dom"
 
@@ -50,4 +92,5 @@ useEffect(() => {
 };
 
 export const useNotifications = () => useContext(NotificationsContext);
+
 

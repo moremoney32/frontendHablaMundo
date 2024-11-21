@@ -10,6 +10,7 @@ import { snackbbar } from "../../../../helpers/snackbars";
 import infos from "../../../../assets/icons/infos.svg";
 export const MainMotsCroisés = () => {
   const datasFrench = JSON.parse(localStorage.getItem('datas'));
+  const [focusedWord, setFocusedWord] = useState(null);
   const translations = datasFrench.map(word => word.traduction);
   let names = datasFrench.map(word => word.name);
   const dataCrossword =  generateCrossword(translations).positions.map((item, index) => {
@@ -29,17 +30,18 @@ const newDataCrossword ={
   const [loading, setLoading] = useState(false);
   const [dataswords, setDatasWords] = useState(names);
   const dataTheme = JSON.parse(localStorage.getItem('theme'));
-  const name = JSON.parse(localStorage.getItem('name'))
+  const name = JSON.parse(localStorage.getItem('name'));
   const id = JSON.parse(localStorage.getItem('id'));
   const token = localStorage.getItem('token');
   const handleWordChange = (index, newName) => {
     const newPositions = datas.positions.map((word, i) =>
         i === index ? { ...word, word: newName } : word
     );
-    const newWorldsEnglish = newPositions.map(word => word.word);
+    let newWorldsEnglish = newPositions.map(word => word.word);
+    //newWorldsEnglish = newWorldsEnglish.sort((a, b) => a.localeCompare(b))
     const generatenewGrille = generateCrossword(newWorldsEnglish)
     const filterName  =  datas.positions.map(word => word.name);
-    const generateFRenchEnglish =  generatenewGrille.positions.map((item, index) => {
+    const generateFRenchEnglish = generateCrossword(newWorldsEnglish).positions.map((item, index) => {
       return {
           ...item,
           name: filterName[index]
@@ -54,6 +56,8 @@ const newDataCrossword ={
     setDatas(newDataCrossword);
    
 };
+
+
 
 const handleWordChangeReste = (index, newName) => {
   let newReste = datas.reste.map((word, i) =>
@@ -104,19 +108,22 @@ const handleWordlsGrille = async()=>{
     }
     return word;
   });
+  console.log(updatedWords)
   
-  updatedWords =  updatedWords.map(({ row, col,direction, ...rest }) => rest);
+   //updatedWords =  updatedWords.map(({ row, col,direction, ...rest }) => rest);
  
   const dataPush ={
      crosswordId:id,
     words:updatedWords
   }
+  console.log(dataPush)
   setLoading(true);
   try {
     const result = await fetchData("https://www.backend.habla-mundo.com/api/v1/words",dataPush,token);
+    console.log(result)
 
     if (result.message === "the words is created") {
-      snackbbar(document.querySelector("#body"), infos,message1, 4000);
+    return  snackbbar(document.querySelector("#body"), infos,message1, 4000);
   }
     
 } catch (error) {
@@ -141,16 +148,16 @@ const handleWordlsGrille = async()=>{
             <span className="title_language">Anglais</span>
             <span className="title_language">Francais</span>
           </div>
-          <WordList data={datas.positions} onWordChange={handleWordChange} onWordChangeFrench={handleWordChangeFrench}/>
+          <WordList data={datas.positions} onWordChange={handleWordChange} onWordChangeFrench={handleWordChangeFrench} setFocusedWord={setFocusedWord}/>
           {datas.reste.length>=1 && <div className="parent_reste">
-            <span className="title_parent">Mots anglais ayants plus de 15 caracteres à modifier</span>
+            <span className="title_parent">Mots anglais ayants plus de 15 caracteres</span>
             <div className="reste">
             <WordListReste data={datas.reste} onWordChange={handleWordChangeReste}/>
             </div>
           </div>}
         </div>
         <div className="sous_parent_main_croisés_right">
-          <Grid positions={datas.positions} gridSize={datas.gridSize}/>
+          <Grid positions={datas.positions} gridSize={datas.gridSize}  focusedWord={focusedWord}/>
           {loading ?<button className="save">En Cours ....</button>:<button className="save" onClick={handleWordlsGrille}>Sauvegarder</button>}
         </div>
       </div>

@@ -28,6 +28,7 @@
   justify-content: center;
   align-items: center;
   position: relative;
+  transform: translate3d(0,2px,0);
 }
 .parent_notifications img{
   width: 15px;
@@ -76,6 +77,7 @@
   width: 180px !important;
   height: 40px;
   object-fit: cover;
+  transform: translate3d(0,4px,0);
 }
 /* .header_left :nth-child(1){
   width: 30px;
