@@ -24,6 +24,7 @@ import { fetchDelete } from "../../../../helpers/fetchDelete";
 import { useSearchNames } from "../../../../customsHooks/useSearchNames";
 import infos from "../../../../assets/icons/infos.svg";
 import { faEdit } from "@fortawesome/free-solid-svg-icons/faEdit";
+import { fetchDataPut } from "../../../../helpers/fetchDataPut";
 export const MainRightTheme = () => {
     const [etat, setEtat] = useState(false);
     const [color, setColor] = useState('#ED4C5C');
@@ -65,32 +66,20 @@ export const MainRightTheme = () => {
             )
         );
         const dataSend = {
-            editingId:editingId,
+            id:editingId,
             name:editingData.name,
             color:editingData.color
         }
         console.log(dataSend)
         try {
-                  const response = await fetchData(
+                  const response = await fetchDataPut(
                     "https://www.backend.habla-mundo.com/api/v1/themes",
-                    'PUT',
                     dataSend,
                     token
                   );
-        
-                  if (response.message === 'Thématique mise à jour') {
+        console.log(response)
+                  if (response.message === 'successful update') {
                     snackbbar(document.querySelector('#body'), infos, 'Mise à jour réussie', 3000);
-        
-                    // Mettre à jour la liste localement
-                    // setResultAllThematiques((prevThematiques) =>
-                    //   prevThematiques.map((theme) =>
-                    //     theme.id === editingId
-                    //       ? { ...theme, name: editingData.name, color: editingData.color }
-                    //       : theme
-                    //   )
-                    // );
-        
-                    // setEditingId(null); // Quitter le mode édition
                     setEtatEdit(false);
                   }
                 } catch (error) {
@@ -106,46 +95,7 @@ export const MainRightTheme = () => {
         setEditingId(null);
     };
 
-    //   // Fonction pour démarrer l'édition
-    //   const handleEdit = (id, name, color) => {
-    //     setEditingId(id);
-    //     setEditingData({ name, color });
-    //   };
-    //   // Fonction pour sauvegarder
-    //   const handleSave = async () => {
-    //     if (!editingId) return;
-    //     const dataSend = {
-    //       id:editingId,
-    //       name:editingData.name,
-    //       color:editingData.color,
-    //};
-
-    //     try {
-    //       const response = await fetchData(
-    //         `https://www.backend.habla-mundo.com/api/v1/themes/${editingId}`,
-    //         'PUT',
-    //         dataSend,
-    //         token
-    //       );
-
-    //       if (response.message === 'Thématique mise à jour') {
-    //         snackbbar(document.querySelector('#body'), infos, 'Mise à jour réussie', 3000);
-
-    //         // Mettre à jour la liste localement
-    //         setResultAllThematiques((prevThematiques) =>
-    //           prevThematiques.map((theme) =>
-    //             theme.id === editingId
-    //               ? { ...theme, name: editingData.name, color: editingData.color }
-    //               : theme
-    //           )
-    //         );
-
-    //         setEditingId(null); // Quitter le mode édition
-    //       }
-    //     } catch (error) {
-    //       console.error(error);
-    //     }
-    //   };
+   
     /*****fin editName */
     let message1 = "Demande prise en compte"
     let message2 = "Demande non prise en compte"

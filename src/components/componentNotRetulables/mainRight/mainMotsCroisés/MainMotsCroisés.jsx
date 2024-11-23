@@ -145,8 +145,9 @@ const handleWordlsGrille = async()=>{
         <div className="sous_parent_main_croisés_left">
           <span className="title_words">Liste des mots</span>
           <div className="sous_parent_main_croisés_left_1">
-            <span className="title_language">Anglais</span>
-            <span className="title_language">Francais</span>
+          <span className="title_language">Numéro</span>
+            <span className="title_languageAnglais">Anglais</span>
+            <span className="title_languageFrancais">Francais</span>
           </div>
           <WordList data={datas.positions} onWordChange={handleWordChange} onWordChangeFrench={handleWordChangeFrench} setFocusedWord={setFocusedWord}/>
           {datas.reste.length>=1 && <div className="parent_reste">

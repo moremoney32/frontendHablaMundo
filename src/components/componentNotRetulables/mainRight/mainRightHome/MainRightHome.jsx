@@ -98,7 +98,7 @@ export const MainRightHome = () => {
             fetchDataGet("https://www.backend.habla-mundo.com/api/v1/statistique").then((result) =>{
                // const pourcent = (result?.suscribes * 100) / result?.users
                //const pourcent = Math.ceil((result?.suscribes * 100) / result?.users);
-            //    console.log(result)
+                console.log(result)
                const pourcent = Math.floor((result?.suscribes * 100) / result?.users);
                 setTaux(pourcent)
                return  setStat(result)
@@ -113,11 +113,12 @@ export const MainRightHome = () => {
             <div className="sous_parent_main_home">
                 <div className="sous_parent_main_home1">
                     <NavLink to="/user" className="nav_link"><InformationUser defaultClassName="icons_user_img" user="Utilisateurs inscrits" icon={faUser} number={stat?.users} className="color_home" /></NavLink>
-                    <div onClick={handleNavigate} className="nav_link"><InformationUser defaultClassName="icons_user_img1" user="Utilisateurs abonnés" icon={faUser} number={stat?.suscribes} pourcent={`(${taux}%)`} className="color_home1" /></div>
-                    <NavLink to="/theme" className="nav_link"><InformationUser defaultClassName="icons_user_img2" user="Thématiques" icon={faGripHorizontal} number={stat?.thematiques} className="color_home2" /></NavLink>
+                    <div onClick={handleNavigate} className="nav_link"><InformationUser defaultClassName="icons_user_img1" user="Abonnés Annuel" icon={faUser} number={stat?.abonneAnnuel} pourcent={`(${stat?.pourcentageAnnuel}%)`} className="color_home1" /></div>
+                    <div onClick={handleNavigate} className="nav_link"><InformationUser defaultClassName="icons_user_img1" user="Abonnés Mensuel" icon={faUser} number={stat?.abonneMensuel} pourcent={`(${stat?.pourcentageMensuel}%)`} className="color_home1" /></div>
+                    <NavLink to="/message" className="nav_link"><InformationUser defaultClassName="icons_user_img3" user="Messages reçus" icon={faCommentDots} number={stat?.nombres_messages} className="color_home3"/></NavLink>
+                    <NavLink to="/theme" className="nav_link"><InformationUser defaultClassName="icons_user_img2" user="Thématiques" icon={faGripHorizontal} number={stat?.thematiques} className="color_home2"/></NavLink>
                     <InformationUser defaultClassName="icons_user_img2" user="Mots croisés" icon={faGripHorizontal} number={stat?.crosswords} className="color_home2" />
-                    <InformationUser defaultClassName="icons_user_img1" user="Listes de mots" icon={faSchool} number={stat?.words} className="color_home2" />
-                    <NavLink to="/message" className="nav_link"><InformationUser defaultClassName="icons_user_img3" user="Messages reçus" icon={faCommentDots} number={stat?.nombres_messages} className="color_home3" /></NavLink>
+                    <InformationUser defaultClassName="icons_user_img1" user="Nombres de mots" icon={faSchool} number={stat?.words} className="color_home2" />
                 </div>
                 <div className="sous_parent_main_home2">
                     <div className="title_main_home">

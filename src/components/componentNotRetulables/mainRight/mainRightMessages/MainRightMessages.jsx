@@ -26,6 +26,7 @@ import { fetchDelete } from "../../../../helpers/fetchDelete";
 export const MainRightMessages = () => {
     const { register, handleSubmit, formState: { errors }, setValue, reset } = useForm();
     const [etat, setEtat] = useState(false);
+    const [etatNotify, setEtatNotify] = useState(false);
     const [activeStates, setActiveStates] = useState({});
     const [content, setContent] = useState(null);
     const [messageText, setMessageText] = useState(null);
@@ -132,6 +133,9 @@ export const MainRightMessages = () => {
     const close = () => {
         setEtat(false);
     };
+    const closeNotify = () => {
+        setEtatNotify(false);
+    };
     const onSubmit = async (data) => {
         const htmlContent = textareaRef.current.innerHTML;
         if (htmlContent.length === 0) {
@@ -150,6 +154,37 @@ export const MainRightMessages = () => {
                 reset();
                 setContent('');
                 textareaRef.current.innerHTML = '';
+            }
+
+
+        } catch (error) {
+            console.log(error)
+        } finally {
+            setLoading(false)
+            setEtat(false)
+        }
+
+    }
+    const onSubmitData = async (data) => {
+        const htmlContent = textareaRef.current.innerHTML;
+        if (htmlContent.length === 0) {
+            return snackbbar(document.querySelector("#body"), infos, message2, 2000);
+        }
+
+        const dataSend = {
+            // user_id: id,
+            message: htmlContent
+        }
+        setLoading(true)
+        try {
+            const result = await fetchData("https://www.backend.habla-mundo.com/api/v1/send-notification-message", dataSend, token)
+            console.log(result)
+            if (result.success === "Jobs created successfully!") {
+                snackbbar(document.querySelector("#body"), infos, message1, 2000);
+                reset();
+                setContent('');
+                textareaRef.current.innerHTML = '';
+                setEtatNotify(false);
             }
 
 
@@ -218,26 +253,26 @@ export const MainRightMessages = () => {
     //fin intersection
     const handleRemove = (dataId) => {
         console.log(dataId);
-      const data = {
-        id:[dataId]
-      }
-      console.log(data)
+        const data = {
+            id: [dataId]
+        }
+        console.log(data)
         fetchDelete("https://www.backend.habla-mundo.com/api/v1/notifications", data, token).then((response) => {
             console.log(response)
-            if(response.status === "200"){
-               snackbbar(document.querySelector("#body"), infos, message1, 2000);
-               setTimeout(() => {
-                fetchDataGetToken('https://www.backend.habla-mundo.com/api/v1/notifications', token).then((response) => {
-                    //console.log(response)
-                    const compareDate = response.sort((a, b) => {
-                        const dateA = new Date(a.created_at);
-                        const dateB = new Date(b.created_at);
-                        return dateB - dateA;
-                    });
-                    setData(compareDate)
-                })
-                
-            }, 2000);
+            if (response.status === "200") {
+                snackbbar(document.querySelector("#body"), infos, message1, 2000);
+                setTimeout(() => {
+                    fetchDataGetToken('https://www.backend.habla-mundo.com/api/v1/notifications', token).then((response) => {
+                        //console.log(response)
+                        const compareDate = response.sort((a, b) => {
+                            const dateA = new Date(a.created_at);
+                            const dateB = new Date(b.created_at);
+                            return dateB - dateA;
+                        });
+                        setData(compareDate)
+                    })
+
+                }, 2000);
             }
         })
     }
@@ -250,71 +285,104 @@ export const MainRightMessages = () => {
             }
         });
     };
-    
+
     const handleSelectAll = () => {
-        if (selectedMessages?.length === data.length){
-            setSelectedMessages([]); 
-        } 
+        if (selectedMessages?.length === data.length) {
+            setSelectedMessages([]);
+        }
         else {
-            setSelectedMessages(data.map(info => info.id)); 
+            setSelectedMessages(data.map(info => info.id));
         }
     };
     const handleDeleteSelected = () => {
-        const data ={
-            id:selectedMessages
+        const data = {
+            id: selectedMessages
         }
         console.log(data)
         console.log(selectedMessages)
         fetchDelete("https://www.backend.habla-mundo.com/api/v1/notifications", data, token).then((response) => {
             console.log(response)
-            if(response.status === "200"){
-               snackbbar(document.querySelector("#body"), infos, message1, 2000);
-               setTimeout(() => {
-                fetchDataGetToken('https://www.backend.habla-mundo.com/api/v1/notifications', token).then((response) => {
-                    const compareDate = response.sort((a, b) => {
-                        const dateA = new Date(a.created_at);
-                        const dateB = new Date(b.created_at);
-                        return dateB - dateA;
-                    });
-                    setData(compareDate)
-                })
-                
-            }, 2000);
+            if (response.status === "200") {
+                snackbbar(document.querySelector("#body"), infos, message1, 2000);
+                setTimeout(() => {
+                    fetchDataGetToken('https://www.backend.habla-mundo.com/api/v1/notifications', token).then((response) => {
+                        const compareDate = response.sort((a, b) => {
+                            const dateA = new Date(a.created_at);
+                            const dateB = new Date(b.created_at);
+                            return dateB - dateA;
+                        });
+                        setData(compareDate)
+                    })
+
+                }, 2000);
             }
         })
     };
     console.log(selectedMessages)
+    const checkNotification = () => {
+        setEtatNotify(true)
+    }
 
     return (
         <div className="parent_main">
             <div className="justifyContent">
                 <HeaderTitleMain h1="Messages" />
-                {selectedMessages.length === 0 ?<button   disabled={selectedMessages.length === 0} className="buttonSelectNone">
+                <button className="buttonSelectNotification" onClick={checkNotification}>
+                    Envoyer les notifications
+                </button>
+                {selectedMessages.length === 0 ? <button disabled={selectedMessages.length === 0} className="buttonSelectNone">
                     Supprimer les messages sélectionnés
-                </button>:<button onClick={handleDeleteSelected}   className="buttonSelect">
+                </button> : <button onClick={handleDeleteSelected} className="buttonSelect">
                     Supprimer les messages sélectionnés
                 </button>}
             </div>
+            {etatNotify && <div id="masque"></div>}
+            {etatNotify && <div id="answer_client">
+                <div className="parentHeaderNotify">
+                    <p className="answer_client_name_notify">Notification</p>
+                    <FontAwesomeIcon icon={faClose} className="closeNotify" onClick={closeNotify} />
+                </div>
+                <form className="answer_form" onSubmit={handleSubmit(onSubmitData)}>
+                    <div className="answer_mail_description">
+                        {/* <label htmlFor="reponse">Réponse</label> */}
+                        <div className="objet_mail">
+                            <span className="objet">Message</span>
+                            <span className="objet_mail_chil1">A:<span className="objet_mail_chil2">Tous</span></span>
+                        </div>
+                        <div className="answer_mail_sous_description">
+                            <div className="answer_mail_sous_description_img">
+                                <img src={gras} alt="" className="img_answer_profession" onClick={grasText} />
+                                <img src={underline} alt="" className="img_answer_profession" onClick={underlineText} />
+                                <img src={italique} alt="" className="img_answer_profession" onClick={italiqueText} />
+                                <img src={police} alt="" className="img_answer_profession" onClick={() => changeFontSize(4)} />
+                                <img src={link} alt="" className="img_answer_profession links" onClick={linkText} />
+                                <img src={list} alt="" className="img_answer_profession lists" onClick={listText} />
+                                <img src={upload} alt="" className="img_answer_profession upload" onClick={handleUploadClick} />
+                                <input
+                                    type="file"
+                                    ref={fileInputRef}
+                                    style={{ display: 'none' }}
+                                    onChange={handleFileChange}
+                                />
+                            </div>
+                            <div
+                                className="textarea_answer"
+                                contentEditable="true"
+                                placeholder="Entrez un message"
+                                ref={textareaRef}
+                            ></div>
+                            <input type="hidden" name="reponse" value={content} />
+                        </div>
+                    </div>
+                    {loading ? <button className="send_mail">En cours ...</button> : <button className="send_mail" type="submit">Envoyer</button>}
+                </form>
+            </div>}
             <div className="sous_parent_main_messages">
                 {etat && <div id="masque"></div>}
                 {etat && <div id="answer_client">
                     <FontAwesomeIcon icon={faClose} className="close" onClick={close} />
                     <p>Message de:<span className="answer_client_name">{textName}</span></p>
                     <span className="answer_client_messages">{messageText}</span>
-                    {/* {
-    fichiers?.map((fichier) => {
-        const isPdf = fichier.endsWith('.pdf');
-        return (
-            <div className="answer_client_file">
-                {isPdf ? (
-                    <embed src={fichier} type="application/pdf" width="50%" height="300px" />
-                ) : (
-                    <img src={fichier} alt="" />
-                )}
-            </div>
-        );
-    })
-} */}
                     {
                         fichiers?.map((fichier) => {
                             const Pdf = fichier.endsWith('.pdf');
@@ -376,8 +444,8 @@ export const MainRightMessages = () => {
                 </div>
 
                 {
-
-                    data?.reverse().slice(firstIndexComments, lastIndexComments).map((info, index) => {
+                        data?.slice().reverse().slice(firstIndexComments, lastIndexComments).map((info, index) => {
+                    // data?.reverse().slice(firstIndexComments, lastIndexComments).map((info, index) => {
                         const isActive = activeStates[info.id] || info.read_at !== null;
                         const isSelected = selectedMessages?.includes(info.id);
                         console.log(isSelected)
