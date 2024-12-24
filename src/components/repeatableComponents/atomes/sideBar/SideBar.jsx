@@ -18,6 +18,7 @@ export const SideBar = () => {
         <NavLink to="/home"  className="navlink" activeClassName="active"><ButtonMainLeft icons={faHome} name="Accueil"  isActive={window.location.pathname === "/home"}
           defaultClassName="icon_default"/></NavLink>
         <NavLink to="/theme"  className="navlink" activeClassName="active"><ButtonMainLeft icons={faGripHorizontal} name="Thématiques" isActive={window.location.pathname === "/theme"} defaultClassName="icon_default"/></NavLink>
+        <NavLink to="/grammaire"  className="navlink" activeClassName="active"><ButtonMainLeft icons={faUser} name="Grammaires" defaultClassName="icon_default_black" isActive={window.location.pathname === "/grammaire"}/></NavLink>
         <NavLink to="/user"  className="navlink" activeClassName="active"><ButtonMainLeft icons={faUser} name="Utilisateurs" defaultClassName="icon_default_black" isActive={window.location.pathname === "/user"}/></NavLink>
         <NavLink to="/message"  className="navlink" activeClassName="active"><ButtonMainLeft icons={faCommentDots} name="Messages" defaultClassName="icon_default" isActive={window.location.pathname === "/message"}/></NavLink>
         <NavLink to="/faq"  className="navlink" activeClassName="active"><ButtonMainLeft icons={faCommentAlt} name="FAQ" defaultClassName="icon_default_black" isActive={window.location.pathname === "/faq"} /></NavLink>

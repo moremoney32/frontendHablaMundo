@@ -52,6 +52,21 @@
 border: 1px solid #0084FA1A;
 /* position: relative; */
 }
+.sous_alls_grammaire{
+  display:grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+    width:"100%" !important; 
+    justify-content: space-between !important;  
+  align-items: center;
+  padding: 10px;
+  padding-left: 15px;
+  padding-right: 15px;
+  border-radius: 5px;
+   background-color:#0084FA0D; 
+  align-items: center;
+border: 1px solid #0084FA1A;
+/* position: relative; */
+}
 .remove_words{
   width: 20px;
   height: 20px;
@@ -82,6 +97,102 @@ border: 1px solid #0084FA1A;
 .parent_icons_thematics_child2{
   font-size: 14px !important;
   cursor: pointer;
+}
+.parent_icons_thematics_child2_grammar{
+  font-size: 14px !important;
+  cursor: pointer;
+  color:"#0084FA";
+  font-weight: bold;
+}
+.parent_icons_grammaire_child2{
+  align-items: center;
+  display:flex;
+  gap:15px !important;
+}
+.optionGrammar{
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+   width:22.5em !important; 
+  display: flex;
+  flex-direction: column;
+  background:white;
+  position: absolute;
+  /* transform: translate3d(0,64px,0); */
+  border: 1px solid rgba(0,0,0,0.05);
+  z-index: 2000;
+  max-height:200px !important;
+  /* overflow-y: auto; */
+}
+.optionGrammar span{
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 12px;
+  text-align: left;
+  color:black;
+  border-bottom: 1px solid #fafafa;
+   opacity: 0.8;
+   font-size: 16px;
+   transition: 1s;
+   cursor: pointer;  
+}
+.optionGrammar span:hover{
+  background:var(--color-secondary);
+  color: white;
+}
+.optionGrammar1{
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+   width:22.5em !important; 
+  display: flex;
+  flex-direction: column;
+  background:white;
+  position: absolute;
+   transform: translate3d(0,4em,0); 
+  border: 1px solid rgba(0,0,0,0.05);
+  z-index: 5000;
+  max-height:200px !important;
+   overflow-y: auto; 
+}
+.optionGrammar1 span{
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 12px;
+  text-align: left;
+  color:black;
+  border-bottom: 1px solid #fafafa;
+   opacity: 0.8;
+   font-size: 16px;
+   transition: 1s;
+   cursor: pointer;  
+}
+.optionGrammar1 span:hover{
+  background:var(--color-secondary);
+  color: white;
+}
+
+
+.child-grammaire{
+  display:flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: 7px;
+  padding-bottom: 7px;
+  padding-left: 12px;
+  padding-right: 12px;
+  border-radius: 5px;
+  border:1px solid #0084FA;
+}
+.color_grammaire{
+  color:#0084FA
+}
+.next_words{
+  width:12px !important;
+  height:12px !important;
+  object-fit:cover;
+}
+.nameDetails{
+  color:#0084FA !important;
+  font-size: 12px !important;
 }
 .parent_icons_thematics_span{
   font-size: 14px;
@@ -136,6 +247,24 @@ background: white;
   gap: 30px !important;
   padding-bottom: 30px;
 }
+#answer_client_theme_grammaire{
+  background: white;
+    width: 60%;
+    margin: auto;
+    padding-left: 40px;
+    padding-right: 40px;
+    padding-top: 30px;
+    border-radius: 5px;
+    z-index: 2000;
+     position:absolute; 
+    top:20px;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 30px !important;
+    padding-bottom: 30px;
+  }
 .answer_client_theme1{
   color: black;
   font-weight: 550;
@@ -239,6 +368,43 @@ text-decoration: underline;
   display: flex;
   gap: 20px;
   align-items:center;
+}
+.space-signup{
+  width: 50% !important;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.img_user{
+  color:#42444B;
+  position: absolute;
+  top:10px;
+  right:10px;
+}
+.space-signup label{
+  color:black;
+  text-align: left;
+  font-size: 15px;
+  font-weight: bold;
+}
+.space-signup input{
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border: 1px solid #c3c3c3;
+  border-radius: 5px;
+  outline: none;
+  transition: ease-in-out 0.2s;
+}
+.selectGrammar{
+  width: 100%;
+}
+.answer_client_theme2_grammaire{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 .answer_client_theme2_child1{
   width: calc(100% - 220px);

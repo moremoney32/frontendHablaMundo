@@ -202,7 +202,7 @@ export const MainRightSousThematiques = () => {
                     setTimeout(() => {
                         fetchData("https://www.backend.habla-mundo.com/api/v1/theme",{id:resultValue.id}).then((result) => {
                             console.log(result)
-                             setSousThematique(result)
+                            setSousThematique(result)
                         })
                         setOpenSousThemes(false)
                        

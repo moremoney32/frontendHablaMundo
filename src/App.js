@@ -10,6 +10,7 @@ import { Comptes } from './pages/comptes/Comptes';
 import { SousThematiques } from './pages/sousThematiques/SousThematiques';
 import { MotsCroisés } from './pages/motsCroisés/MotsCroisés';
 import { NotificationsProvider } from './components/componentNotRetulables/mainRight/NotificationsProvider';
+import { Grammaire } from './pages/grammaires/Grammaire';
 
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
               <Route path="/comptes" element={<Comptes />} />
               <Route path="/sousThematiques" element={<SousThematiques/>}/>
               <Route path="/motsCroisés" element={<MotsCroisés/>}/>
+              <Route path="/grammaire" element={<Grammaire/>}/>
               <Route path="/" element={<Deconnexion />}/>
             </Routes>
         </div>

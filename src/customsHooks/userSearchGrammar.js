@@ -1,18 +1,18 @@
 import { useState, useCallback} from 'react';
 
-export function useSearchNames(arrayInformation) {
-  const [searchResults, setSearchResults] = useState([]);
+export function useSearchGrammar(arrayInformation) {
+  const [searchResultsGrammar, setSearchResultsGrammar] = useState([]);
 
-  const searchElementUserName = useCallback((userInformation) => {
+  const searchElementUserNameGrammar = useCallback((userInformation) => {
     return new Promise((resolve) => {
       let timeOutId = null;
         clearTimeout(timeOutId);
       timeOutId = setTimeout(()=>{
         const searchName = () => {
           return new Promise((resolve) => {
-            const searchName = arrayInformation.filter((info) => info.title);
+            const searchName = arrayInformation.filter((info) => info.name);
             const searchNamesInfos = searchName.filter((info) => {
-              if ( info.title.toLowerCase().includes(userInformation.toLowerCase())) {
+              if ( info.name.toLowerCase().includes(userInformation.toLowerCase())) {
                 return info;
               }
             });
@@ -25,12 +25,12 @@ export function useSearchNames(arrayInformation) {
         Promise.all([searchName()]).then((response) => {
           const results = [...response[0]];
           const filterDoublon = [...new Set(results)];
-          setSearchResults(filterDoublon);
+          setSearchResultsGrammar(filterDoublon);
           return resolve(filterDoublon);
         });
     },500)
      });
   }, [arrayInformation]);
   
-  return [searchResults, searchElementUserName];
+  return [searchResultsGrammar, searchElementUserNameGrammar];
 }

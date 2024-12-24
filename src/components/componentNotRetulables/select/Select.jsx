@@ -2,7 +2,7 @@
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
-export const Select = ({dataSelectStatus,handleChildClick,changeIcon,icon,optionVisible,rotateIcon,optionName,defautClassName,selectRef}) => {
+export const Select = ({dataSelectStatus,handleChildClick,defautClassNameOption,changeIcon,icon,optionVisible,rotateIcon,optionName,defautClassName,selectRef}) => {
 
     return (
         <div className={defautClassName}>
@@ -11,7 +11,7 @@ export const Select = ({dataSelectStatus,handleChildClick,changeIcon,icon,option
                 <FontAwesomeIcon icon={faAngleDown} className="icon_zIndex"  style={{transform: rotateIcon && "rotate(180deg)" }}/>
             </div>
             {optionVisible && (
-                <div className="option">
+                <div className={defautClassNameOption}>
                     {
                         dataSelectStatus.map((changeGender,index)=>{
                             return(
