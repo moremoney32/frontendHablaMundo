@@ -18,6 +18,7 @@
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
+  cursor: pointer;
  }
  .parent_notifications{
   width: 30px;
@@ -165,7 +166,7 @@
   color: #FFFFFF !important;
   text-align: center;
   padding: 10px !important;
-  background: #D73030;
+  background: #24D26D;
   border:none;
   border-radius: 5px;
   cursor: pointer;

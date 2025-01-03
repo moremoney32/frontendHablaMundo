@@ -2,7 +2,7 @@ export function fetchData(url, data, token) {
   return new Promise((resolve, reject) => {
       const dataToSend = {
           method: 'POST',
-          headers: {
+          headers:{
               'Content-Type': 'application/json',
               'Accept': 'application/json',
                 'Authorization': `Bearer ${token}`  

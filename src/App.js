@@ -11,6 +11,8 @@ import { SousThematiques } from './pages/sousThematiques/SousThematiques';
 import { MotsCroisés } from './pages/motsCroisés/MotsCroisés';
 import { NotificationsProvider } from './components/componentNotRetulables/mainRight/NotificationsProvider';
 import { Grammaire } from './pages/grammaires/Grammaire';
+import { MainRightAllTraduction } from './components/componentNotRetulables/mainRight/mainRightAllTraduction/MainRightAllTraduction';
+import { Traduction } from './pages/traduction/Traduction';
 
 
 function App() {
@@ -28,6 +30,7 @@ function App() {
               <Route path="/sousThematiques" element={<SousThematiques/>}/>
               <Route path="/motsCroisés" element={<MotsCroisés/>}/>
               <Route path="/grammaire" element={<Grammaire/>}/>
+              <Route path="/AllTraduction" element={<Traduction/>}/>
               <Route path="/" element={<Deconnexion />}/>
             </Routes>
         </div>

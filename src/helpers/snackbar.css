@@ -33,3 +33,14 @@
     display: inline-block !important;
     text-transform: uppercase;
   }
+  .snackbar-visible {
+    display: flex;
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    padding: 10px 20px;
+    background-color: #333;
+    color: white;
+    border-radius: 5px;
+    z-index: 1000;
+  }

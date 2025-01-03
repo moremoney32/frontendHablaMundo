@@ -55,8 +55,8 @@ border: 1px solid #0084FA1A;
 .sous_alls_grammaire{
   display:grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
-    width:"100%" !important; 
-    justify-content: space-between !important;  
+  width: calc(100% - 220px) !important;
+    /* justify-content: space-between !important;   */
   align-items: center;
   padding: 10px;
   padding-left: 15px;
@@ -73,7 +73,8 @@ border: 1px solid #0084FA1A;
   object-fit: cover;
   cursor: pointer;
   display: flex;
-  margin: auto;
+   margin: auto; 
+   transform: translate3d(10px,0,0);
 }
 .parent_icons_thematics_span1{
   position: absolute;
@@ -97,6 +98,7 @@ border: 1px solid #0084FA1A;
 .parent_icons_thematics_child2{
   font-size: 14px !important;
   cursor: pointer;
+  width: calc(100% -30px) !important;
 }
 .parent_icons_thematics_child2_grammar{
   font-size: 14px !important;
@@ -108,6 +110,7 @@ border: 1px solid #0084FA1A;
   align-items: center;
   display:flex;
   gap:15px !important;
+  width: calc(100% - 30px) !important;
 }
 .optionGrammar{
   border-bottom-left-radius: 5px;
@@ -153,6 +156,12 @@ border: 1px solid #0084FA1A;
   max-height:200px !important;
    overflow-y: auto; 
 }
+.errorGrammar{
+  position:absolute;
+  bottom: 0px;
+  left: 0;
+  color:"green"
+}
 .optionGrammar1 span{
   padding-top: 8px;
   padding-bottom: 8px;
@@ -181,6 +190,7 @@ border: 1px solid #0084FA1A;
   padding-right: 12px;
   border-radius: 5px;
   border:1px solid #0084FA;
+  cursor:pointer;
 }
 .color_grammaire{
   color:#0084FA
@@ -722,6 +732,12 @@ text-decoration: underline;
   width: 13px;
   height: 13px;
    transform: translate3d(150px,0,0);
+}
+.edit_icon_grammar {
+  cursor: pointer !important;
+  color: #888;
+  width: 13px;
+  height: 13px;
 }
 .headerEdit{
   display: flex;

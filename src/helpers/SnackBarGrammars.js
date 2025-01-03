@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import "./snackBar.css";
+import "./snackbar.css";
 
-export const snackBarss = ({ message, image, timeToHide = 3000, onClose }) => {
+export const SnackBarGrammars = ({ message, image, timeToHide = 3000, onClose }) => {
   const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
