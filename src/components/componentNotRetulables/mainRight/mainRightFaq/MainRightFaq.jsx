@@ -29,7 +29,7 @@ export const MainRightFaq = () => {
   let message1 = "Demande prise en compte";
 
   useEffect(() => {
-    fetchDataGet("https://www.backend.habla-mundo.com/api/v1/faq").then((response) => {
+    fetchDataGet("faq").then((response) => {
       setDatas(response)
     })
 
@@ -38,11 +38,11 @@ export const MainRightFaq = () => {
     const htmlContent = textareaRef.current.innerHTML;
     data.reponse = htmlContent;
     console.log(data)
-    fetchData("https://www.backend.habla-mundo.com/api/v1/faq", data).then((result) => {
+    fetchData("faq", data).then((result) => {
       if (result.success === "FAP as created") {
         snackbbar(document.querySelector("#body"), infos, message1, 2000);
         setDatas(null)
-        fetchDataGet("https://www.backend.habla-mundo.com/api/v1/faq").then((response) => {
+        fetchDataGet("faq").then((response) => {
           setDatas(response)
         })
         reset();
@@ -107,7 +107,7 @@ export const MainRightFaq = () => {
   };
 
   const handleRemoveQuestion = async (id) => {
-    const url = `https://www.backend.habla-mundo.com/api/v1/faq/${id}`;
+    const url = `https://www.develop.habla-mundo.com/api/v1/faq/${id}`;
 
     try {
       const response = await fetch(url, {

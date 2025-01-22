@@ -1,4 +1,5 @@
-export function fetchDataGetToken(url,token){
+const API_BASE_URL = process.env.REACT_APP_HABLA;
+export function fetchDataGetToken(endpoint,token){
     return new Promise((resolve, reject) => {
         const dataToSend = {
         method: 'GET',
@@ -11,7 +12,7 @@ export function fetchDataGetToken(url,token){
         credentials: "include"
       };
   
-        fetch(url,dataToSend).then((response)=>{
+        fetch(`${API_BASE_URL}/${endpoint}`,dataToSend).then((response)=>{
   
             return response.json()
   

@@ -73,7 +73,7 @@ export const MainRightTheme = () => {
         console.log(dataSend)
         try {
                   const response = await fetchDataPut(
-                    "https://www.backend.habla-mundo.com/api/v1/themes",
+                    "themes",
                     dataSend,
                     token
                   );
@@ -240,7 +240,7 @@ export const MainRightTheme = () => {
         }
     };
     useEffect(() => {
-        fetchDataGet("https://www.backend.habla-mundo.com/api/v1/themes").then((result) => {
+        fetchDataGet("themes").then((result) => {
             console.log(result)
             const response = result.sort((a, b) => a.name.localeCompare(b.name))
             setResultAllThematiques(response)
@@ -282,7 +282,7 @@ export const MainRightTheme = () => {
             setLoading(true);
 
             try {
-                const result = await fetchData("https://www.backend.habla-mundo.com/api/v1/themes", dataSend, token);
+                const result = await fetchData("themes", dataSend, token);
                 if (result.message === "the thematics is created") {
                     // snackbbar(document.querySelector("#body"), infos, result.message, 2000);
                     snackbbar(document.querySelector("#body"), infos, message1, 2000);
@@ -352,7 +352,7 @@ export const MainRightTheme = () => {
             id: id
         }
         console.log(id)
-        fetchDelete("https://www.backend.habla-mundo.com/api/v1/themes", dataSend, token).then((result) => {
+        fetchDelete("themes", dataSend, token).then((result) => {
             // console.log(result)
             if (result.message === "the thematique is deleted") {
                 //snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg", result.message, 4000);
@@ -405,6 +405,7 @@ export const MainRightTheme = () => {
                     optionName={optionName}
                     optionVisible={optionVisible}
                     rotateIcon={rotateIcon}
+                     defautClassNameOption="option"
                     defautClassName="select" />
             </div>
           

@@ -23,7 +23,7 @@ export const Deconnexion = () => {
     const onSubmit = async (data) => {
         setConnect(true)
         try {
-            const result = await fetchData("https://www.backend.habla-mundo.com/api/v1/login",data);
+            const result = await fetchData("login",data);
 
             if (result.access_token) {
                 snackbbar(document.querySelector("#body"), infos,message1, 2000);

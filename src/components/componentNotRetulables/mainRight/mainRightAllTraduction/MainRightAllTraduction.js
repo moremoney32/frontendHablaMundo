@@ -31,6 +31,7 @@ export const MainRightAllTraduction = () => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                 'Authorization': `Bearer ${token}`
             },
             body: JSON.stringify({ id: localStorage.getItem("idThematiqueTraduction") }),
         })
@@ -63,13 +64,14 @@ export const MainRightAllTraduction = () => {
         updatedLevels[levelIndex].sentences[sentenceIndex].content = value.trim();
         setLevels(updatedLevels);
     };
-    const addSentence = (levelIndex) => {
+    const addSentence = (levelIndex,lessonId) => {
         const updatedLevels = [...levels];
         const lastIndex = updatedLevels[levelIndex].sentences.length;
         const newSentence = {
-            id: `new-${Date.now()}`,
+           
             content: "",
             traduction: "",
+            lesson_id: lessonId
         };
         updatedLevels[levelIndex].sentences.push(newSentence);
         setLevels(updatedLevels);
@@ -89,7 +91,7 @@ export const MainRightAllTraduction = () => {
         console.log(data);
         setLoading(levelIndex)
         try {
-            const result = await fetchData("https://www.develop.habla-mundo.com/api/v1/sentence/update", data,token)
+            const result = await fetchData("sentence/update", data,token)
             if (result.status === 200) {
                 return snackbbar(document.querySelector("#body"), infos, "Demande prise en compte", 3000);
             }
@@ -199,7 +201,7 @@ export const MainRightAllTraduction = () => {
             <HeaderTraduction theme={title} />
             {masque && <div id="masqueTheme"></div>}
             {masqueRemove && <div id="masqueTheme"></div>}
-            {masque && <Popup h1="Suppression de la Grammaire" closePopup={closePopup} text="Voulez-vous Vraiment supprimer cette leçon de grammaire" TextRemove="Supprimer" removeLesson={handleLesson} closeLesson={closeLesson} />}
+            {masque && <Popup h1="Suppression de la Grammaire" closePopup={closePopup} text="Voulez-vous vraiment supprimer cette leçon de grammaire?" TextRemove="Supprimer" removeLesson={handleLesson} closeLesson={closeLesson} />}
             {masqueRemove && <PopupRemove h1="Suppression de toutes les lessons" closePopup={closePopup} text="Voulez-vous Vraiment supprimer toutes les lessons" TextRemove="Supprimer" removeLesson={handleThematique} closeLesson={closeTheme} />}
             <div className="parent_traduction">
                 <div className="child_traduction">
@@ -263,7 +265,7 @@ export const MainRightAllTraduction = () => {
                                         </div>
                                     ))}
                                     {level.sentences?.length < 25 && (
-                                        <div className="add-sentence-button" onClick={() => addSentence(levelIndex)}>
+                                        <div className="add-sentence-button" onClick={() => addSentence(levelIndex,level.lesson_id)}>
                                             <span></span>
                                             <span className='plusTraduction'>+</span>
                                         </div>

@@ -10,7 +10,7 @@ export const MainRightComptes = () =>{
     const [data,setData] = useState("");
       let message1 = "Demande prise en compte"
     useEffect(() =>{
-        fetchDataGetToken("https://www.backend.habla-mundo.com/api/v1/user",token).then((result) =>{
+        fetchDataGetToken("user",token).then((result) =>{
             setData(result)
         })
 },[])
@@ -28,7 +28,7 @@ export const MainRightComptes = () =>{
     }
     const handleEditable = () => {
         if (isEditable) {
-                fetchData("https://www.backend.habla-mundo.com/api/v1/update/users/admin",data,token).then((response)=>{
+                fetchData("update/users/admin",data,token).then((response)=>{
                     if(response.message === "update successful"){
                         return snackbbar(document.querySelector("#body"), infos,message1, 2000)
                     }

@@ -41,7 +41,7 @@ export const MainRightSousThematiques = () => {
         const id = {
             id: resultValue.id
         }
-        fetchData("https://www.backend.habla-mundo.com/api/v1/theme",id).then((result) => {
+        fetchData("theme",id).then((result) => {
             console.log(result)
             if(result.message === "this thematic dont have a crossword"){
                // return  snackbbar(document.querySelector("#body"), "../../../../assets/icons/infos.svg", result.message, 2000);
@@ -121,7 +121,7 @@ export const MainRightSousThematiques = () => {
             id:id
         }
         try {
-            const result = await fetchData("https://www.backend.habla-mundo.com/api/v1/word",dataId,token);
+            const result = await fetchData("word",dataId,token);
              console.log(result)
             localStorage.setItem('datas', JSON.stringify(result));
             localStorage.setItem('name', JSON.stringify(name));
@@ -193,14 +193,14 @@ export const MainRightSousThematiques = () => {
             // console.log(dataSend)
             setLoading(true);
             try {
-                const result = await fetchData("https://www.backend.habla-mundo.com/api/v1/themes", dataSend, token);
+                const result = await fetchData("themes", dataSend, token);
                 if (result.message === "the thematics is created") {
                     snackbbar(document.querySelector("#body"), infos,message1, 2000);
             
 
                     
                     setTimeout(() => {
-                        fetchData("https://www.backend.habla-mundo.com/api/v1/theme",{id:resultValue.id}).then((result) => {
+                        fetchData("theme",{id:resultValue.id}).then((result) => {
                             console.log(result)
                             setSousThematique(result)
                         })
@@ -320,6 +320,7 @@ export const MainRightSousThematiques = () => {
                         optionName={optionName}
                         optionVisible={optionVisible}
                         rotateIcon={rotateIcon}
+                        defautClassNameOption="option"
                         defautClassName="select"/>
                 </div>
                 <div className="sous_parent_main_users_main">

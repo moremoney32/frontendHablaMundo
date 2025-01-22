@@ -1,6 +1,7 @@
-export function fetchDelete(url, dataToSend,token) {
+const API_BASE_URL = process.env.REACT_APP_HABLA;
+export function fetchDelete(endpoint, dataToSend,token) {
     return new Promise((resolve, reject) => {
-        fetch(url, {
+        fetch(`${API_BASE_URL}/${endpoint}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',

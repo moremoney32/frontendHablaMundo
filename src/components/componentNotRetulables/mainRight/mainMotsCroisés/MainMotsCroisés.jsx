@@ -119,7 +119,7 @@ const handleWordlsGrille = async()=>{
   console.log(dataPush)
   setLoading(true);
   try {
-    const result = await fetchData("https://www.backend.habla-mundo.com/api/v1/words",dataPush,token);
+    const result = await fetchData("words",dataPush,token);
     console.log(result)
 
     if (result.message === "the words is created") {

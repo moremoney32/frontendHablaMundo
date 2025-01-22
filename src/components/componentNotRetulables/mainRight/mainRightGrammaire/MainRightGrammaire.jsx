@@ -40,7 +40,7 @@ export const MainRightGrammaire = () => {
     const [optionVisible, setOptionVisible] = useState(false);
     const [optionVisibleGrammar, setOptionVisibleGrammar] = useState(false);
     const [optionVisibleVisibility, setOptionVisibleVisibility] = useState(false);
-    const [optionName, setOptionName] = useState("Plus récents");
+    const [optionName, setOptionName] = useState("Ordre Aphabétique");
     const [optionNameGrammar, setOptionNameGrammar] = useState("A1");
     const [rotateIcon, setRotateIcon] = useState(false);
     const [rotateIconGrammar, setRotateIconGrammar] = useState(false);
@@ -119,7 +119,7 @@ export const MainRightGrammaire = () => {
         }
         try {
                   const response = await fetchData(
-                    "https://www.develop.habla-mundo.com/api/v1/lesson/update_title",
+                    "lesson/update_title",
                     dataSend,
                     token
                   );
@@ -354,37 +354,37 @@ export const MainRightGrammaire = () => {
         fetchDataGet(url).then((result) => {
             console.log(result);
             setDataUser(result?.data);
-            setTotalPages(result?.last_page || 1);
-            setNextPageUrl(result?.next_page_url || null);
-            setPrevPageUrl(result?.prev_page_url || null);
+            // setTotalPages(result?.last_page || 1);
+            // setNextPageUrl(result?.next_page_url || null);
+            // setPrevPageUrl(result?.prev_page_url || null);
 
-            // Récupération correcte de la page actuelle
-            const pageNumber = new URL(url).searchParams.get("page") || 1;
-            setCurrentPage(Number(pageNumber));
+            // // Récupération correcte de la page actuelle
+            // const pageNumber = new URL(url).searchParams.get("page") || 1;
+            // setCurrentPage(Number(pageNumber));
         });
     };
 
     useEffect(() => {
-        const initialUrl = "https://www.develop.habla-mundo.com/api/v1/lessons?page=1"
+        const initialUrl = "lessons"
         fetchDataByUrl(initialUrl)
     }, [])
-    const handlePageClick = (pageNumber) => {
-        const specificPageUrl = `https://www.develop.habla-mundo.com/api/v1/lessons?page=${pageNumber}`;
-        fetchDataByUrl(specificPageUrl);
-    };
-    const handleNextClick = () => {
-        if (nextPageUrl) {
-            fetchDataByUrl(nextPageUrl);
-        }
-    };
+    // const handlePageClick = (pageNumber) => {
+    //     const specificPageUrl = `https://www.develop.habla-mundo.com/api/v1/lessons?page=${pageNumber}`;
+    //     fetchDataByUrl(specificPageUrl);
+    // };
+    // const handleNextClick = () => {
+    //     if (nextPageUrl) {
+    //         fetchDataByUrl(nextPageUrl);
+    //     }
+    // };
 
-    const handlePrevClick = () => {
-        if (prevPageUrl) {
-            fetchDataByUrl(prevPageUrl);
-        }
-    };
+    // const handlePrevClick = () => {
+    //     if (prevPageUrl) {
+    //         fetchDataByUrl(prevPageUrl);
+    //     }
+    // };
     useEffect(() => {
-        fetchDataGet("https://www.backend.habla-mundo.com/api/v1/themes")
+        fetchDataGet("themes")
             .then((result) => {
                 console.log(result);
                 const transformedResponse = result
@@ -411,7 +411,7 @@ export const MainRightGrammaire = () => {
         setDataWords([])
         setThématiques(theme)
         setValue('thématique', theme);
-        fetchData("https://www.backend.habla-mundo.com/api/v1/theme", userId).then((result) => {
+        fetchData("theme", userId).then((result) => {
             console.log(result)
             return setDataWords(result)
         })
@@ -443,7 +443,7 @@ export const MainRightGrammaire = () => {
                 thematique_id: thematique_id,
             };
             console.log(dataSend)
-            const response = await fetchData("https://www.develop.habla-mundo.com/api/v1/lessons", dataSend);
+            const response = await fetchData("lessons", dataSend,token);
             console.log(response)
             if (response.status === 422) {
                 return snackbbar(document.querySelector("#body"), infos, "Cette leçon existe déjà", 3000);
@@ -491,7 +491,7 @@ export const MainRightGrammaire = () => {
                     setMasqueRemove(false)
                     snackbbar(document.querySelector("#body"), infos, "Demande prise en compte", 3000);
                     setTimeout(() => {
-                        fetchDataGet("https://www.develop.habla-mundo.com/api/v1/lessons").then((result) => {
+                        fetchDataGet("lessons").then((result) => {
                             console.log(result)
                             setDataUser(result?.data)
                         })
@@ -512,14 +512,14 @@ export const MainRightGrammaire = () => {
                 </div>
             </div>
             {masqueRemove && <div id="masqueTheme"></div>}
-            {masqueRemove && <PopupRemove h1="Suppression de la lesson." closePopup={closePopup} text="Voulez-vous Vraiment supprimer cette lesson?" TextRemove="Supprimer" removeLesson={handleThematique} closeLesson={closeTheme} />}
+            {masqueRemove && <PopupRemove h1="Suppression de la lesson." closePopup={closePopup} text="Voulez-vous vraiment supprimer cette lesson?" TextRemove="Supprimer" removeLesson={handleThematique} closeLesson={closeTheme} />}
             <div className="sous_parent_main_users_header">
                 <div className="sous_parent_main_users_header_input">
                     <input type="text" className="input_users" placeholder="Rechercher une thématique" name="checkValueThematique" onChange={(e) => {
                         setLevelSearch(false);
                         setEtatSearch(true)
                         searchElementUserName(e.target.value);
-                        if (e.target.value.length === 0) {
+                        if(e.target.value.length === 0){
                             setLevelSearch(true);
                             setEtatSearch(false)
                         }

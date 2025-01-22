@@ -102,7 +102,7 @@ export const MainRightUsers = () => {
     }, [setValue]);
 
     useEffect(() =>{
-        fetchDataGetToken("https://www.backend.habla-mundo.com/api/v1/users",token).then((result) =>{
+        fetchDataGetToken("users",token).then((result) =>{
             setDataUser(result)
             localStorage.setItem('dataUser', JSON.stringify(result));
         }).catch((error)=>{
@@ -126,7 +126,7 @@ export const MainRightUsers = () => {
     console.log(dataSend)
     setLoading(true)
     try{
-       const result = await fetchData("https://www.backend.habla-mundo.com/api/v1/send-message",dataSend,token)
+       const result = await fetchData("send-message",dataSend,token)
             if(result.message === "Notification sent successfully."){
                 return snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg", result.message, 2000)
             }
@@ -302,6 +302,7 @@ export const MainRightUsers = () => {
                         optionName={optionName}
                         optionVisible={optionVisible}
                         rotateIcon={rotateIcon}
+                        defautClassNameOption="option"
                         defautClassName="select" />
                 </div>
                 <div className="sous_parent_main_users_information">

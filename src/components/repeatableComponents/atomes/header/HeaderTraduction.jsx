@@ -30,7 +30,7 @@ export const HeaderTraduction = ({ theme }) => {
         }
         console.log(dataSend)
         setIsEditable(!isEditable);
-            fetchData("https://www.develop.habla-mundo.com/api/v1/lesson/update_title",dataSend,token).then((result) => {
+            fetchData("lesson/update_title",dataSend,token).then((result) => {
                 console.log(result)
                 if(result.status === 200){
                     snackbbar(document.querySelector("#body"),infos,"Demande prise en compte", 2000);  

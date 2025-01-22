@@ -18,7 +18,7 @@ useEffect(() => {
     }
 }, [location.pathname]);
     useEffect(() => {
-        const eventSource = new EventSource('https://backend.habla-mundo.com/api/v1/listen-message');
+        const eventSource = new EventSource('listen-message');
 
         eventSource.addEventListener('message', (event) => {
             if (event.data === "nothing") {

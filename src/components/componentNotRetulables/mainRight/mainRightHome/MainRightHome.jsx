@@ -24,7 +24,7 @@ export const MainRightHome = () => {
     // });
     const[resultAllThematiques,setResultAllThematiques] = useState(null);
     useEffect(() => {
-        const eventSource= new EventSource('https://backend.habla-mundo.com/api/v1/listen-message');
+        const eventSource= new EventSource('listen-message');
         eventSource.addEventListener('message', (event) => {
             if (event.data === "nothing") {
                 return;
@@ -70,20 +70,9 @@ export const MainRightHome = () => {
         }, 500);
     }
     let counter = 10
-    // useEffect(() => {
-    //     fetchDataGet("https://www.backend.habla-mundo.com/api/v1/themes").then((result) => {
-    //         if(result<=counter){
-    //             return   setResultAllThematiques(result)
-    //         }
-    //         else{
-    //             result.slice(-counter)
-    //             return  setResultAllThematiques(result)
-    //         }
-           
-    //     })
-    // }, [])
+
     useEffect(() => {
-        fetchDataGet("https://www.backend.habla-mundo.com/api/v1/themes").then((result) => {
+        fetchDataGet("themes").then((result) => {
             if (result.length <= counter) {
                 // Si le tableau a moins ou exactement "counter" éléments, afficher tout
                 return setResultAllThematiques(result.reverse().slice());
@@ -95,7 +84,7 @@ export const MainRightHome = () => {
         });
     }, [counter]);
     useEffect(() =>{
-            fetchDataGet("https://www.backend.habla-mundo.com/api/v1/statistique").then((result) =>{
+            fetchDataGet("statistique").then((result) =>{
                // const pourcent = (result?.suscribes * 100) / result?.users
                //const pourcent = Math.ceil((result?.suscribes * 100) / result?.users);
                 console.log(result)

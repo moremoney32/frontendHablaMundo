@@ -51,7 +51,7 @@ export const MainRightMessages = () => {
 
 
     useEffect(() => {
-        fetchDataGetToken('https://www.backend.habla-mundo.com/api/v1/notifications', token).then((response) => {
+        fetchDataGetToken('notifications', token).then((response) => {
             //console.log(response)
             const compareDate = response.sort((a, b) => {
                 const dateA = new Date(a.created_at);
@@ -119,7 +119,7 @@ export const MainRightMessages = () => {
         const dataSend = {
             id: idMessages
         }
-        fetchData("https://www.backend.habla-mundo.com/api/v1/notifications/read", dataSend, token).then((response) => {
+        fetchData("notifications/read", dataSend, token).then((response) => {
             if (response.message === "Notification marked as read") {
                 console.log(true)
                 setActiveStates((prevState) => ({
@@ -148,7 +148,7 @@ export const MainRightMessages = () => {
         }
         setLoading(true)
         try {
-            const result = await fetchData("https://www.backend.habla-mundo.com/api/v1/send-message", dataSend, token)
+            const result = await fetchData("send-message", dataSend, token)
             if (result.message === "Notification sent successfully.") {
                 snackbbar(document.querySelector("#body"), infos, message1, 2000);
                 reset();
@@ -177,7 +177,7 @@ export const MainRightMessages = () => {
         }
         setLoading(true)
         try {
-            const result = await fetchData("https://www.backend.habla-mundo.com/api/v1/send-notification-message", dataSend, token)
+            const result = await fetchData("send-notification-message", dataSend, token)
             console.log(result)
             if (result.success === "Jobs created successfully!") {
                 snackbbar(document.querySelector("#body"), infos, message1, 2000);
@@ -257,12 +257,12 @@ export const MainRightMessages = () => {
             id: [dataId]
         }
         console.log(data)
-        fetchDelete("https://www.backend.habla-mundo.com/api/v1/notifications", data, token).then((response) => {
+        fetchDelete("notifications", data, token).then((response) => {
             console.log(response)
             if (response.status === "200") {
                 snackbbar(document.querySelector("#body"), infos, message1, 2000);
                 setTimeout(() => {
-                    fetchDataGetToken('https://www.backend.habla-mundo.com/api/v1/notifications', token).then((response) => {
+                    fetchDataGetToken('notifications', token).then((response) => {
                         //console.log(response)
                         const compareDate = response.sort((a, b) => {
                             const dateA = new Date(a.created_at);
@@ -300,12 +300,12 @@ export const MainRightMessages = () => {
         }
         console.log(data)
         console.log(selectedMessages)
-        fetchDelete("https://www.backend.habla-mundo.com/api/v1/notifications", data, token).then((response) => {
+        fetchDelete("notifications", data, token).then((response) => {
             console.log(response)
             if (response.status === "200") {
                 snackbbar(document.querySelector("#body"), infos, message1, 2000);
                 setTimeout(() => {
-                    fetchDataGetToken('https://www.backend.habla-mundo.com/api/v1/notifications', token).then((response) => {
+                    fetchDataGetToken('notifications', token).then((response) => {
                         const compareDate = response.sort((a, b) => {
                             const dateA = new Date(a.created_at);
                             const dateB = new Date(b.created_at);

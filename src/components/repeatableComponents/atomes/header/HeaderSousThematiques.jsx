@@ -29,7 +29,7 @@ export const HeaderSousThematiques = ({ theme, updateSousThematique }) => {
         }
         console.log(dataSend)
         setIsEditable(!isEditable);
-        fetchDataPut("https://www.backend.habla-mundo.com/api/v1/themes",dataSend,token).then((result) => {
+        fetchDataPut("themes",dataSend,token).then((result) => {
             console.log(result)
             if(result.message === "successful update"){
                 snackbbar(document.querySelector("#body"),infos,message1, 2000);  

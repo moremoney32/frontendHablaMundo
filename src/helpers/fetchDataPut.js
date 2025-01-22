@@ -1,6 +1,7 @@
-export function fetchDataPut(url, dataToSend,token) {
+const API_BASE_URL = process.env.REACT_APP_HABLA;
+export function fetchDataPut(endpoint, dataToSend,token) {
     return new Promise((resolve, reject) => {
-        fetch(url, {
+        fetch(`${API_BASE_URL}/${endpoint}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',

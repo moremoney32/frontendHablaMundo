@@ -30,7 +30,7 @@ export const HeaderMotsCroisés = ({ theme1, theme2}) => {
             id:id,
         }
         console.log(dataSend)
-        fetchDelete("https://www.backend.habla-mundo.com/api/v1/crosswords",dataSend,token).then((result) =>{
+        fetchDelete("crosswords",dataSend,token).then((result) =>{
             console.log(result)
             if (result.message === "the crossword is deleted") {
                 snackbbar(document.querySelector("#body"), infos,message1, 2000);
@@ -50,7 +50,7 @@ export const HeaderMotsCroisés = ({ theme1, theme2}) => {
             name:theme2Ref.current.innerText
         }
         setIsEditable(!isEditable);
-        fetchDataPut("https://www.backend.habla-mundo.com/api/v1/crosswords",dataSend,token).then((result) => {
+        fetchDataPut("crosswords",dataSend,token).then((result) => {
             console.log(result)
             if(result.message === "Updated successfully"){
                 snackbbar(document.querySelector("#body"),infos,message1, 2000);  
