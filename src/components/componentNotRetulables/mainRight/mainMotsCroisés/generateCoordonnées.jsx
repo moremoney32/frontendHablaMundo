@@ -85,7 +85,7 @@ export const generateCrossword = (words) => {
 
     // Filtrer les mots de plus de 15 caractères
     const filteredWords = words.filter(word => {
-        if (word.length > 15) {
+        if (word.length > 60) {
             reste.push(word);
             return false;
         }

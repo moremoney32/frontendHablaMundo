@@ -38,6 +38,8 @@
     color: white;
     font-size:15px;
     cursor: pointer;
+    position: fixed;
+    right:1.3em;
 }
 .sous_parent_main_users_information_list{
     display: flex;
