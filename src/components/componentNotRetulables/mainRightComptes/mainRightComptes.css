@@ -85,6 +85,39 @@
     width: 15px;
     height: 15px;
   }
+  /* .sous_description_img{
+    display: flex;
+    gap: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #909090;
+    padding-left: 20px;
+    position: relative;
+  } */
+  .edit_textarea{
+    display: flex;
+    padding-left: 7px;
+    padding-right: 7px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    gap: 5px;
+    border: 1px solid #BEBEBE;
+    outline: none;
+    border-radius: 5px;
+    align-items: center;
+    cursor: pointer;
+    position: absolute;
+    right: 20px;
+    top: 5px;
+  }
+  .edit_textarea img{
+    width: 13px;
+    height: 13px;
+    
+  }
+  .edit_textarea span{
+    font-size: 12px;  
+  }
   .sous_parent_main2_main{
     display:grid;
     grid-template-columns: 1fr 1fr 1fr;
@@ -111,10 +144,47 @@
     width: 100%;
     padding-left:20px ;
     padding-right:20px ;
-    padding-top:25px;
     padding-bottom: 20px;
     border-radius: 5px;
     display: flex;
-    justify-content: space-between;
-    border: 1px solid grey;
+    gap: 30px;
+    align-items: center;
+    
+  }
+  .parent_confidentialite{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 50%;
+  }
+  .link_a{
+    width: 300px;
+  }
+  .save_button_confidentialite{
+    text-align: center;
+    border: none;
+    border-radius:5px;
+    outline: none;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    color: white;
+    background: #0084FA;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  .spinner {
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top: 3px solid white;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    animation: spin 0.8s linear infinite;
+    display: inline-block;
+    margin-right: 5px;
+    vertical-align: middle;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
   }

@@ -17,7 +17,7 @@ export const HeaderTraduction = ({ theme }) => {
         navigate('/grammaire');
     };
     const handleNavigateSousTheme = () => {
-        navigate('/grammaire', { state: { filter: "etat", fromHome: true } });
+        navigate('/grammaire', { state: { filter: "etatB", fromHome: true } });
     };
     const handleEditable = () => {
         setIsEditable(!isEditable);
@@ -42,7 +42,7 @@ export const HeaderTraduction = ({ theme }) => {
     return (
         <div className="header_main_sous__parent_thematique">
             <div className="header_main_sous_thematique">
-                <span className="header_main_1" onClick={handleNavigateTheme}>Leçon de grammaire</span>
+                <span className="header_main_1" onClick={handleNavigateTheme}>Grammaire</span>
                 <FontAwesomeIcon icon={faAngleRight} className="header_main_2_icons" />
                 {/* <span className="header_main_3">{theme}</span> */}
                 {isEditable ? <span className="header_main_3" contentEditable ref={theme2Ref}>{theme}</span> : <span className="header_main_3" disable>{theme}</span>}

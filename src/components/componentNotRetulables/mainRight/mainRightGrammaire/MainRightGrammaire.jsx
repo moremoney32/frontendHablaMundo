@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { HeaderTitleMain } from "../../../repeatableComponents/atomes/header/HeaderTitleMain"
 import { faClose } from "@fortawesome/free-solid-svg-icons/faClose";
 import gras from "../../../../assets/icons/gras.png";
@@ -21,7 +21,7 @@ import { fetchDataGet } from "../../../../helpers/fetchDataGet";
 import { formatTime } from "../../../../helpers/formatDate";
 import { fetchDelete } from "../../../../helpers/fetchDelete";
 import { useSearchNames } from "../../../../customsHooks/useSearchNames";
-import { faAngleLeft, faAngleRight, faEdit, faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faAngleLeft, faAngleRight, faEdit, faSearch,faAngleDown } from "@fortawesome/free-solid-svg-icons";
 import { useSearchGrammar } from "../../../../customsHooks/userSearchGrammar";
 import { useSearchWords } from "../../../../customsHooks/useSearchWords";
 import { snackbbar } from "../../../../helpers/snackbars";
@@ -30,9 +30,11 @@ import closePopup from "../../../../assets/icons/closePopup.png";
 import "../mainRightAllTraduction/mainRightAllTraduction.css"
 import { Pagination } from "../../../repeatableComponents/atomes/pagination/Pagination";
 import "./mainRightGrammaire.css"
+import {  useSearchGrammarTheme } from "../../../../customsHooks/userSearchGrammarTheme";
 
 export const MainRightGrammaire = () => {
     const [etat, setEtat] = useState(false);
+    const [etatB, setEtatB] = useState(false);
     const [loading, setLoading] = useState(false);
     const [masqueRemove, setMasqueRemove] = useState(false);
     const [userThemeId, setUserThemeId] = useState("");
@@ -42,7 +44,8 @@ export const MainRightGrammaire = () => {
     const [optionVisibleVisibility, setOptionVisibleVisibility] = useState(false);
     const [optionName, setOptionName] = useState("Ordre Aphabétique");
     const [optionNameGrammar, setOptionNameGrammar] = useState("A1");
-    const [rotateIcon, setRotateIcon] = useState(false);
+    const [rotateIcon,setRotateIcon] = useState(false);
+    const [rotateIconWords,setRotateIconWords] = useState(false);
     const [rotateIconGrammar, setRotateIconGrammar] = useState(false);
     const [levelSearch, setLevelSearch] = useState(true);
     const [etatSearch, setEtatSearch] = useState(false);
@@ -55,14 +58,17 @@ export const MainRightGrammaire = () => {
     const [resultAllThematiques, setResultAllThematiques] = useState([]);
     const [searchResults, searchElementUserName] = useSearchNames(dataUser);
     const [searchResultsGrammar, searchElementUserNameGrammar] = useSearchGrammar(resultAllThematiques);
+    const [searchThemeGrammar, searchElementTheme] = useSearchGrammarTheme(dataUser);
     const [searchResultsWords, searchElementUserNameWords] = useSearchWords(dataWords);
+    const [isLoading, setIsLoading] = useState(false);
     const location = useLocation();
 
     /******edit Name */
-    const [crossword_id, setCrossword_id] = useState("");
+    //   const [crossword_id, setCrossword_id] = useState("");
     const [thematique_id, setThematique_id] = useState("");
     const [titleGrammaire, setTitleGrammaire] = useState("");
     const [thématique, setThématiques] = useState("");
+    const [selectValue, setSelectValue] = useState("");
     const [words, setWords] = useState("");
     const [select, setSelect] = useState(false);
     const [selectWords, setSelectWords] = useState(false);
@@ -70,11 +76,13 @@ export const MainRightGrammaire = () => {
     const selectRefGrammar = useRef(null)
     const textareaRef = useRef(null);
     const fileInputRef = useRef(null);
+     const [crossword_id, setCrossword_id] = useState([]);
     const [content, setContent] = useState(null);
     const [totalPages, setTotalPages] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
     const [nextPageUrl, setNextPageUrl] = useState(null);
     const [prevPageUrl, setPrevPageUrl] = useState(null);
+    // const [etatRemove, setEtatRemove] = useState(false);
     const handleChangePages = (newPage) => {
         if (newPage > 0 && newPage <= totalPages) {
             setCurrentPage(newPage)
@@ -83,6 +91,7 @@ export const MainRightGrammaire = () => {
 
 
     const selectRef = useRef(null);
+    const selectWordsRef = useRef(null);
     const selectRefLanguages = useRef(null);
     const selectRefVisibility = useRef(null);
     const dataSelectStatus = ["Ordre Aphabétique", "Plus récents", "Moins récents"];
@@ -110,27 +119,27 @@ export const MainRightGrammaire = () => {
                 ? { ...item, title: editingData.title }
                 : item
         );
-    
+
         setDataUser(updatedDataUser);
-    
+
         const dataSend = {
             title: editingData.title,
             thematique_id: editingId,
         }
         try {
-                  const response = await fetchData(
-                    "lesson/update_title",
-                    dataSend,
-                    token
-                  );
-        console.log(response)
-                  if (response.status === 200) {
-                    snackbbar(document.querySelector('#body'), infos, 'Demande prise compte', 3000);
-                    setEtatEdit(false);
-                  }
-                } catch (error) {
-                  console.error(error);
-                }
+            const response = await fetchData(
+                "lesson/update_title",
+                dataSend,
+                token
+            );
+            console.log(response)
+            if (response.status === 200) {
+                snackbbar(document.querySelector('#body'), infos, 'Demande prise compte', 3000);
+                setEtatEdit(false);
+            }
+        } catch (error) {
+            console.error(error);
+        }
 
         // Fermer la popup
     };
@@ -153,9 +162,11 @@ export const MainRightGrammaire = () => {
             setOptionVisible(true);
         }
     };
-    useEffect(() => {
-        if (location.state?.fromHome && location.state?.filter) {
-            setEtat(true)
+
+    useEffect(()=>{
+        if (location.state?.fromHome && location.state?.filter === "etatB"){
+            setEtatB(true);
+            setEtat(true);
         }
     }, [location.state]);
     const changeIconGrammar = () => {
@@ -199,6 +210,7 @@ export const MainRightGrammaire = () => {
             setOptionVisibleLanguages(true);
         }
     };
+
     const handleChildClick = (value) => {
         if (value === "Ordre Aphabétique") {
             const select = selectRef.current
@@ -208,7 +220,6 @@ export const MainRightGrammaire = () => {
             select.style.borderBottomRightRadius = "5px"
             select.style.borderBottomLeftRadius = "5px"
             const compareAphabetiques = dataUser.sort((a, b) => a.title.localeCompare(b.title))
-            console.log(compareAphabetiques)
             return setResultAllThematiques(compareAphabetiques)
         }
         if (value === "Moins récents") {
@@ -219,14 +230,11 @@ export const MainRightGrammaire = () => {
             select.style.borderBottomRightRadius = "5px"
             select.style.borderBottomLeftRadius = "5px"
             const compareDate = dataUser.sort((a, b) => {
-                // Convertir les chaînes de caractères en objets Date
                 const dateA = new Date(a.created_at);
                 const dateB = new Date(b.created_at);
-                // difference
                 return dateA - dateB;
             });
-            console.log(compareDate)
-            setResultAllThematiques(compareDate)
+            return setResultAllThematiques(compareDate)
         }
         if (value === "Plus récents") {
             const select = selectRef.current
@@ -240,8 +248,7 @@ export const MainRightGrammaire = () => {
                 const dateB = new Date(b.created_at);
                 return dateB - dateA;
             });
-            console.log(compareDate)
-            setResultAllThematiques(compareDate)
+            return setResultAllThematiques(compareDate)
         }
     };
     const handleChildClickGrammar = (value) => {
@@ -347,48 +354,48 @@ export const MainRightGrammaire = () => {
         setEtat(true)
     }
     const close = () => {
-        setEtat(false)
-    }
+        setEtat(false);
+        if (etatB) {
+            navigate(-1);
+        }
+    };
+
 
     const fetchDataByUrl = (url) => {
-        fetchDataGet(url).then((result) => {
-            console.log(result);
-            setDataUser(result?.data);
-            // setTotalPages(result?.last_page || 1);
-            // setNextPageUrl(result?.next_page_url || null);
-            // setPrevPageUrl(result?.prev_page_url || null);
+        fetchDataGet(url)
+            .then((result) => {
+                console.log(result);
+                // const sortedData = result.data.sort( 
+                //     (a, b) => new Date(b.created_at) - new Date(a.created_at)
+                // );
+                const sortedData = result.data
+                    ? result.data.sort((a, b) => a.title.localeCompare(b.title))
+                    : [];
+                const uniqueData = Array.from(
+                    new Map(sortedData.map((item) => [item.title, item])).values()
+                );
+                console.log(uniqueData)
 
-            // // Récupération correcte de la page actuelle
-            // const pageNumber = new URL(url).searchParams.get("page") || 1;
-            // setCurrentPage(Number(pageNumber));
-        });
+                setDataUser(uniqueData);
+            })
+            .catch((error) => {
+                console.error("Erreur lors de la récupération des données :", error);
+            });
     };
+
+
 
     useEffect(() => {
         const initialUrl = "lessons"
         fetchDataByUrl(initialUrl)
     }, [])
-    // const handlePageClick = (pageNumber) => {
-    //     const specificPageUrl = `https://www.develop.habla-mundo.com/api/v1/lessons?page=${pageNumber}`;
-    //     fetchDataByUrl(specificPageUrl);
-    // };
-    // const handleNextClick = () => {
-    //     if (nextPageUrl) {
-    //         fetchDataByUrl(nextPageUrl);
-    //     }
-    // };
 
-    // const handlePrevClick = () => {
-    //     if (prevPageUrl) {
-    //         fetchDataByUrl(prevPageUrl);
-    //     }
-    // };
     useEffect(() => {
         fetchDataGet("themes")
             .then((result) => {
                 console.log(result);
                 const transformedResponse = result
-                    .sort((a, b) => a.name.localeCompare(b.name)) // Sort by name
+                    .sort((a, b) => a.name.localeCompare(b.name))
                     .map((item) => ({
                         id: item.id,
                         name: item.name,
@@ -415,18 +422,32 @@ export const MainRightGrammaire = () => {
             console.log(result)
             return setDataWords(result)
         })
-
     };
 
-
-    const handleChildClickWords = (words, id) => {
-        setCrossword_id(id);
+    const handleSelectJuridictions = () => {
+        let select = selectWordsRef.current
+        setRotateIconWords(!rotateIconWords);
+        if (rotateIconWords){
+            select.style.borderBottomRightRadius = "10px";
+            select.style.borderBottomLeftRadius = "10px";
+            setSelectWords(false);
+        } else {
+            select.style.borderBottomRightRadius = "0px";
+            select.style.borderBottomLeftRadius = "0px";
+            setSelectWords(true);
+        }
+    }
+    const handleChildClickWords =(value,id)=>{
+        if (!words.includes(value)){
+            // Ajouter la nouvelle juridiction à celles déjà sélectionnées, séparées par des virgules
+            setWords(prevJuridictions => prevJuridictions ? `${prevJuridictions}, ${value}` : value);
+            setCrossword_id(prevIds => [...prevIds, id]);
+        }
         setSelectWords(false);
-        setWords(words);
-        setValue('words', words);
     };
-
-
+   
+       
+    
     const onSubmit = async (data) => {
         const htmlContent = textareaRef.current.innerHTML;
         data.reponse = htmlContent;
@@ -439,11 +460,11 @@ export const MainRightGrammaire = () => {
                 title: data.title,
                 level: optionNameGrammar,
                 description: htmlContent,
-                crossword_id: crossword_id,
+                crossword_ids: crossword_id,
                 thematique_id: thematique_id,
             };
             console.log(dataSend)
-            const response = await fetchData("lessons", dataSend,token);
+            const response = await fetchData("lessons", dataSend, token);
             console.log(response)
             if (response.status === 422) {
                 return snackbbar(document.querySelector("#body"), infos, "Cette leçon existe déjà", 3000);
@@ -463,7 +484,12 @@ export const MainRightGrammaire = () => {
     const handleDetails = (id) => {
         localStorage.setItem("idThematiqueTraduction", id);
         navigate("/AllTraduction");
+        // setTimeout(() => {
+        //     // navigate("/sousThematiques");
+        //     window.open("/AllTraduction", "_blank");
+        // }, 500);
     }
+   
     const closeTheme = () => {
         setMasqueRemove(false)
     }
@@ -472,10 +498,13 @@ export const MainRightGrammaire = () => {
         setUserThemeId(id)
     }
     const handleThematique = async () => {
+        setIsLoading(true); 
+
         const data = {
             thematique_id: userThemeId
-        }
-        fetch('https://www.develop.habla-mundo.com/api/v1/lesson', {
+        };
+
+        fetch('https://www.backend.habla-mundo.com/api/v1/lesson', {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -486,40 +515,47 @@ export const MainRightGrammaire = () => {
         })
             .then((response) => response.json())
             .then((result) => {
-                console.log(result)
-                if (result.status === 404) {
-                    setMasqueRemove(false)
-                    snackbbar(document.querySelector("#body"), infos, "Demande prise en compte", 3000);
+                console.log(result);
+                if (result.status === 200) {
+                   return snackbbar(document.querySelector("#body"), infos, "Demande prise en compte", 3000),setMasqueRemove(false),
                     setTimeout(() => {
-                        fetchDataGet("lessons").then((result) => {
-                            console.log(result)
-                            setDataUser(result?.data)
-                        })
-                    }, 2000)
+                        fetchDataByUrl("lessons");
+                    }, 2000);
                 }
             })
-            .catch((error) => console.error('Erreur lors de la récupération des données :', error));
-    }
-
-
+            .catch((error) => console.error('Erreur lors de la récupération des données :', error))
+            .finally(() => setIsLoading(false)); 
+    };
+ 
     return (
         <div className="parent_main">
             <div className="title_main">
-                <HeaderTitleMain h1="Grammaire" />
-                <div className="update_theme" onClick={checkTheme}>
+                <HeaderTitleMain h1="Grammaire"/>
+                {/* <div className="update_theme" onClick={checkTheme}>
                     <span>+</span>
                     <span>Ajouter une leçon</span>
-                </div>
+                </div> */}
             </div>
             {masqueRemove && <div id="masqueTheme"></div>}
-            {masqueRemove && <PopupRemove h1="Suppression de la lesson." closePopup={closePopup} text="Voulez-vous vraiment supprimer cette lesson?" TextRemove="Supprimer" removeLesson={handleThematique} closeLesson={closeTheme} />}
+            {/* {masqueRemove && <PopupRemove h1="Suppression de la lesson." closePopup={closePopup} text="Voulez-vous vraiment supprimer cette lesson?" TextRemove="Supprimer" removeLesson={handleThematique} closeLesson={closeTheme} />} */}
+            {masqueRemove && (
+                <PopupRemove
+                    h1="Suppression de la leçon."
+                    closePopup={closePopup}
+                    text="Voulez-vous vraiment supprimer cette leçon ?"
+                    TextRemove="Supprimer"
+                    removeLesson={handleThematique}
+                    isLoading={isLoading}
+                />
+            )}
             <div className="sous_parent_main_users_header">
                 <div className="sous_parent_main_users_header_input">
-                    <input type="text" className="input_users" placeholder="Rechercher une thématique" name="checkValueThematique" onChange={(e) => {
+                    <input type="text" className="input_users" placeholder="Rechercher une thématique ou une leçon de grammaire" name="checkValueThematique" onChange={(e) => {
+                         const searchValue = e.target.value.toLowerCase();
                         setLevelSearch(false);
                         setEtatSearch(true)
-                        searchElementUserName(e.target.value);
-                        if(e.target.value.length === 0){
+                        searchElementTheme(searchValue);
+                        if (e.target.value.length === 0) {
                             setLevelSearch(true);
                             setEtatSearch(false)
                         }
@@ -528,7 +564,7 @@ export const MainRightGrammaire = () => {
                         <img src={search} alt="" className="search_users" />
                     </div>
                 </div>
-                <Select
+                {/* <Select
                     dataSelectStatus={dataSelectStatus}
                     changeIcon={changeIcon}
                     handleChildClick={handleChildClick}
@@ -537,15 +573,19 @@ export const MainRightGrammaire = () => {
                     optionVisible={optionVisible}
                     rotateIcon={rotateIcon}
                     defautClassNameOption="option"
-                    defautClassName="select" />
+                    defautClassName="select" /> */}
+                <div className="update_theme1" onClick={checkTheme}>
+                    <span>+</span>
+                    <span>Ajouter une leçon</span>
+                </div>
             </div>
 
-            <div className="alls_thematics">
+            <div className="alls_thematics-grammar">
                 {/* Liste des thématiques */}
-                {levelSearch && dataUser?.reverse().slice().map((result) => (
+                {levelSearch && dataUser?.map((result) => (
                     <div
                         key={result.id}
-                        className="sous_alls_grammaire"
+                        className="sous_alls_grammaire1"
                     >
                         <span
                             className="parent_icons_thematics_child2 color_grammaire"
@@ -554,27 +594,23 @@ export const MainRightGrammaire = () => {
                         </span>
                         <span className="parent_icons_thematics_child2">
                             {result.thematique_name}
+                        </span>
+                        <span className="sentences_grammar">
+                            {result.sentences.length} phrases
                         </span>
                         <span className="parent_icons_thematics_child2">
                             créé {formatTime(result.created_at)}
                         </span>
                         <div className="parent_icons_grammaire_child2">
-                            {/* <div className="child-grammaire" onClick={() => handleDetails(result.thematique_id)}> */}
-                            {/* <span className="nameDetails">
-                                    Details
-                                </span>
-                                <img src={next} alt="next_words" className="next_words" /> */}
                             <FontAwesomeIcon icon={faEdit} className="edit_icon_grammar" onClick={() => handleEdit(result.thematique_id, result.title)} />
-
-                            {/* </div> */}
                             <img src={remove} alt="remove_words" className="remove_words" onClick={() => openPopup(result.thematique_id)} />
                         </div>
                     </div>
                 ))}
-                {etatSearch && searchResults?.map((result) => (
+                {etatSearch && searchThemeGrammar?.map((result) => (
                     <div
                         key={result.id}
-                        className="sous_alls_grammaire"
+                        className="sous_alls_grammaire1"
                     >
                         <span
                             className="parent_icons_thematics_child2 color_grammaire"
@@ -583,6 +619,9 @@ export const MainRightGrammaire = () => {
                         </span>
                         <span className="parent_icons_thematics_child2">
                             {result.thematique_name}
+                        </span>
+                        <span className="sentences_grammar">
+                            {result.sentences.length} phrases
                         </span>
                         <span className="parent_icons_thematics_child2">
                             créé {formatTime(result.created_at)}
@@ -633,8 +672,8 @@ export const MainRightGrammaire = () => {
             )}
 
             <div className="sous_parent_main_thematique">
-                {etat && <div id="masqueTheme"></div>}
-                {etat && <form id="answer_client_theme_grammaire" onSubmit={handleSubmit(onSubmit)}>
+                {etat || etatB ? (<div id="masqueTheme"></div>) : null}
+                {etat || etatB ? (<form id="answer_client_theme_grammaire" onSubmit={handleSubmit(onSubmit)}>
                     <FontAwesomeIcon icon={faClose} className="close_theme" onClick={close} />
                     <span className="title">CREATION D'UNE LECON DE GRAMMAIRE</span>
                     <div className="answer_client_theme2">
@@ -676,13 +715,12 @@ export const MainRightGrammaire = () => {
                                 defaultValue={thématique}
                                 {...register("thématique", { required: "La thématique est obligatoire" })}
                                 onBlur={() => {
-                                    // Optionnel : Masquer les options si l'utilisateur sort du champ
-                                    setTimeout(() => setSelect(false), 200); // Temps pour permettre le clic sur les options
+                                    setTimeout(() => setSelect(false), 200);
                                 }}
                                 onChange={(e) => {
                                     searchElementUserNameGrammar(e.target.value);
                                     setSelect(true);
-                                    register('thématique').onChange(e); // Access onChange from register
+                                    register('thématique').onChange(e);
                                 }}
                             />
                             {errors.thématique && <span className="error">{errors.thématique.message}</span>}
@@ -700,28 +738,27 @@ export const MainRightGrammaire = () => {
                             )}
                         </div>
 
-                        <div className="space-signup">
-                            <label htmlFor="words">Mot croisés</label>
+                        <div className="space-signup" onClick={handleSelectJuridictions} ref={selectWordsRef}>
+                            <label htmlFor="words">Listes de mots</label>
                             <input
                                 type="text"
                                 name="words"
-                                defaultValue={words}
-                                {...register("words", { required: "Le mot croisé est obligatoire" })}
-                                onFocus={() => setSelectWords(true)}
-                                onBlur={() => {
-                                    // Optionnel : Masquer les options si l'utilisateur sort du champ
-                                    setTimeout(() => setSelectWords(false), 200); // Temps pour permettre le clic sur les options
-                                }}
+                                value={words}
                                 onChange={(e) => {
-                                    searchElementUserNameWords(e.target.value);
-                                    register('words').onChange(e); // Access onChange from register
-                                }}
+                                    setWords(e.target.value)
+                                    register('words').onChange(e);
+                                    if (words.length === 1) {
+        
+                                        setCrossword_id([])
+                                    }
+                                    console.log(words)}}
                             />
-                            {errors.words && <span className="error">{errors.words.message}</span>}
+                                <FontAwesomeIcon icon={faAngleDown} className="iconWords"  style={{transform: rotateIconWords && "rotate(180deg)" }}/>
+                             {errors.words && <span className="error">{errors.words.message}</span>} 
 
                             {selectWords && (
                                 <div className="optionGrammar1">
-                                    {searchResultsWords.map((infosUsers) => {
+                                    {dataWords.map((infosUsers) => {
                                         return (
                                             <span key={infosUsers.id} onClick={() => handleChildClickWords(infosUsers.name, infosUsers.id)}>
                                                 {infosUsers.name}
@@ -769,7 +806,7 @@ export const MainRightGrammaire = () => {
                     </div>
 
                     {loading ? <button type="submit" className="button_theme">En cours ...</button> : <button type="submit" className="button_theme">Génerer les phrases</button>}
-                </form>}
+                </form>) : null}
             </div>
         </div>
     )

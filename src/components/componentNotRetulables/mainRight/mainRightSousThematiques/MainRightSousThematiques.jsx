@@ -312,7 +312,11 @@ export const MainRightSousThematiques = () => {
                             <img src={search} alt="" className="search_users" />
                         </div>
                     </div>
-                    <Select
+                    <div className="update_theme_sous_thematique">
+                <span className="update_theme_sous_thematique_span1">+</span>
+                <span onClick={updateSousThematique} className="update_theme_sous_thematique_span2">Ajouter une sous thématique</span>
+            </div>
+                    {/* <Select
                         dataSelectStatus={dataSelectStatus}
                         changeIcon={changeIcon}
                         handleChildClick={handleChildClick}
@@ -321,7 +325,7 @@ export const MainRightSousThematiques = () => {
                         optionVisible={optionVisible}
                         rotateIcon={rotateIcon}
                         defautClassNameOption="option"
-                        defautClassName="select"/>
+                        defautClassName="select"/> */}
                 </div>
                 <div className="sous_parent_main_users_main">
                     {

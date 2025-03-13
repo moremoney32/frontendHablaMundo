@@ -25,14 +25,14 @@ export const Header = () => {
                 <img src={hablamundo} alt="hablamundo" />
             </div>
             <div className="header_right">
-                <div className="parent_notifications">
+                {/* <div className="parent_notifications">
                    <img src={notifications} alt="notifications" className="notifications_img" onClick={notificationsImg}/>
                  {
                         notificationsCount?.length > 0 && (
                             <span className="counter_notifications">{notificationsCount.length}</span>
                         )
                     } 
-                </div>
+                </div> */}
             </div>
         </div>
     );

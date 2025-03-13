@@ -10,17 +10,18 @@ export function useSearchNames(arrayInformation) {
       timeOutId = setTimeout(()=>{
         const searchName = () => {
           return new Promise((resolve) => {
-            const searchName = arrayInformation.filter((info) => info.title);
-            const searchNamesInfos = searchName.filter((info) => {
-              if ( info.title.toLowerCase().includes(userInformation.toLowerCase())) {
-                return info;
+            const searchName = arrayInformation.filter((info) => info.name);
+            const searchNamesInfos = arrayInformation.filter((info) => {
+              
+              if (info.name && info.name.toLowerCase().includes(userInformation.toLowerCase())) {
+                return true;
               }
+              return false;
             });
             return resolve(searchNamesInfos);
           });
         };
-       
-  
+    
        
         Promise.all([searchName()]).then((response) => {
           const results = [...response[0]];

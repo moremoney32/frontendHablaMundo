@@ -4,6 +4,7 @@ import "./mainRightAllTraduction.css"
 import { HeaderTraduction } from '../../../repeatableComponents/atomes/header/HeaderTraduction';
 import removeTraduction from "../../../../assets/icons/removeTraduction.png"
 import downTraduction from "../../../../assets/icons/downTraduction.png"
+import reset from "../../../../assets/icons/reset.png"
 import { fetchData } from '../../../../helpers/fetchData';
 import { snackbbar } from '../../../../helpers/snackbars';
 import { useNavigate } from "react-router-dom";
@@ -25,13 +26,14 @@ export const MainRightAllTraduction = () => {
     const [loadingButtonRemove, setLoadingButtonRemove] = useState(false);
     const [expandedLevel, setExpandedLevel] = useState(null);
     const token = localStorage.getItem("token");
+    console.log(token)
 
     useEffect(() => {
-        fetch('https://www.develop.habla-mundo.com/api/v1/lesson', {
+        fetch('https://www.backend.habla-mundo.com/api/v1/lesson', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                 'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${token}`
             },
             body: JSON.stringify({ id: localStorage.getItem("idThematiqueTraduction") }),
         })
@@ -39,6 +41,7 @@ export const MainRightAllTraduction = () => {
             .then((result) => {
                 console.log(result)
                 if (result?.data) {
+                    console.log(result?.data)
                     return setLevels(result?.data),
                         setTitle(result?.title)
                 }
@@ -64,20 +67,29 @@ export const MainRightAllTraduction = () => {
         updatedLevels[levelIndex].sentences[sentenceIndex].content = value.trim();
         setLevels(updatedLevels);
     };
-    const addSentence = (levelIndex,lessonId) => {
-        const updatedLevels = [...levels];
-        const lastIndex = updatedLevels[levelIndex].sentences.length;
-        const newSentence = {
-           
-            content: "",
-            traduction: "",
-            lesson_id: lessonId
-        };
-        updatedLevels[levelIndex].sentences.push(newSentence);
-        setLevels(updatedLevels);
+    // const addSentence = (levelIndex, lessonId) => {
+    //     const updatedLevels = [...levels];
+    //     const lastIndex = updatedLevels[levelIndex].sentences.length;
+    //     const newSentence = {
+
+    //         content: "",
+    //         traduction: "",
+    //         lesson_id: lessonId
+    //     };
+    //     updatedLevels[levelIndex].sentences.push(newSentence);
+    //     setLevels(updatedLevels);
+    // };
+    const addSentence = (lessonId) => {
+        const dataSend = {
+            lesson_id:lessonId
+        }
+       fetchData("generate_more_sentences",dataSend,token).then((response)=>{
+        console.log(response)
+        return   snackbbar(document.querySelector("#body"), infos, "Demande prise en compte", 3000), setLevels(response?.data)
+       })
     };
 
-    const handleSave = async (sentences, idThematique, levelIndex, level, description,lessonId) => {
+    const handleSave = async (sentences, idThematique, levelIndex, level, description, lessonId) => {
         console.log(lessonId)
         const updatedSentences = sentences.filter((sentence) => sentence.traduction.trim() !== "");
 
@@ -91,7 +103,7 @@ export const MainRightAllTraduction = () => {
         console.log(data);
         setLoading(levelIndex)
         try {
-            const result = await fetchData("sentence/update", data,token)
+            const result = await fetchData("sentence/update", data, token)
             if (result.status === 200) {
                 return snackbbar(document.querySelector("#body"), infos, "Demande prise en compte", 3000);
             }
@@ -121,7 +133,7 @@ export const MainRightAllTraduction = () => {
             lesson_id: idPopup
         }
         console.log(data)
-        fetch("https://www.develop.habla-mundo.com/api/v1/lesson", {
+        fetch("https://www.backend.habla-mundo.com/api/v1/lesson", {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -140,7 +152,7 @@ export const MainRightAllTraduction = () => {
                 if (result.status === 200) {
                     snackbbar(document.querySelector("#body"), infos, "Demande prise en compte", 3000);
                     setTimeout(() => {
-                        fetch('https://www.develop.habla-mundo.com/api/v1/lesson', {
+                        fetch('https://www.backend.habla-mundo.com/api/v1/lesson', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -175,7 +187,7 @@ export const MainRightAllTraduction = () => {
         const data = {
             thematique_id: localStorage.getItem("idThematiqueTraduction")
         }
-        fetch('https://www.develop.habla-mundo.com/api/v1/lesson', {
+        fetch('https://www.backend.habla-mundo.com/api/v1/lesson', {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -195,6 +207,38 @@ export const MainRightAllTraduction = () => {
             })
             .catch((error) => console.error('Erreur lors de la récupération des données :', error));
     }
+
+    const resetSentence = async (sentenceId, lessonId, wordId) => {
+        try {
+            const url = "https://www.backend.habla-mundo.com/api/v1/add_single_sentence";
+            
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    sentence_id: sentenceId,
+                    lesson_id: lessonId,
+                    word_id: wordId
+                }),
+            });
+    
+            const result = await response.json();
+            console.log("Réponse API (reset) :", result);
+    
+            if (response.ok) {
+             return   snackbbar(document.querySelector("#body"), infos, "Demande prise en compte", 3000), setLevels(result?.data)
+               
+            } else {
+             snackbbar(document.querySelector("#body"), infos, "Erreur lors de la réinitialisation !", 3000);
+            }
+        } catch (error) {
+            console.error("Erreur lors de la réinitialisation :", error);
+            alert("Une erreur est survenue !");
+        }
+    };
 
     return (
         <div className="parent_main">
@@ -249,6 +293,7 @@ export const MainRightAllTraduction = () => {
                                                     onBlur={(e) =>
                                                         handleEditContent(levelIndex, sentenceIndex, e.currentTarget.textContent)
                                                     }>{sentence.content}</span>
+                                                     <img src={reset} alt="" className='reset'  onClick={() => resetSentence(sentence.id, sentence.lesson_id, sentence.word_id)}/>
                                             </div>
                                             <div className="english-translation">
                                                 <div
@@ -264,8 +309,8 @@ export const MainRightAllTraduction = () => {
                                             </div>
                                         </div>
                                     ))}
-                                    {level.sentences?.length < 25 && (
-                                        <div className="add-sentence-button" onClick={() => addSentence(levelIndex,level.lesson_id)}>
+                                    {level.sentences?.length < 350 && (
+                                        <div className="add-sentence-button" onClick={() => addSentence(level.lesson_id)}>
                                             <span></span>
                                             <span className='plusTraduction'>+</span>
                                         </div>
@@ -275,7 +320,7 @@ export const MainRightAllTraduction = () => {
                             <button
                                 className="save-button"
                                 onClick={() =>
-                                    handleSave(level.sentences, localStorage.getItem("idThematiqueTraduction"), levelIndex, level.level_name, level.description,level.lesson_id)
+                                    handleSave(level.sentences, localStorage.getItem("idThematiqueTraduction"), levelIndex, level.level_name, level.description, level.lesson_id)
                                 }
                                 disabled={loading === levelIndex}
                             >

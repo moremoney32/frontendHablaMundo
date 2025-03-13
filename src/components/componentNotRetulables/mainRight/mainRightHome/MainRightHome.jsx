@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useEffect, useState } from "react"
 import { fetchDataGet } from "../../../../helpers/fetchDataGet"
 import { useNotifications } from "../NotificationsProvider"
+import { faSpellCheck } from "@fortawesome/free-solid-svg-icons/faSpellCheck"
 
 export const MainRightHome = () => {
     const navigate = useNavigate();
@@ -106,8 +107,9 @@ export const MainRightHome = () => {
                     <div onClick={handleNavigate} className="nav_link"><InformationUser defaultClassName="icons_user_img1" user="Abonnés Mensuel" icon={faUser} number={stat?.abonneMensuel} pourcent={`(${stat?.pourcentageMensuel}%)`} className="color_home1" /></div>
                     <NavLink to="/message" className="nav_link"><InformationUser defaultClassName="icons_user_img3" user="Messages reçus" icon={faCommentDots} number={stat?.nombres_messages} className="color_home3"/></NavLink>
                     <NavLink to="/theme" className="nav_link"><InformationUser defaultClassName="icons_user_img2" user="Thématiques" icon={faGripHorizontal} number={stat?.thematiques} className="color_home2"/></NavLink>
-                    <InformationUser defaultClassName="icons_user_img2" user="Mots croisés" icon={faGripHorizontal} number={stat?.crosswords} className="color_home2" />
+                    <InformationUser defaultClassName="icons_user_img2" user="Listes de mots" icon={faGripHorizontal} number={stat?.crosswords} className="color_home2" />
                     <InformationUser defaultClassName="icons_user_img1" user="Nombres de mots" icon={faSchool} number={stat?.words} className="color_home2" />
+                    <InformationUser defaultClassName="icons_user_img1" user="Nombres de phrases" icon={faSpellCheck} number={stat?.nombre_phrase} className="color_home" />
                 </div>
                 <div className="sous_parent_main_home2">
                     <div className="title_main_home">
@@ -130,7 +132,7 @@ export const MainRightHome = () => {
                     <NavLink to="/theme" className="voir_plus"><span>Voir plus</span></NavLink>
 
                 </div>
-                <div className="sous_parent_main_home3">
+                {/* <div className="sous_parent_main_home3">
                     <span className="h3_home">Notifications</span>
                     <div className="parent_notifications_home">
                         {
@@ -150,7 +152,7 @@ export const MainRightHome = () => {
                             })
                         } 
                     </div>
-                </div>
+                </div> */}
             </div>
 
         </div>

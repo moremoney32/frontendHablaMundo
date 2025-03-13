@@ -1,3 +1,12 @@
 .pagination{
     transform: translate3d(0,5px,0);
 }
+.iconWords{
+    position: absolute;
+}
+.iconWords{
+    color: #909090;
+    position: absolute;
+    top:35px;
+    right:10px;
+  }

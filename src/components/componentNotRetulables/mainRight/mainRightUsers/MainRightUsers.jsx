@@ -101,43 +101,43 @@ export const MainRightUsers = () => {
         }
     }, [setValue]);
 
-    useEffect(() =>{
-        fetchDataGetToken("users",token).then((result) =>{
+    useEffect(() => {
+        fetchDataGetToken("users", token).then((result) => {
             setDataUser(result)
             localStorage.setItem('dataUser', JSON.stringify(result));
-        }).catch((error)=>{
+        }).catch((error) => {
             console.log(error)
         })
-},[])
+    }, [])
     const close = () => {
         setEtatMasque(false);
     };
-    const onSubmit =async (data) => {
+    const onSubmit = async (data) => {
         console.log(data)
         const htmlContent = textareaRef.current.innerHTML;
-        if(htmlContent.length === 0){
+        if (htmlContent.length === 0) {
             return snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg", message1, 4000)
         }
-    
-    const dataSend ={
-        user_id:id,
-        message:htmlContent
-    }
-    console.log(dataSend)
-    setLoading(true)
-    try{
-       const result = await fetchData("send-message",dataSend,token)
-            if(result.message === "Notification sent successfully."){
+
+        const dataSend = {
+            user_id: id,
+            message: htmlContent
+        }
+        console.log(dataSend)
+        setLoading(true)
+        try {
+            const result = await fetchData("send-message", dataSend, token)
+            if (result.message === "Notification sent successfully.") {
                 return snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg", result.message, 2000)
             }
-       
 
-    }catch(error){
-        console.log(error)
-    }finally{
-        setLoading(false)
-        setEtatMasque(false)
-    }
+
+        } catch (error) {
+            console.log(error)
+        } finally {
+            setLoading(false)
+            setEtatMasque(false)
+        }
     }
     const handleUploadClick = () => {
         if (fileInputRef.current) {
@@ -172,22 +172,22 @@ export const MainRightUsers = () => {
             setRotateIcon(!rotateIcon);
             setLevel(true)
             setEtatValue(false)
-            searchAbonnes(dataUserLocal,status).then((result)=>{
+            searchAbonnes(dataUserLocal, status).then((result) => {
                 setDataUser(result)
             })
             select.style.borderBottomRightRadius = "5px"
             select.style.borderBottomLeftRadius = "5px"
         }
-         if (value === "Abonné") {
+        if (value === "Abonné") {
             status = value
             status = 1
             const select = selectRef.current
             setOptionName(value);
             setOptionVisible(false);
             setRotateIcon(!rotateIcon);
-             setLevel(true)
+            setLevel(true)
             setEtatValue(false)
-            searchAbonnes(dataUserLocal,status).then((result)=>{
+            searchAbonnes(dataUserLocal, status).then((result) => {
                 setDataUser(result)
             })
             select.style.borderBottomRightRadius = "5px"
@@ -198,15 +198,15 @@ export const MainRightUsers = () => {
             setOptionName(value);
             setOptionVisible(false);
             setRotateIcon(!rotateIcon);
-             setLevel(true)
-             setEtatValue(false)
+            setLevel(true)
+            setEtatValue(false)
             setDataUser(dataUserLocal)
             select.style.borderBottomRightRadius = "5px"
             select.style.borderBottomLeftRadius = "5px"
         }
-       
+
     };
-    
+
     const handleFileChange = (event) => {
         const file = event.target.files[0];
         if (file) {
@@ -223,15 +223,15 @@ export const MainRightUsers = () => {
 
         }
     };
-    
-    useEffect(() => {   
+
+    useEffect(() => {
         if (location.state?.filter) {
             handleChildClick(location.state?.filter);
         }
     }, [location.state]);
     const startIndex = (currentPage - 1) * itemsPages
     const dataCurrent = dataUser?.slice(startIndex, startIndex + itemsPages)
-  
+
     return (
         <div className="parent_main">
             <div>
@@ -271,10 +271,10 @@ export const MainRightUsers = () => {
                                     contentEditable="true"
                                     placeholder="Entrez un message"
                                     ref={textareaRef}></div>
-                                <input type="hidden" name="text" value={content}/>
+                                <input type="hidden" name="text" value={content} />
                             </div>
                         </div>
-                        {loading?<button className="send_mail">En cours ...</button>:<button className="send_mail" type="submit">Envoyer par mail</button>}
+                        {loading ? <button className="send_mail">En cours ...</button> : <button className="send_mail" type="submit">Envoyer par mail</button>}
                     </form>
                 </div>}
                 <div className="sous_parent_main_users_header">
@@ -282,7 +282,7 @@ export const MainRightUsers = () => {
                         <input type="text" className="input_users" placeholder="Rechercher un utilisateur" name="checkValue" onChange={(e) => {
                             setLevel(false);
                             setEtatValue(true)
-                             searchElementUser(e.target.value);
+                            searchElementUser(e.target.value);
                             //  handleChangePages(currentPage + 1) a regler
                             if (e.target.value.length === 0) {
                                 setLevel(true);
@@ -322,9 +322,9 @@ export const MainRightUsers = () => {
                                 </div>
                                 <div className="user_adress_mail">{data.email}</div>
                                 <div className="user_inscription">{formatTime(data.created_at)}</div>
-                                 <div className={`status ${data.suscribe === "0" ? "Non abonné" : "Abonné"}`}>
-                {data.suscribe === "1" ? "Abonné" : "Non abonné"}
-            </div>
+                                <div className={`status ${data.suscribe === "0" ? "Non abonné" : "Abonné"}`}>
+                                    {data.suscribe === "1" ? "Abonné" : "Non abonné"}
+                                </div>
                                 {/* <div>
                                     <div className="action" onClick={() => handleClick(data.id, data.first_name, data.email)}>
                                         <img src={messageOutlined} alt="message_outlined" />
@@ -332,13 +332,13 @@ export const MainRightUsers = () => {
                                     </div>
 
                                 </div> */}
-                               
+
                             </div>
 
                         )
                     })}
 
-                     {etatValue && searchResults.reverse().slice()?.map((data) => {
+                    {etatValue && searchResults.reverse().slice()?.map((data) => {
                         return (
                             <div className="sous_parent_main_users_information-child2" key={data.id}>
                                 <div className="prenom">
@@ -347,9 +347,9 @@ export const MainRightUsers = () => {
                                 </div>
                                 <div className="user_adress_mail">{data.email}</div>
                                 <div className="user_inscription">{formatTime(data.created_at)}</div>
-                                 <div className={`status ${data.suscribe === "0" ? "Non abonné" : "Abonné"}`}>
-                {data.suscribe === "1" ? "Abonné" : "Non abonné"}
-            </div>
+                                <div className={`status ${data.suscribe === "0" ? "Non abonné" : "Abonné"}`}>
+                                    {data.suscribe === "1" ? "Abonné" : "Non abonné"}
+                                </div>
                                 {/* <div>
                                     <div className="action" onClick={() => handleClick(data.id, data.first_name, data.email)}>
                                         <img src={messageOutlined} alt="message_outlined" />
@@ -357,7 +357,7 @@ export const MainRightUsers = () => {
                                     </div>
 
                                 </div> */}
-                               
+
                             </div>
 
                         )
@@ -369,10 +369,10 @@ export const MainRightUsers = () => {
                         <FontAwesomeIcon
                             icon={faAngleLeft}
                             className="icons_pagination"
-                             onClick={() => handleChangePages(currentPage - 1)}
+                            onClick={() => handleChangePages(currentPage - 1)}
                         />
-                         <div className="counter">
-                              {[...Array(totalPages)].map((_, index) => (
+                        <div className="counter">
+                            {[...Array(totalPages)].map((_, index) => (
                                 <span
                                     key={index}
                                     className={currentPage === index + 1 ? "active_page" : "non_active"}
@@ -380,13 +380,13 @@ export const MainRightUsers = () => {
                                 >
                                     {index + 1}
                                 </span>
-                            ))}  
-                        </div> 
-                         <FontAwesomeIcon
+                            ))}
+                        </div>
+                        <FontAwesomeIcon
                             icon={faAngleRight}
                             className="icons_pagination"
                             onClick={() => handleChangePages(currentPage + 1)}
-                        /> 
+                        />
                     </div>
                 </div>
             </div>

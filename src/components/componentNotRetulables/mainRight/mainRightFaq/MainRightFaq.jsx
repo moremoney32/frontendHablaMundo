@@ -107,7 +107,7 @@ export const MainRightFaq = () => {
   };
 
   const handleRemoveQuestion = async (id) => {
-    const url = `https://www.develop.habla-mundo.com/api/v1/faq/${id}`;
+    const url = `https://www.backend.habla-mundo.com/api/v1/faq/${id}`;
 
     try {
       const response = await fetch(url, {

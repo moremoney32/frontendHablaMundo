@@ -46,10 +46,10 @@ export const HeaderSousThematiques = ({ theme, updateSousThematique }) => {
                 {isEditable ?<span className="header_main_3" contentEditable ref={theme2Ref}>{theme}</span>:<span className="header_main_3" disable>{theme}</span>}
                 {isEditable ? <button className="update_buton" onClick={handleChange}>Enregistrer</button> : <button className="update_buton" onClick={handleEditable}>Modifier</button>}
             </div>
-            <div className="update_theme_sous_thematique">
+            {/* <div className="update_theme_sous_thematique">
                 <span>+</span>
                 <span onClick={updateSousThematique}>Ajouter une sous thématique</span>
-            </div>
+            </div> */}
 
         </div>
     )

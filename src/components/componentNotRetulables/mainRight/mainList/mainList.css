@@ -1,0 +1,138 @@
+.sous_parent_main_users_header_list{
+    display: flex;
+    gap: 20px;
+    align-items: center;
+  }
+  .sous_parent_main_users_header_input_list{
+    width: calc(100% - 400px) !important;
+    position: relative;
+  }
+ 
+.parent_circle_position{
+    width:45px;
+    height:23px;
+     background:rgba(0, 0, 0, 0.08);  
+    border-radius: 20px;
+    padding:4px;
+    position: relative;
+}
+.child_circle_position{
+    border-radius: 50%;
+    background:white;
+    width: 19px;
+    height: 19px;
+    position: absolute;
+    left: 4px;
+    top: 2px;
+    color: transparent;
+    cursor: pointer;
+}
+.saveButton{
+    padding-top:15px;
+    padding-bottom:15px;
+    text-align: center;
+    background:#24D26D;
+    border-radius: 10px;
+    width: 200px;
+    border: none;
+    color: white;
+    font-size:15px;
+    cursor: pointer;
+}
+.sous_parent_main_users_information_list{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+  }
+  .sous_parent_main_users_information-child1_list{
+    width:100%;
+    display: flex;
+   justify-content: space-between; 
+   padding-right:1.5em;
+  }
+  .sous_parent_main_users_information-child1_list span{
+    text-align: left !important;
+    width: 200px;
+    font-size:15px;
+    color:#000000;
+    font-weight:500;
+  }
+  .parent_list{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  .sous_parent_main_users_information-child2-list{
+    /* width: 100%; */
+    width: calc(100% - 1.5em) !important;
+    display: flex;
+   justify-content: space-between; 
+   background: #0084FA0D;
+    padding-left: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-radius: 5px;
+    align-items: center;
+    cursor: pointer;
+  }
+  .user_adress_mail_list{
+    color:#42444B;
+    font-size: 13px;
+    text-align: left !important;
+    width: 200px;
+  }
+  .pagination{
+    display: flex;
+    justify-content: space-between;
+  }
+  .pagination_nbrs_pages{
+    font-size: 12px;
+  }
+  .counter{
+    display: flex;
+    gap: 5px;
+  }
+  .direction_icons{
+     display: flex; 
+     gap: 10px; 
+     align-items: center;
+     cursor: pointer;
+     height: 30px;
+  }
+  .icons_pagination{
+    color: #42444B;
+  }
+  .non_active{
+    color: #42444B;
+    padding-left: 10px;
+    padding-right: 10px;
+    height:30px !important;
+    line-height: 30px;
+  }
+  .active_page{
+    color: white;
+    border-radius: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    background: var(--color-primary);
+    height:30px !important;
+    line-height: 30px;
+  
+  }
+  .loading{
+    margin:0 auto;
+  }
+  .color_french{
+color: green;
+  }
+  .color_english{
+    
+  }
+  .color_theme{
+    color:blueviolet;
+  }
+  .color_crossword{
+    color:black;
+    font-weight: bold;
+  }

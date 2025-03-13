@@ -25,10 +25,12 @@ import { useSearchNames } from "../../../../customsHooks/useSearchNames";
 import infos from "../../../../assets/icons/infos.svg";
 import { faEdit } from "@fortawesome/free-solid-svg-icons/faEdit";
 import { fetchDataPut } from "../../../../helpers/fetchDataPut";
+import { useCallback } from "react";
 export const MainRightTheme = () => {
     const [etat, setEtat] = useState(false);
     const [color, setColor] = useState('#ED4C5C');
     const [showPicker, setShowPicker] = useState(false);
+    const [selectValue, setSelectValue] = useState("");
     const [etatSousTheme, setEtatSousTheme] = useState(false);
     const { register, handleSubmit, formState: { errors }, setValue } = useForm();
     const [optionVisible, setOptionVisible] = useState(false);
@@ -48,6 +50,9 @@ export const MainRightTheme = () => {
     const [etatEdit, setEtatEdit] = useState(false);
     const [editingId, setEditingId] = useState(null); // ID de l'élément en édition
     const [editingData, setEditingData] = useState({ name: "", color: "" });
+    const [contextMenu, setContextMenu] = useState(null); // Stocke les coordonnées du clic droit
+    const [selectedId, setSelectedId] = useState(null); // Stocke l'ID de la thématique cliquée
+    const [selectedName, setSelectedName] = useState(null); // Stocke le nom de la thématique
 
     // Fonction pour ouvrir la popup avec les données actuelles
     const handleEdit = (id, name, color) => {
@@ -57,7 +62,7 @@ export const MainRightTheme = () => {
     };
 
     // Fonction pour sauvegarder les changements
-    const handleSave = async() => {
+    const handleSave = async () => {
         setResultAllThematiques((prev) =>
             prev.map((item) =>
                 item.id === editingId
@@ -66,27 +71,27 @@ export const MainRightTheme = () => {
             )
         );
         const dataSend = {
-            id:editingId,
-            name:editingData.name,
-            color:editingData.color
+            id: editingId,
+            name: editingData.name,
+            color: editingData.color
         }
         console.log(dataSend)
         try {
-                  const response = await fetchDataPut(
-                    "themes",
-                    dataSend,
-                    token
-                  );
-        console.log(response)
-                  if (response.message === 'successful update') {
-                    snackbbar(document.querySelector('#body'), infos, 'Mise à jour réussie', 3000);
-                    setEtatEdit(false);
-                  }
-                } catch (error) {
-                  console.error(error);
-                }
-        
-         // Fermer la popup
+            const response = await fetchDataPut(
+                "themes",
+                dataSend,
+                token
+            );
+            console.log(response)
+            if (response.message === 'successful update') {
+                snackbbar(document.querySelector('#body'), infos, 'Mise à jour réussie', 3000);
+                setEtatEdit(false);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+
+        // Fermer la popup
     };
 
     // Fonction pour fermer la popup
@@ -95,7 +100,7 @@ export const MainRightTheme = () => {
         setEditingId(null);
     };
 
-   
+
     /*****fin editName */
     let message1 = "Demande prise en compte"
     let message2 = "Demande non prise en compte"
@@ -153,7 +158,7 @@ export const MainRightTheme = () => {
             setOptionVisibleLanguages(true);
         }
     };
-    const handleChildClick = (value) => {
+    const handleChildClick = useCallback((value) => {
         if (value === "Ordre Aphabétique") {
             const select = selectRef.current
             setOptionName(value);
@@ -197,7 +202,10 @@ export const MainRightTheme = () => {
             console.log(compareDate)
             setResultAllThematiques(compareDate)
         }
-    };
+    }, [selectValue])
+    useEffect(() => {
+        handleChildClick(selectValue)
+    }, [selectValue])
     const handleChildClickLanguages = (value) => {
         const select = selectRefLanguages.current
         setOptionNameLanguages(value);
@@ -369,24 +377,34 @@ export const MainRightTheme = () => {
         localStorage.setItem('result', JSON.stringify(result))
         localStorage.setItem('theme', JSON.stringify(dataSend));
         setTimeout(() => {
-            navigate("/sousThematiques");
+            // navigate("/sousThematiques");
+            window.open("/sousThematiques", "_blank");
         }, 500);
     }
+    // const updateCrosswords = (id, name) => {
+    //     const result = { id };
+    //     const dataSend = { name };
+    //     localStorage.setItem("result", JSON.stringify(result));
+    //     localStorage.setItem("theme", JSON.stringify(dataSend));
+
+    //     navigate("/sousThematiques"); 
+    // }
     return (
         <div className="parent_main">
             <div className="title_main">
                 <HeaderTitleMain h1="Thématiques" />
-                <div className="update_theme" onClick={checkTheme}>
+                {/* <div className="update_theme" onClick={checkTheme}>
                     <span>+</span>
                     <span>Ajouter une thématique</span>
-                </div>
+                </div> */}
             </div>
             <div className="sous_parent_main_users_header">
                 <div className="sous_parent_main_users_header_input">
                     <input type="text" className="input_users" placeholder="Rechercher une thématique" name="checkValueThematique" onChange={(e) => {
+                        const searchValue = e.target.value.toLowerCase();
                         setLevelSearch(false);
                         setEtatSearch(true)
-                        searchElementUserName(e.target.value);
+                        searchElementUserName(searchValue);
                         if (e.target.value.length === 0) {
                             setLevelSearch(true);
                             setEtatSearch(false)
@@ -397,18 +415,22 @@ export const MainRightTheme = () => {
                         <img src={search} alt="" className="search_users" />
                     </div>
                 </div>
-                <Select
+                {/* <Select
                     dataSelectStatus={dataSelectStatus}
                     changeIcon={changeIcon}
-                    handleChildClick={handleChildClick}
+                    handleChildClick={setSelectValue}
                     selectRef={selectRef}
                     optionName={optionName}
                     optionVisible={optionVisible}
                     rotateIcon={rotateIcon}
                      defautClassNameOption="option"
-                    defautClassName="select" />
+                    defautClassName="select" /> */}
+                <div className="update_theme" onClick={checkTheme}>
+                    <span>+</span>
+                    <span>Ajouter une thématique</span>
+                </div>
             </div>
-          
+
             <div className="alls_thematics">
                 {/* Liste des thématiques */}
                 {levelSearch && resultAllThematiques?.map((result) => (
@@ -426,7 +448,7 @@ export const MainRightTheme = () => {
                             </span>
                         </div>
                         <span className="parent_icons_thematics_span">
-                            {result.crosswords_count} Mots croisés
+                            {result.crosswords_count} Listes de mots
                         </span>
                         <span className="parent_icons_thematics_span">
                             {result.words_count} Mots
@@ -434,13 +456,13 @@ export const MainRightTheme = () => {
                         <span className="parent_icons_thematics_span">
                             créé {formatTime(result.created_at)}
                         </span>
-                        <FontAwesomeIcon icon={faEdit} className="edit_icon"  onClick={() => handleEdit(result.id, result.name, result.color)} />
+                        <FontAwesomeIcon icon={faEdit} className="edit_icon" onClick={() => handleEdit(result.id, result.name, result.color)} />
                         <div className="parent_icons_thematics_span">
-                                <img src={remove} alt="remove_words" className="remove_words" onClick={() => removeTheme(result.id)} />
-                                </div>
+                            <img src={remove} alt="remove_words" className="remove_words" onClick={() => removeTheme(result.id)} />
+                        </div>
                     </div>
                 ))}
-                   {etatSearch && searchResults?.map((result) => (
+                {etatSearch && searchResults?.map((result) => (
                     <div
                         key={result.id}
                         className="sous_alls_thematics"
@@ -455,7 +477,7 @@ export const MainRightTheme = () => {
                             </span>
                         </div>
                         <span className="parent_icons_thematics_span">
-                            {result.crosswords_count} Mots croisés
+                            {result.crosswords_count} Listes de mots
                         </span>
                         <span className="parent_icons_thematics_span">
                             {result.words_count} Mots
@@ -463,10 +485,10 @@ export const MainRightTheme = () => {
                         <span className="parent_icons_thematics_span">
                             créé {formatTime(result.created_at)}
                         </span>
-                        <FontAwesomeIcon icon={faEdit} className="edit_icon"  onClick={() => handleEdit(result.id, result.name, result.color)}/>
+                        <FontAwesomeIcon icon={faEdit} className="edit_icon" onClick={() => handleEdit(result.id, result.name, result.color)} />
                         <div className="parent_icons_thematics_span">
-                                <img src={remove} alt="remove_words" className="remove_words" onClick={() => removeTheme(result.id)}/>
-                                </div>
+                            <img src={remove} alt="remove_words" className="remove_words" onClick={() => removeTheme(result.id)} />
+                        </div>
                     </div>
                 ))}
 
@@ -474,25 +496,25 @@ export const MainRightTheme = () => {
                 {etatEdit && (
                     <div className="modal">
                         <div className="modal_content">
-                           <div className="headerEdit">
-                           <span className="title">MODIFIER LA THEMATIQUE</span>
-                           </div>
-                           <div className="paletteEdit">
-                           <input
-                            className="inputEdit"
-                                type="text"
-                                value={editingData.name}
-                                onChange={(e) =>
-                                    setEditingData((prev) => ({ ...prev, name: e.target.value }))
-                                }
-                            />
-                            <SketchPicker
-                                color={editingData.color}
-                                onChangeComplete={(color) =>
-                                    setEditingData((prev) => ({ ...prev, color: color.hex }))
-                                }
-                            />
-                           </div>
+                            <div className="headerEdit">
+                                <span className="title">MODIFIER LA THEMATIQUE</span>
+                            </div>
+                            <div className="paletteEdit">
+                                <input
+                                    className="inputEdit"
+                                    type="text"
+                                    value={editingData.name}
+                                    onChange={(e) =>
+                                        setEditingData((prev) => ({ ...prev, name: e.target.value }))
+                                    }
+                                />
+                                <SketchPicker
+                                    color={editingData.color}
+                                    onChangeComplete={(color) =>
+                                        setEditingData((prev) => ({ ...prev, color: color.hex }))
+                                    }
+                                />
+                            </div>
                             <div className="modal_actions">
                                 <button onClick={handleClose} className="cancel_button">
                                     Annuler

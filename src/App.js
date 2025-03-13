@@ -13,6 +13,7 @@ import { NotificationsProvider } from './components/componentNotRetulables/mainR
 import { Grammaire } from './pages/grammaires/Grammaire';
 import { MainRightAllTraduction } from './components/componentNotRetulables/mainRight/mainRightAllTraduction/MainRightAllTraduction';
 import { Traduction } from './pages/traduction/Traduction';
+import { List } from './pages/listes/List';
 
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
             <Routes>
               <Route path="/home" element={<Home />} />
               <Route path="/theme" element={<Theme />} />
+              <Route path="/liste" element={<List />} />
               <Route path="/user" element={<Users />} />
               <Route path="/message" element={<Messages />} />
               <Route path="/faq" element={<Faq />} />

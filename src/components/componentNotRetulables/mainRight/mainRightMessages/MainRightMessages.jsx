@@ -28,8 +28,8 @@ export const MainRightMessages = () => {
     const [etat, setEtat] = useState(false);
     const [etatNotify, setEtatNotify] = useState(false);
     const [activeStates, setActiveStates] = useState({});
-    const [content, setContent] = useState(null);
     const [messageText, setMessageText] = useState(null);
+    const [content, setContent] = useState(messageText);
     const [textName, setTextName] = useState(null);
     const textareaRef = useRef(null);
     const fileInputRef = useRef(null);
@@ -51,9 +51,9 @@ export const MainRightMessages = () => {
 
 
     useEffect(() => {
-        fetchDataGetToken('notifications', token).then((response) => {
-            //console.log(response)
-            const compareDate = response.sort((a, b) => {
+        fetchDataGetToken('notifications-admin', token).then((response) => {
+            console.log(response)
+            const compareDate = response?.data.sort((a, b) => {
                 const dateA = new Date(a.created_at);
                 const dateB = new Date(b.created_at);
                 return dateB - dateA;
@@ -143,13 +143,15 @@ export const MainRightMessages = () => {
         }
 
         const dataSend = {
-            user_id: id,
-            message: htmlContent
+            user_id: [id],
+            message: htmlContent,
         }
+        console.log(dataSend)
         setLoading(true)
         try {
             const result = await fetchData("send-message", dataSend, token)
-            if (result.message === "Notification sent successfully.") {
+            console.log(result)
+            if (result.message === "message sent successfully.") {
                 snackbbar(document.querySelector("#body"), infos, message1, 2000);
                 reset();
                 setContent('');
@@ -165,6 +167,12 @@ export const MainRightMessages = () => {
         }
 
     }
+    useEffect(() => {
+        if (textareaRef.current && messageText) {
+            textareaRef.current.innerHTML = messageText; 
+            setContent(messageText);
+        }
+    }, [messageText]);
     const onSubmitData = async (data) => {
         const htmlContent = textareaRef.current.innerHTML;
         if (htmlContent.length === 0) {
@@ -172,19 +180,75 @@ export const MainRightMessages = () => {
         }
 
         const dataSend = {
-            // user_id: id,
             message: htmlContent
         }
+        console.log(dataSend)
         setLoading(true)
         try {
             const result = await fetchData("send-notification-message", dataSend, token)
             console.log(result)
             if (result.success === "Jobs created successfully!") {
                 snackbbar(document.querySelector("#body"), infos, message1, 2000);
+                
+              return  setTimeout(() => {
+                    fetchDataGetToken('notifications-admin', token).then((response) => {
+                        //console.log(response)
+                        const compareDate = response?.data.sort((a, b) => {
+                            const dateA = new Date(a.created_at);
+                            const dateB = new Date(b.created_at);
+                            return dateB - dateA;
+                        });
+                      return  setData(compareDate),  setEtatNotify(false),reset(),
+                      setContent(''),
+                      textareaRef.current.innerHTML = '';
+                    })
+                  
+
+                 }, 2000);
+            }
+
+
+        } catch (error) {
+            console.log(error)
+        } finally {
+            setLoading(false)
+            setEtat(false)
+        }
+
+    }
+    const onSubmitDataUpdate = async (data) => {
+        const htmlContent = textareaRef.current.innerHTML;
+        if (htmlContent.length === 0) {
+            return snackbbar(document.querySelector("#body"), infos, message2, 2000);
+        }
+
+        const dataSend = {
+            new_notification: htmlContent,
+            id:id
+        }
+        console.log(dataSend)
+        setLoading(true)
+        try {
+            const result = await fetchData("notifications-update", dataSend, token)
+            console.log(result)
+            if (result.status === 200) {
+                snackbbar(document.querySelector("#body"), infos, message1, 2000);
                 reset();
                 setContent('');
                 textareaRef.current.innerHTML = '';
-                setEtatNotify(false);
+                 setTimeout(() => {
+                    fetchDataGetToken('notifications-admin', token).then((response) => {
+                        //console.log(response)
+                        const compareDate = response?.data.sort((a, b) => {
+                            const dateA = new Date(a.created_at);
+                            const dateB = new Date(b.created_at);
+                            return dateB - dateA;
+                        });
+                      return  setData(compareDate),  setEtatNotify(false);
+                    })
+                  
+
+                 }, 2000);
             }
 
 
@@ -257,14 +321,14 @@ export const MainRightMessages = () => {
             id: [dataId]
         }
         console.log(data)
-        fetchDelete("notifications", data, token).then((response) => {
+        fetchDelete("notifications_delete", data, token).then((response) => {
             console.log(response)
             if (response.status === "200") {
                 snackbbar(document.querySelector("#body"), infos, message1, 2000);
                 setTimeout(() => {
-                    fetchDataGetToken('notifications', token).then((response) => {
+                    fetchDataGetToken('notifications-admin', token).then((response) => {
                         //console.log(response)
-                        const compareDate = response.sort((a, b) => {
+                        const compareDate = response?.data.sort((a, b) => {
                             const dateA = new Date(a.created_at);
                             const dateB = new Date(b.created_at);
                             return dateB - dateA;
@@ -300,13 +364,13 @@ export const MainRightMessages = () => {
         }
         console.log(data)
         console.log(selectedMessages)
-        fetchDelete("notifications", data, token).then((response) => {
+        fetchDelete("notifications_delete", data, token).then((response) => {
             console.log(response)
             if (response.status === "200") {
                 snackbbar(document.querySelector("#body"), infos, message1, 2000);
                 setTimeout(() => {
-                    fetchDataGetToken('notifications', token).then((response) => {
-                        const compareDate = response.sort((a, b) => {
+                    fetchDataGetToken('notifications-admin', token).then((response) => {
+                        const compareDate = response?.data.sort((a, b) => {
                             const dateA = new Date(a.created_at);
                             const dateB = new Date(b.created_at);
                             return dateB - dateA;
@@ -326,14 +390,14 @@ export const MainRightMessages = () => {
     return (
         <div className="parent_main">
             <div className="justifyContent">
-                <HeaderTitleMain h1="Messages" />
+                <HeaderTitleMain h1="Notifications" />
                 <button className="buttonSelectNotification" onClick={checkNotification}>
                     Envoyer les notifications
                 </button>
                 {selectedMessages.length === 0 ? <button disabled={selectedMessages.length === 0} className="buttonSelectNone">
-                    Supprimer les messages sélectionnés
+                    Supprimer les notifications sélectionnées
                 </button> : <button onClick={handleDeleteSelected} className="buttonSelect">
-                    Supprimer les messages sélectionnés
+                    Supprimer les notifications sélectionnées
                 </button>}
             </div>
             {etatNotify && <div id="masque"></div>}
@@ -346,7 +410,7 @@ export const MainRightMessages = () => {
                     <div className="answer_mail_description">
                         {/* <label htmlFor="reponse">Réponse</label> */}
                         <div className="objet_mail">
-                            <span className="objet">Message</span>
+                            <span className="objet">Notification</span>
                             <span className="objet_mail_chil1">A:<span className="objet_mail_chil2">Tous</span></span>
                         </div>
                         <div className="answer_mail_sous_description">
@@ -370,8 +434,9 @@ export const MainRightMessages = () => {
                                 contentEditable="true"
                                 placeholder="Entrez un message"
                                 ref={textareaRef}
+                                onInput={(e) => setContent(e.target.innerHTML)}
                             ></div>
-                            <input type="hidden" name="reponse" value={content} />
+                            <input type="hidden" name="reponse" value={content}/>
                         </div>
                     </div>
                     {loading ? <button className="send_mail">En cours ...</button> : <button className="send_mail" type="submit">Envoyer</button>}
@@ -381,8 +446,9 @@ export const MainRightMessages = () => {
                 {etat && <div id="masque"></div>}
                 {etat && <div id="answer_client">
                     <FontAwesomeIcon icon={faClose} className="close" onClick={close} />
-                    <p>Message de:<span className="answer_client_name">{textName}</span></p>
-                    <span className="answer_client_messages">{messageText}</span>
+                    <p>Notification de:<span className="answer_client_name">{textName}</span></p>
+                    {/* <span className="answer_client_messages">{messageText}</span> */}
+                    <p dangerouslySetInnerHTML={{ __html:messageText  }}/>
                     {
                         fichiers?.map((fichier) => {
                             const Pdf = fichier.endsWith('.pdf');
@@ -397,15 +463,12 @@ export const MainRightMessages = () => {
                             );
                         })
                     }
-                    <form className="answer_form" onSubmit={handleSubmit(onSubmit)}>
-                        <div className="objet_mail">
-                            <span className="objet">Objet</span>
-                            <span className="objet_mail_chil1">A:<span className="objet_mail_chil2">{email}</span></span>
-                        </div>
-                        <input type="text" name="objet" className="answer_email_input" placeholder="Entrer l'objet du message" {...register("objet", { required: "Veuillez entrer une question" })} />
-                        {errors.objet && <span className="error">{errors.objet.message}</span>}
+                    <form className="answer_form" onSubmit={handleSubmit(onSubmitDataUpdate)}>
                         <div className="answer_mail_description">
-                            <label htmlFor="reponse">Réponse</label>
+                            <div className="objet_mail">
+                                <span className="objet">Notification</span>
+                                <span className="objet_mail_chil1">A:<span className="objet_mail_chil2">Tous</span></span>
+                            </div>
                             <div className="answer_mail_sous_description">
                                 <div className="answer_mail_sous_description_img">
                                     <img src={gras} alt="" className="img_answer_profession" onClick={grasText} />
@@ -431,7 +494,7 @@ export const MainRightMessages = () => {
                                 <input type="hidden" name="reponse" value={content} />
                             </div>
                         </div>
-                        {loading ? <button className="send_mail">En cours ...</button> : <button className="send_mail" type="submit">Envoyer par mail</button>}
+                        {loading ? <button className="send_mail">En cours ...</button> : <button className="send_mail" type="submit">Envoyer</button>}
                     </form>
                 </div>}
                 <div>
@@ -444,19 +507,23 @@ export const MainRightMessages = () => {
                 </div>
 
                 {
-                        data?.slice().reverse().slice(firstIndexComments, lastIndexComments).map((info, index) => {
-                    // data?.reverse().slice(firstIndexComments, lastIndexComments).map((info, index) => {
+                    data?.slice(firstIndexComments, lastIndexComments).map((info, index) => {
+                        // data?.reverse().slice(firstIndexComments, lastIndexComments).map((info, index) => {
                         const isActive = activeStates[info.id] || info.read_at !== null;
                         const isSelected = selectedMessages?.includes(info.id);
                         console.log(isSelected)
+                        console.log(info)
                         return (
+                            
                             <div className={`parent_messages ${isActive ? 'active_message' : ''}`} key={index}>
 
                                 <div className="parent_messages1">
-                                    <img src={message} alt="message" className="message" onClick={() => handleClick(info.notifiable_id, info.data.body, info.username, info.data.fichier, info.email, info.id)} />
+                                    <img src={message} alt="message" className="message" onClick={() => handleClick(info.id, info.data, info.user_name, info.data.fichier, info.email, info.id)} />
                                     <div className="infos_messages">
-                                        <span className="infos_messages_child1">{info.username}</span>
-                                        <span className="infos_messages_child2">{info.data.body}</span>
+                                        <span className="infos_messages_child1">{info.user_name}</span>
+                                        {/* <span className="infos_messages_child2">{dangerouslySetInnerHTML={ __html: info.data } || "Aucun message"}</span> */}
+                                        <p dangerouslySetInnerHTML={{ __html: info.data }}/>
+                                        
                                     </div>
                                 </div>
                                 <span className="parent_messages2">{formatTime(info.created_at)}</span>
@@ -470,9 +537,9 @@ export const MainRightMessages = () => {
                         );
                     })
                 }
-                {lastIndexComments < data?.length && (
+             {lastIndexComments < data?.length && (
                     <div className="observation" ref={containUseref}>chargement.......</div>
-                )}
+                )} 
             </div>
         </div>
     );
