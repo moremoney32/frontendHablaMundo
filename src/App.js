@@ -14,6 +14,9 @@ import { Grammaire } from './pages/grammaires/Grammaire';
 import { MainRightAllTraduction } from './components/componentNotRetulables/mainRight/mainRightAllTraduction/MainRightAllTraduction';
 import { Traduction } from './pages/traduction/Traduction';
 import { List } from './pages/listes/List';
+import { Conversation } from './pages/conversation/Conversation';
+import { MainMotsConversationsDetails } from './components/componentNotRetulables/mainRight/mainConversations/MainConversationsDetails';
+import { ConversationDetails } from './pages/conversationDetails/ConversationDetails';
 
 
 function App() {
@@ -24,6 +27,7 @@ function App() {
             <Routes>
               <Route path="/home" element={<Home />} />
               <Route path="/theme" element={<Theme />} />
+              <Route path="/conversation" element={<Conversation />} />
               <Route path="/liste" element={<List />} />
               <Route path="/user" element={<Users />} />
               <Route path="/message" element={<Messages />} />
@@ -33,6 +37,7 @@ function App() {
               <Route path="/motsCroisés" element={<MotsCroisés/>}/>
               <Route path="/grammaire" element={<Grammaire/>}/>
               <Route path="/AllTraduction" element={<Traduction/>}/>
+               <Route path="/conversationDetails" element={<ConversationDetails/>}/>
               <Route path="/" element={<Deconnexion />}/>
             </Routes>
         </div>

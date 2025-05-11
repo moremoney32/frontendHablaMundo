@@ -79,6 +79,22 @@
 border: 1px solid #0084FA1A;
 /* position: relative; */
 }
+.sous_alls_thematicss{
+  display:grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    width: calc(100% - 220px) !important; 
+    justify-content: space-between !important;  
+  /* width:calc((100% / 5) - 125px / 5); */
+  align-items: center;
+  padding: 10px;
+  padding-left: 15px;
+  padding-right: 15px;
+  border-radius: 5px;
+   background-color:#0084FA0D; 
+  align-items: center;
+border: 1px solid #0084FA1A;
+/* position: relative; */
+}
 .sous_alls_grammaire{
   display:grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
@@ -423,6 +439,12 @@ text-decoration: underline;
   display: flex;
   gap: 20px;
   align-items:center;
+}
+.answer_client_theme3{
+  width: 100% !important;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 .space-signup{
   position: relative;

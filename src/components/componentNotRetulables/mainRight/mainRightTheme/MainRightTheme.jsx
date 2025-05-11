@@ -105,7 +105,7 @@ export const MainRightTheme = () => {
     let message1 = "Demande prise en compte"
     let message2 = "Demande non prise en compte"
     const [thematiques, setThematiques] = useState([
-        { id: 1, thematique: '', crossword: '', words: [] },
+        { id: 1, thematique: '', crossword: '', words: [],wordsAnglais:[] },
     ]);
     const [loading, setLoading] = useState(false);
     const selectRef = useRef(null);
@@ -277,20 +277,29 @@ export const MainRightTheme = () => {
                 // return snackbbar(document.querySelector("#body"), infos, messages, 4000);
                 return snackbbar(document.querySelector("#body"), infos, message2, 4000);
             }
+            if (sousThemes.wordsAnglais.length % 25 !== 0 || sousThemes.wordsAnglais.length === 0) {
+                const messages = `Le nombre de mots dans la sous thématique "${sousThemes.crossword}" doit être un multiple de 25.`
+                // return snackbbar(document.querySelector("#body"), infos, messages, 4000);
+                return snackbbar(document.querySelector("#body"), infos, message2, 4000);
+            }
         }
         if (data) {
+            console.log(thematiques)
             const dataSend = {
                 name: data.thematique,
                 color: color,
-                visibility: checkVisibility,
+                 visibility: 0,
                 // icon: icons[selectedIconIndex].name,
-                dataCrossword: thematiques
+                wordsFr: thematiques[0].words,
+                wordsEn:thematiques[0].wordsAnglais
             }
+            console.log(dataSend)
             setEtatSousTheme(true);
             setLoading(true);
 
             try {
                 const result = await fetchData("themes", dataSend, token);
+                console.log(result)
                 if (result.message === "the thematics is created") {
                     // snackbbar(document.querySelector("#body"), infos, result.message, 2000);
                     snackbbar(document.querySelector("#body"), infos, message1, 2000);
@@ -330,6 +339,15 @@ export const MainRightTheme = () => {
         });
         setThematiques(newThematiques);
     };
+    const handleRemoveChips = (id, chipIndex) => {
+        const newThematiques = thematiques.map(thematique => {
+            if (thematique.id === id) {
+                thematique.wordsAnglais = thematique.wordsAnglais.filter((_, index) => index !== chipIndex);
+            }
+            return thematique;
+        });
+        setThematiques(newThematiques);
+    };
     const handleAddThematique = () => {
         setThematiques([...thematiques, { id: thematiques.length + 1, crossword: '', words: [] }])
     }
@@ -345,13 +363,23 @@ export const MainRightTheme = () => {
 
         // doublons
         updatedFormation.words = [...updatedFormation.words, ...chips];
-        // updatedFormation.words = Array.from(new Set(updatedFormation.words.map(word => word.toLowerCase())))
-        //     .map(lowercaseWord =>
-        //         updatedFormation.words.find(word => word.toLowerCase() === lowercaseWord)
-        //     );
 
         setThematiques(updatedFormations);
     };
+    const handleAddChips = (id, value) => {
+        const updatedFormations = [...thematiques];
+        const updatedFormation = updatedFormations.find((f) => f.id === id);
+
+        // Séparer les mots par les virgules
+        const chips = value.split(',')
+            .map(chip => chip.trim())
+            .filter(chip => chip);
+
+        // doublons
+        updatedFormation.wordsAnglais  = [...updatedFormation.wordsAnglais, ...chips];
+        setThematiques(updatedFormations);
+    };
+  
     const handleRemoveThematique = (id) => {
         setThematiques(thematiques.filter((theme) => theme.id !== id));
     };
@@ -366,6 +394,11 @@ export const MainRightTheme = () => {
                 //snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg", result.message, 4000);
                 snackbbar(document.querySelector("#body"), infos, message1, 4000);
                 setResultAllThematiques(result.thematique);
+                return  fetchDataGet("themes").then((result) => {
+                    console.log(result)
+                    const response = result.sort((a, b) => a.name.localeCompare(b.name))
+                    setResultAllThematiques(response)
+                })
             }
         }).catch((error) => {
             console.log({ messahge: error })
@@ -411,6 +444,10 @@ export const MainRightTheme = () => {
                         }
                         register("checkValue").onChange(e);
                     }} />
+                     <FontAwesomeIcon
+                                            icon={faClose}
+                                            className="icons_close_list"
+                                        /> 
                     <div className="parent_search_users">
                         <img src={search} alt="" className="search_users" />
                     </div>
@@ -566,7 +603,7 @@ export const MainRightTheme = () => {
                                 </div>
                             )}
                         </div>
-                        <div className="visibility">
+                        {/* <div className="visibility">
                             <label htmlFor="">Gratuit</label>
                             <Select
                                 dataSelectStatus={dataSelectVisibility}
@@ -577,13 +614,14 @@ export const MainRightTheme = () => {
                                 optionVisible={optionVisibleVisibility}
                                 rotateIcon={rotateIconVisility}
                                 defautClassName="select" />
-                        </div>
+                        </div> */}
 
                     </div>
                     <span className="title">CREATION DE LA SOUS THEMATIQUE</span>
                     <div className="parent_contenair_sous_thematique">
                         {
                             thematiques?.map((sousThemes) => {
+                                console.log("sousThemes",sousThemes)
                                 return (
                                     <div className="contenair_sous_thematique" key={sousThemes.id}>
                                         <div className="parent_sous_thematique">
@@ -599,9 +637,9 @@ export const MainRightTheme = () => {
                                                     }} />
                                             </div>
                                             <div className="space_contenair">
-                                                <label htmlFor=""> Liste de mots de la sous-thématique</label>
+                                                <label htmlFor=""> Liste de mots de la sous-thématique Francais</label>
                                                 <div className="parent_textarea">
-                                                    <textarea className="textarea_sous_thematique" placeholder="Entrer un mot" onKeyDown={(e) => {
+                                                    <textarea className="textarea_sous_thematique" placeholder="Entrer un mot français" onKeyDown={(e) => {
                                                         if (e.key === 'Enter') {
                                                             e.preventDefault();
                                                             handleAddChip(sousThemes.id, e.target.value);
@@ -618,8 +656,33 @@ export const MainRightTheme = () => {
                                                         ))}
                                                     </div>
                                                     <span className="nbre_words">Listes de mots:{sousThemes.words.length}</span>
+                                                    
                                                 </div>
                                             </div>
+                                            <div className="space_contenair">
+                                                <label htmlFor=""> Liste de mots de la sous-thématique Anglais</label>
+                                                <div className="parent_textarea">
+                                                    <textarea className="textarea_sous_thematique" placeholder="Entrer un mot anglais" onKeyDown={(e) => {
+                                                        if (e.key === 'Enter') {
+                                                            e.preventDefault();
+                                                            handleAddChips(sousThemes.id, e.target.value);
+                                                            e.target.value = '';
+                                                        }
+                                                    }}>
+                                                    </textarea>
+                                                    <div className="option_chips">
+                                                        {sousThemes.wordsAnglais.map((chip, index) => (
+                                                            <div key={index} className="chip">
+                                                                <span>{chip}</span>
+                                                                <FontAwesomeIcon icon={faClose} className="close_chips" onClick={() => handleRemoveChips(sousThemes.id, index)} />
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                    <span className="nbre_words">Listes de mots:{sousThemes.wordsAnglais.length}</span>
+                                                    
+                                                </div>
+                                            </div>
+                                           
                                         </div>
                                         <div className="add_remove">
                                             {

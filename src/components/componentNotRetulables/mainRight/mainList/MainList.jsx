@@ -17,7 +17,7 @@ import { Select } from '../../select/Select';
 import { ButtonMainLeft } from '../../../repeatableComponents/atomes/button/ButtonMainLeft';
 import { fetchDataGetToken } from '../../../../helpers/fetchDataGetToken';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
+import { faAngleLeft, faAngleRight, faClose } from "@fortawesome/free-solid-svg-icons";
 
 export const MainList = () => {
     const checkRef = useRef(null);
@@ -325,8 +325,13 @@ export const MainList = () => {
             </div>
             <div className="sous_parent_main_users_header_list">
                 <div className="sous_parent_main_users_header_input_list">
-                    <input type="text" className="input_users" placeholder="Rechercher un mot,une liste de mots ou une thématique" name="checkValue" value={searchQuery}
+                    <input type="search" className="input_users" placeholder="Rechercher un mot, listes de mots ou une thématique" name="checkValue" value={searchQuery}
                         onChange={handleSearchChange} />
+                         <FontAwesomeIcon
+                        icon={faClose}
+                        className="icons_close_list"
+                        onClick={() => setSearchQuery("")}
+                    /> 
                     <div className="parent_search_users">
                         <img src={search} alt="" className="search_users" />
                     </div>
@@ -340,15 +345,15 @@ export const MainList = () => {
             <div className='sous_parent_main_users_information-child1'>
                 <span>Français</span>
                 <span>Anglais</span>
+                <span>Listes de mots</span>
                 <span>Thématiques</span>
-                <span>Mots croisés</span>
             </div>
             {data.length > 0 ? (
                     data.map((word, index) => (
                         <div key={index} className="sous_parent_main_users_information-child2">
                             {/* Editable: Mot Français */}
                             <div
-                                className="user_adress_mail_list color_french"
+                                className="user_adress_mail_list color_english"
                                 contentEditable
                                 // suppressContentEditableWarning={true}
                                 onBlur={(e) => handleEdit(index, "text", e.target.innerText)}
@@ -367,8 +372,8 @@ export const MainList = () => {
                             </div>
 
                             {/* Non modifiables */}
-                            <div className="user_adress_mail_list color_theme">{word.name}</div>
-                            <div className="user_adress_mail_list color_crossword">{word.Crossword}</div>
+                            <div className="user_adress_mail_list color_english">{word.name}</div>
+                            <div className="user_adress_mail_list color_english">{word.Crossword}</div>
                         </div>
                     ))
                 ) : (

@@ -198,7 +198,7 @@ export const MainRightComptes = () => {
                         </div>
                     </div>
                 </div>
-                <p>Mentions légales</p>
+                <p className="mentions">Mentions légales</p>
                 <div className="sous_parent_main3">
                     <div className="parent_confidentialite">
                         {/* <a href="#" className="link_a">Thèmes et conditions d'utilisation</a> */}

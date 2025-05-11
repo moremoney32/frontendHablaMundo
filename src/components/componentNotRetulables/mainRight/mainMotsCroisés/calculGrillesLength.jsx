@@ -21,7 +21,7 @@
 /****ca plus bas tient le coup */
 export const calculateGridSize = (words) => {
   // Filtrer les mots qui sont strictement inférieurs à 16 caractères.
-  const filteredWords = words.filter(word => word.length <= 60);
+  const filteredWords = words.filter(word => word.length <= 15);
 
   // Calculer la taille de la grille en fonction des mots filtrés
   const longestWord = filteredWords.reduce((max, word) => Math.max(max, word.length), 0);

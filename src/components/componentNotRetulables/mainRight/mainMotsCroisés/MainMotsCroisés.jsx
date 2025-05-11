@@ -26,38 +26,45 @@ export const MainMotsCroisés = () => {
   }
   let message1 = "Demande prise en compte"
   let message2 = "Demande non prise en compte"
-  const [datas, setDatas] = useState(newDataCrossword);
+  // const [datas, setDatas] = useState(newDataCrossword);
+  const [datas, setDatas] = useState({
+    positions: datasFrench, // Initialiser avec les données existantes
+    gridSize: 15, // Exemple de taille de grille
+    reste: [], // Exemple de reste
+  });
   const [loading, setLoading] = useState(false);
   const [dataswords, setDatasWords] = useState(names);
   const dataTheme = JSON.parse(localStorage.getItem('theme'));
   const name = JSON.parse(localStorage.getItem('name'));
   const id = JSON.parse(localStorage.getItem('id'));
   const token = localStorage.getItem('token');
-  const handleWordChange = (index, newName) => {
-    const newPositions = datas.positions.map((word, i) =>
-      i === index ? { ...word, word: newName } : word
-    );
-    let newWorldsEnglish = newPositions.map(word => word.word);
-    //newWorldsEnglish = newWorldsEnglish.sort((a, b) => a.localeCompare(b))
-    const generatenewGrille = generateCrossword(newWorldsEnglish)
-    const filterName = datas.positions.map(word => word.name);
-    const generateFRenchEnglish = generateCrossword(newWorldsEnglish).positions.map((item, index) => {
-      return {
-        ...item,
-        name: filterName[index]
-      };
-    });
-    const newDataCrossword = {
-      positions: generateFRenchEnglish,
-      gridSize: generatenewGrille.gridSize,
-      reste: datas.reste
-    }
+  // const handleWordChange = (index, newName) => {
+  //   const newPositions = datas.positions.map((word, i) =>
+  //     i === index ? { ...word, word: newName } : word
+  //   );
+  //   let newWorldsEnglish = newPositions.map(word => word.word);
+  //   console.log(newWorldsEnglish)
+  //   //newWorldsEnglish = newWorldsEnglish.sort((a, b) => a.localeCompare(b))
+  //    const generatenewGrille = generateCrossword(newWorldsEnglish)
+  //   const filterName = datas.positions.map(word => word.name);
+  //   console.log(filterName)
+  //   const generateFRenchEnglish = generateCrossword(newWorldsEnglish).positions.map((item, index) => {
+  //     return {
+  //       ...item,
+  //       name: filterName[index]
+  //     };
+  //   });
+  //   const newDataCrossword = {
+  //     positions: generateFRenchEnglish,
+  //     gridSize: generatenewGrille.gridSize,
+  //     reste: datas.reste
+  //   }
 
-    setDatas(newDataCrossword);
+  //   setDatas(newDataCrossword);
 
-  };
+  // };
 
-
+console.log(datas)
 
   const handleWordChangeReste = (index, newName) => {
     let newReste = datas.reste.map((word, i) =>
@@ -80,41 +87,53 @@ export const MainMotsCroisés = () => {
     }
     setDatas(newDataCrossword);
   };
-  const handleWordChangeFrench = (index, newName) => {
-    const newPositions = datas.positions.map((word, i) =>
-      i === index ? { ...word, name: newName } : word
-    );
-    const datasFrench = newPositions.map(element => element.name)
-    setDatasWords(datasFrench)
-    const updatedWords = datas.positions.map((item, index) => {
-      if (index < datasFrench.length) {
-        return { ...item, name: datasFrench[index] };
-      }
-      return item;
-    });
-    const newDataCrossword = {
-      positions: updatedWords,
-      gridSize: datas.gridSize,
-      reste: datas.reste
-    }
-    setDatas(newDataCrossword);
+  // const handleWordChangeFrench = (index, newName) => {
+  //   const newPositions = datas.positions.map((word, i) =>
+  //     i === index ? { ...word, name: newName } : word
+  //   );
+  //   const datasFrench = newPositions.map(element => element.name)
+  //   console.log(datasFrench)
+  //   setDatasWords(datasFrench)
+  //   const updatedWords = datas.positions.map((item, index) => {
+  //     if (index < datasFrench.length) {
+  //       return { ...item, name: datasFrench[index] };
+  //     }
+  //     return item;
+  //   });
+  //   const newDataCrossword = {
+  //     positions: updatedWords,
+  //     gridSize: datas.gridSize,
+  //     reste: datas.reste
+  //   }
+  //   setDatas(newDataCrossword);
 
-  }
+  // }
+  const handleWordChange = (index, newName) => {
+  setDatas((prev) => {
+    const newPositions = [...prev.positions];
+    newPositions[index] = { ...newPositions[index], traduction: newName }; // Mettre à jour le mot anglais
+    return {
+      ...prev,
+      positions: newPositions,
+    };
+  });
+};
+const handleWordChangeFrench = (index, newName) => {
+  setDatas((prev) => {
+    const newPositions = [...prev.positions];
+    newPositions[index] = { ...newPositions[index], name: newName }; // Mettre à jour le mot français
+    return {
+      ...prev,
+      positions: newPositions,
+    };
+  });
+};
 
   const handleWordlsGrille = async () => {
-    let updatedWords = datas.positions.map((word, index) => {
-      if (index < datasFrench.length) {
-        return { ...word, id: datasFrench[index].id };
-      }
-      return word;
-    });
-    console.log(updatedWords)
-
-    //updatedWords =  updatedWords.map(({ row, col,direction, ...rest }) => rest);
-
+    
     const dataPush = {
       crosswordId: id,
-      words: updatedWords
+      words: datas.positions
     }
     console.log(dataPush)
     setLoading(true);
@@ -133,17 +152,64 @@ export const MainMotsCroisés = () => {
     }
 
   }
+  
+  const generateRandomId = () => {
+    return Math.floor(10000000 + Math.random() * 90000000); // Génère un nombre entre 10000000 et 99999999
+  };
+  
   const handleAddWord = () => {
     if (datas.positions.length < 25) {
-      setDatas((prev) => ({
-        ...prev,
-        positions: [...prev.positions, { word: "", name: "" }],
-      }));
+      setDatas((prev) => {
+        const newPositions = [...prev.positions, { name: "", traduction: "", id:  generateRandomId() }]; 
+        return {
+          ...prev,
+          positions: newPositions,
+        };
+      });
+      return console.log(datas)
     }
   };
+  console.log(datas.positions)
 
-
-
+  
+  const handleDeleteWord = async (indexToDelete) => {
+    const wordToDelete = datas.positions[indexToDelete];
+    const id = wordToDelete?.id;
+  
+    if (!id) return;
+  
+    try {
+      const response = await fetch("https://www.backend.habla-mundo.com/api/v1/words", {
+        method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id }) // on envoie { id: 1 }
+      });
+      console.log(response)
+      console.log(response.json())
+  
+      if (response.ok) {
+        setDatas((prev) => {
+          const newPositions = prev.positions.filter((_, i) => i !== indexToDelete);
+          return {
+            ...prev,
+            positions: newPositions,
+          };
+        });
+  
+        snackbbar(document.querySelector("#body"), infos, "Mot supprimé avec succès", 4000);
+      } else {
+        throw new Error("Échec de suppression");
+      }
+    } catch (err) {
+      console.error(err);
+      snackbbar(document.querySelector("#body"), infos, "Erreur lors de la suppression", 4000);
+    }
+  };
+  
+  
   return (
     <div className="parent_main">
       <div className="parent_header_sous_thematiques">
@@ -157,7 +223,7 @@ export const MainMotsCroisés = () => {
             <span className="title_languageAnglais">Francais</span>
             <span className="title_languageFrancais">Anglais</span>
           </div>
-          <WordList data={datas.positions} onWordChange={handleWordChange} onWordChangeFrench={handleWordChangeFrench} setFocusedWord={setFocusedWord} />
+          <WordList data={datas.positions} onWordChange={handleWordChange} onWordChangeFrench={handleWordChangeFrench} setFocusedWord={setFocusedWord}  onDeleteWord={handleDeleteWord}/>
           {/* {datas.reste.length >= 1 && <div className="parent_reste">
             <span className="title_parent">Mots anglais ayants plus de 15 caracteres</span>
             <div className="reste">

@@ -138,3 +138,9 @@ color: green;
     color:black;
     font-weight: bold;
   }
+  .icons_close_list{
+    position:absolute;
+    top:25%;
+    right:50px !important;
+    cursor: pointer;
+  }

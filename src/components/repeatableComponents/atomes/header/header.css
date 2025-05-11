@@ -2,7 +2,7 @@
 .header{
     padding-top:13px;
    padding-bottom:13px;
-   padding-left: 30px;
+   padding-left: 10px;
    padding-right: 30px; 
    background-color:var(--color-primary);
    display: flex;
@@ -180,6 +180,16 @@
   border-radius: 5px;
   cursor: pointer;
 } 
+ .header_remove_worlds1{
+  font-size: 13px !important;
+  color: #FFFFFF !important;
+  text-align: center;
+  padding: 10px !important;
+  background:#D73030;
+  border:none;
+  border-radius: 5px;
+  cursor: pointer;
+}
 .header_main_3{
   font-size:23px;
  color: black;

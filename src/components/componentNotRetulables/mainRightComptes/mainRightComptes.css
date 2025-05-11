@@ -63,6 +63,9 @@
     flex-direction: column;
     gap: 30px;
   }
+  .mentions{
+    padding-left: 20px;
+  }
   .sous_parent_main2_header{
     display:flex;
     justify-content: space-between;

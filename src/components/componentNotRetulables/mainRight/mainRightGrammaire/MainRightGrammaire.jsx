@@ -21,7 +21,7 @@ import { fetchDataGet } from "../../../../helpers/fetchDataGet";
 import { formatTime } from "../../../../helpers/formatDate";
 import { fetchDelete } from "../../../../helpers/fetchDelete";
 import { useSearchNames } from "../../../../customsHooks/useSearchNames";
-import { faAngleLeft, faAngleRight, faEdit, faSearch,faAngleDown } from "@fortawesome/free-solid-svg-icons";
+import { faAngleLeft, faAngleRight, faEdit, faSearch, faAngleDown } from "@fortawesome/free-solid-svg-icons";
 import { useSearchGrammar } from "../../../../customsHooks/userSearchGrammar";
 import { useSearchWords } from "../../../../customsHooks/useSearchWords";
 import { snackbbar } from "../../../../helpers/snackbars";
@@ -30,7 +30,7 @@ import closePopup from "../../../../assets/icons/closePopup.png";
 import "../mainRightAllTraduction/mainRightAllTraduction.css"
 import { Pagination } from "../../../repeatableComponents/atomes/pagination/Pagination";
 import "./mainRightGrammaire.css"
-import {  useSearchGrammarTheme } from "../../../../customsHooks/userSearchGrammarTheme";
+import { useSearchGrammarTheme } from "../../../../customsHooks/userSearchGrammarTheme";
 
 export const MainRightGrammaire = () => {
     const [etat, setEtat] = useState(false);
@@ -44,8 +44,8 @@ export const MainRightGrammaire = () => {
     const [optionVisibleVisibility, setOptionVisibleVisibility] = useState(false);
     const [optionName, setOptionName] = useState("Ordre Aphabétique");
     const [optionNameGrammar, setOptionNameGrammar] = useState("A1");
-    const [rotateIcon,setRotateIcon] = useState(false);
-    const [rotateIconWords,setRotateIconWords] = useState(false);
+    const [rotateIcon, setRotateIcon] = useState(false);
+    const [rotateIconWords, setRotateIconWords] = useState(false);
     const [rotateIconGrammar, setRotateIconGrammar] = useState(false);
     const [levelSearch, setLevelSearch] = useState(true);
     const [etatSearch, setEtatSearch] = useState(false);
@@ -76,7 +76,7 @@ export const MainRightGrammaire = () => {
     const selectRefGrammar = useRef(null)
     const textareaRef = useRef(null);
     const fileInputRef = useRef(null);
-     const [crossword_id, setCrossword_id] = useState([]);
+    const [crossword_id, setCrossword_id] = useState([]);
     const [content, setContent] = useState(null);
     const [totalPages, setTotalPages] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
@@ -163,8 +163,8 @@ export const MainRightGrammaire = () => {
         }
     };
 
-    useEffect(()=>{
-        if (location.state?.fromHome && location.state?.filter === "etatB"){
+    useEffect(() => {
+        if (location.state?.fromHome && location.state?.filter === "etatB") {
             setEtatB(true);
             setEtat(true);
         }
@@ -427,7 +427,7 @@ export const MainRightGrammaire = () => {
     const handleSelectJuridictions = () => {
         let select = selectWordsRef.current
         setRotateIconWords(!rotateIconWords);
-        if (rotateIconWords){
+        if (rotateIconWords) {
             select.style.borderBottomRightRadius = "10px";
             select.style.borderBottomLeftRadius = "10px";
             setSelectWords(false);
@@ -437,17 +437,17 @@ export const MainRightGrammaire = () => {
             setSelectWords(true);
         }
     }
-    const handleChildClickWords =(value,id)=>{
-        if (!words.includes(value)){
+    const handleChildClickWords = (value, id) => {
+        if (!words.includes(value)) {
             // Ajouter la nouvelle juridiction à celles déjà sélectionnées, séparées par des virgules
             setWords(prevJuridictions => prevJuridictions ? `${prevJuridictions}, ${value}` : value);
             setCrossword_id(prevIds => [...prevIds, id]);
         }
         setSelectWords(false);
     };
-   
-       
-    
+
+
+
     const onSubmit = async (data) => {
         const htmlContent = textareaRef.current.innerHTML;
         data.reponse = htmlContent;
@@ -489,7 +489,7 @@ export const MainRightGrammaire = () => {
         //     window.open("/AllTraduction", "_blank");
         // }, 500);
     }
-   
+
     const closeTheme = () => {
         setMasqueRemove(false)
     }
@@ -498,7 +498,7 @@ export const MainRightGrammaire = () => {
         setUserThemeId(id)
     }
     const handleThematique = async () => {
-        setIsLoading(true); 
+        setIsLoading(true);
 
         const data = {
             thematique_id: userThemeId
@@ -517,20 +517,20 @@ export const MainRightGrammaire = () => {
             .then((result) => {
                 console.log(result);
                 if (result.status === 200) {
-                   return snackbbar(document.querySelector("#body"), infos, "Demande prise en compte", 3000),setMasqueRemove(false),
-                    setTimeout(() => {
-                        fetchDataByUrl("lessons");
-                    }, 2000);
+                    return snackbbar(document.querySelector("#body"), infos, "Demande prise en compte", 3000), setMasqueRemove(false),
+                        setTimeout(() => {
+                            fetchDataByUrl("lessons");
+                        }, 2000);
                 }
             })
             .catch((error) => console.error('Erreur lors de la récupération des données :', error))
-            .finally(() => setIsLoading(false)); 
+            .finally(() => setIsLoading(false));
     };
- 
+
     return (
         <div className="parent_main">
             <div className="title_main">
-                <HeaderTitleMain h1="Grammaire"/>
+                <HeaderTitleMain h1="Grammaire" />
                 {/* <div className="update_theme" onClick={checkTheme}>
                     <span>+</span>
                     <span>Ajouter une leçon</span>
@@ -551,15 +551,20 @@ export const MainRightGrammaire = () => {
             <div className="sous_parent_main_users_header">
                 <div className="sous_parent_main_users_header_input">
                     <input type="text" className="input_users" placeholder="Rechercher une thématique ou une leçon de grammaire" name="checkValueThematique" onChange={(e) => {
-                         const searchValue = e.target.value.toLowerCase();
+                        const searchValue = e.target.value.toLowerCase();
                         setLevelSearch(false);
                         setEtatSearch(true)
                         searchElementTheme(searchValue);
                         if (e.target.value.length === 0) {
                             setLevelSearch(true);
-                            setEtatSearch(false)
+                            setEtatSearch(false);
                         }
                     }} />
+                    <FontAwesomeIcon
+                        icon={faClose}
+                        className="icons_close_list"
+                        onClick={() => searchElementTheme("")}
+                    />
                     <div className="parent_search_users">
                         <img src={search} alt="" className="search_users" />
                     </div>
@@ -596,7 +601,7 @@ export const MainRightGrammaire = () => {
                             {result.thematique_name}
                         </span>
                         <span className="sentences_grammar">
-                            {result.sentences.length} phrases
+                            {result?.sentence_count} phrases
                         </span>
                         <span className="parent_icons_thematics_child2">
                             créé {formatTime(result.created_at)}
@@ -704,9 +709,6 @@ export const MainRightGrammaire = () => {
                                 defautClassNameOption="optionGrammar"
                                 defautClassName="selectGrammar" />
                         </div>
-                    </div>
-
-                    <div className="answer_client_theme2">
                         <div className="space-signup">
                             <label htmlFor="thématique">Thématique</label>
                             <input
@@ -737,8 +739,87 @@ export const MainRightGrammaire = () => {
                                 </div>
                             )}
                         </div>
+                    </div>
 
-                        <div className="space-signup" onClick={handleSelectJuridictions} ref={selectWordsRef}>
+                    <div className="answer_client_theme3">
+                        <div className="space_contenair contenair_phrases">
+                            <label htmlFor="">Phrases Françaises</label>
+                            <div className="parent_textarea">
+                                <textarea className="textarea_sous_thematique" placeholder="Entrer une phrase française" onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        e.preventDefault();
+                                        // handleAddChip(sousThemes.id, e.target.value);
+                                        e.target.value = '';
+                                    }
+                                }}>
+                                </textarea>
+                                {/* <div className="option_chips">
+                                    {sousThemes.words.map((chip, index) => (
+                                        <div key={index} className="chip">
+                                            <span>{chip}</span>
+                                            <FontAwesomeIcon icon={faClose} className="close_chips" onClick={() => handleRemoveChip(sousThemes.id, index)} />
+                                        </div>
+                                    ))}
+                                </div> */}
+                                <span className="nbre_words">Listes de phrases:</span>
+
+                            </div>
+                        </div>
+                        <div className="space_contenair contenair_phrases">
+                            <label htmlFor="">Phrases Anglaises</label>
+                            <div className="parent_textarea">
+                                <textarea className="textarea_sous_thematique" placeholder="Entrer un phrase anglaise" onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        e.preventDefault();
+                                        // handleAddChip(sousThemes.id, e.target.value);
+                                        e.target.value = '';
+                                    }
+                                }}>
+                                </textarea>
+                                {/* <div className="option_chips">
+                                    {sousThemes.words.map((chip, index) => (
+                                        <div key={index} className="chip">
+                                            <span>{chip}</span>
+                                            <FontAwesomeIcon icon={faClose} className="close_chips" onClick={() => handleRemoveChip(sousThemes.id, index)} />
+                                        </div>
+                                    ))}
+                                </div> */}
+                                <span className="nbre_words">Listes de phrases:</span>
+
+                            </div>
+                        </div>
+                        {/* <div className="space-signup">
+                            <label htmlFor="thématique">Thématique</label>
+                            <input
+                                type="text"
+                                name="thématique"
+                                defaultValue={thématique}
+                                {...register("thématique", { required: "La thématique est obligatoire" })}
+                                onBlur={() => {
+                                    setTimeout(() => setSelect(false), 200);
+                                }}
+                                onChange={(e) => {
+                                    searchElementUserNameGrammar(e.target.value);
+                                    setSelect(true);
+                                    register('thématique').onChange(e);
+                                }}
+                            />
+                            {errors.thématique && <span className="error">{errors.thématique.message}</span>}
+
+                            {select && (
+                                <div className="optionGrammar1">
+                                    {searchResultsGrammar.map((infosUsers) => {
+                                        return (
+                                            <span key={infosUsers.id} onClick={() => handleChildClickTheme(infosUsers.name, infosUsers.id)}>
+                                                {infosUsers.name}
+                                            </span>
+                                        );
+                                    })}
+                                </div>
+                            )}
+                        </div> */}
+
+                        {/* <div className="space-signup" onClick={handleSelectJuridictions} ref={selectWordsRef}>
                             <label htmlFor="words">Listes de mots</label>
                             <input
                                 type="text"
@@ -748,13 +829,14 @@ export const MainRightGrammaire = () => {
                                     setWords(e.target.value)
                                     register('words').onChange(e);
                                     if (words.length === 1) {
-        
+
                                         setCrossword_id([])
                                     }
-                                    console.log(words)}}
+                                    console.log(words)
+                                }}
                             />
-                                <FontAwesomeIcon icon={faAngleDown} className="iconWords"  style={{transform: rotateIconWords && "rotate(180deg)" }}/>
-                             {errors.words && <span className="error">{errors.words.message}</span>} 
+                            <FontAwesomeIcon icon={faAngleDown} className="iconWords" style={{ transform: rotateIconWords && "rotate(180deg)" }} />
+                            {errors.words && <span className="error">{errors.words.message}</span>}
 
                             {selectWords && (
                                 <div className="optionGrammar1">
@@ -767,7 +849,7 @@ export const MainRightGrammaire = () => {
                                     })}
                                 </div>
                             )}
-                        </div>
+                        </div> */}
                     </div>
 
                     <div className="description">

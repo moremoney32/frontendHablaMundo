@@ -27,8 +27,18 @@
     height:15px;
     object-fit: contain;
      position: absolute !important;
-     top:15px !important;
-    right: 15px !important;
+     top:27px !important;
+    right: 30px !important;
+    cursor: pointer;  
+    /* left:15 !important; */
+}
+.write_traduction{
+    width: 15px;
+    height:15px;
+    object-fit: contain;
+     position: absolute !important;
+     top:27px !important;
+    right: 65px !important;
     cursor: pointer;  
     /* left:15 !important; */
 }
@@ -158,3 +168,30 @@ font-size: 12px;
         height: 100vh !important;
         overflow-y: auto; 
       }
+      /*******toogle description****/
+
+      /* Animation de la flèche */
+.toggle-arrow {
+    transition: transform 0.3s ease;
+    margin-left: 10px;
+    width: 20px;
+}
+
+.toggle-arrow.rotated {
+    transform: rotate(180deg);
+}
+
+/* Style de l'en-tête */
+.description-header {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 10px;
+    background: #f5f5f5;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+
+.description-header:hover {
+    background: #eee;
+}

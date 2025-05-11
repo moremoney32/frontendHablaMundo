@@ -1,14 +1,14 @@
 .button_main_left{
     display: flex !important;
     align-items: center !important;
-    gap: 7px;
+    gap: 6px;
     border: none;
     padding-left: 15px;
     padding-top: 15px;
     padding-bottom: 15px;
   }
   .button_main_left span{
-    font-size: 15px;
+    font-size: 14px;
   }
   
   

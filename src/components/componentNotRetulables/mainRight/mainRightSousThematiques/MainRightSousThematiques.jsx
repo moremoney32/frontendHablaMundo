@@ -238,7 +238,7 @@ export const MainRightSousThematiques = () => {
                                         <div className="parent_sous_thematique">
                                             <div className="space_contenair">
                                                 <label htmlFor="sous_thematique">Sous thématique</label>
-                                                <input type="text" placeholder="Entrer le nom de la sous thématique" name={`crossword-${sousThemes.id}`}   {...register(`crossword-${sousThemes.id}`)}
+                                                <input type="search" placeholder="Entrer le nom de la sous thématique" name={`crossword-${sousThemes.id}`}   {...register(`crossword-${sousThemes.id}`)}
                                                     onChange={(e) => {
                                                         const updatedFormations = [...thematiques];
                                                         const updatedFormation = updatedFormations.find((f) => f.id === sousThemes.id);
@@ -246,6 +246,7 @@ export const MainRightSousThematiques = () => {
                                                         setThematiques(updatedFormations);
                                                         register(`crossword-${sousThemes.id}`).onChange(e);
                                                     }} />
+                                                    <FontAwesomeIcon  icon={faClose} className="icons_close_list" />
                                             </div>
                                             <div className="space_contenair">
                                                 <label htmlFor="">Liste des mots de la sous-thématique</label>

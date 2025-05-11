@@ -1,25 +1,28 @@
-import { snackbbar } from "../../../../helpers/snackbars";
-import infos from "../../../../assets/icons/infos.svg"
 
-function WordList({ data, onWordChange, onWordChangeFrench, setFocusedWord }) {
+import { snackbbar } from "../../../../helpers/snackbars";
+import infos from "../../../../assets/icons/infos.svg";
+import { faEdit, faRemove } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+function WordList({ data, onWordChange, onWordChangeFrench, setFocusedWord,onDeleteWord }) {
   const handleInputChange = (e, index) => {
     let newName = e.target.innerText;
-    if (newName.length > 50) {
+    if (newName.length > 100) {
       snackbbar(
         document.querySelector("#body"),
         infos,
-        "Le mot anglais ne doit pas dépasser 50 caractères.",
+        "Le mot anglais ne doit pas dépasser 100 caractères.",
         4000
       );
-      e.target.innerText = newName.slice(0, 50);
+      e.target.innerText = newName.slice(0, 100);
     } else {
-      onWordChange(index, newName);
+      onWordChange(index, newName); // Mettre à jour le mot anglais
     }
   };
 
   const handleInputFrench = (e, index) => {
     let newName = e.target.innerText;
-    onWordChangeFrench(index, newName);
+    onWordChangeFrench(index, newName); // Mettre à jour le mot français
   };
 
   const handleBlur = (e, index) => {
@@ -29,8 +32,8 @@ function WordList({ data, onWordChange, onWordChangeFrench, setFocusedWord }) {
 
   return (
     <div className="sous_parent_main_croisés_left_parent">
-      {data?.map((word, index) => (
-        <div className="sous_parent_main_croisés_left_2" key={index}>
+      {data.map((word, index) => (
+        <div className="sous_parent_main_croisés_left_2" key={word.id || index}>
           <span className="content_number">{index + 1}</span>
           <span
             contentEditable
@@ -42,24 +45,16 @@ function WordList({ data, onWordChange, onWordChangeFrench, setFocusedWord }) {
           <span
             contentEditable
             className="content"
-            onFocus={() => setFocusedWord(word.word)} // Définir le mot focusé
-            onBlur={(e) => handleBlur(e, index)} // Combiner handleInputChange et setFocusedWord...
+            onFocus={() => setFocusedWord(word.traduction)} // Définir le mot focusé
+            onBlur={(e) => handleBlur(e, index)} // Combiner handleInputChange et setFocusedWord
           >
-            {word.word}
+            {word.traduction}
           </span>
+            <FontAwesomeIcon icon={faRemove}   className="edit-edit"   onClick={() => onDeleteWord(index)}/> 
         </div>
       ))}
-       {/* Ajouter une div vide si data < 25 */}
-       {data.length < 25 && (
-        <div className="sous_parent_main_croisés_left_2 empty" key="empty">
-          <span className="content_number">{data.length + 1}</span>
-          <span className="content" contentEditable></span>
-          <span className="content_words" contentEditable></span>
-        </div>
-      )}
     </div>
   );
 }
 
 export default WordList;
-

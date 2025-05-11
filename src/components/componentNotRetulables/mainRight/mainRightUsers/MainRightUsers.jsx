@@ -290,6 +290,11 @@ export const MainRightUsers = () => {
                             }
                             register("checkValue").onChange(e); // Access onChange from register
                         }} />
+                         <FontAwesomeIcon
+                                                icon={faClose}
+                                                className="icons_close_list"
+                                               
+                                            /> 
                         <div className="parent_search_users">
                             <img src={search} alt="" className="search_users" />
                         </div>

@@ -1,6 +1,5 @@
 .sous_parent_main_croisés{
-    width: 70%;
-    margin: auto;
+    width: 85%;
     /* display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 40px; */
@@ -85,6 +84,13 @@
     font-size: 14px;
     border: 1px solid #D6EBFF;
       align-items: center;  
+      position: relative;
+}
+.edit-edit{
+position: absolute;
+right: 20px;
+color:red;
+cursor: pointer;
 }
 .content{
     color: black;
@@ -196,12 +202,11 @@
     
 }
 .parent_button_save{
-    width: 70%;
+    width: 85%;
     display:grid;
     grid-template-columns: 1fr 1fr;
     align-items: center;
     gap: 30px;
-    margin: auto;
 }
 .save_update{
     text-align: center;
