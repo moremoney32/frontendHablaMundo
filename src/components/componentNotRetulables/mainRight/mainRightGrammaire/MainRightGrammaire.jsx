@@ -82,6 +82,9 @@ export const MainRightGrammaire = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [nextPageUrl, setNextPageUrl] = useState(null);
     const [prevPageUrl, setPrevPageUrl] = useState(null);
+    const [phrasesFr, setPhrasesFr] = useState([]);
+    const [phrasesEn, setPhrasesEn] = useState([]);
+
     // const [etatRemove, setEtatRemove] = useState(false);
     const handleChangePages = (newPage) => {
         if (newPage > 0 && newPage <= totalPages) {
@@ -149,6 +152,39 @@ export const MainRightGrammaire = () => {
         setEtatEdit(false);
         setEditingId(null);
     };
+    // const handleAddPhrase = (value, type) => {
+    //     const phrases = value.split(",").map(p => p.trim()).filter(p => p);
+
+    //     if (type === "fr") {
+    //         setPhrasesFr(prev => [...prev, ...phrases]);
+    //     } else if (type === "en") {
+    //         setPhrasesEn(prev => [...prev, ...phrases]);
+    //     }
+    // };
+       const handleAddPhrase = (value, type) => {
+    const separators = /\r?\n/; // Supporte Windows (\r\n) et Unix (\n)
+
+    const phrases = value
+        .split(separators)  // On coupe selon les sauts de ligne
+        .map(p => p.trim()) // On nettoie les espaces autour
+        .filter(p => p.length > 0); // On ignore les vides
+
+   if (type === "fr") {
+            setPhrasesFr(prev => [...prev, ...phrases]);
+        } else if (type === "en") {
+            setPhrasesEn(prev => [...prev, ...phrases]);
+        }
+};
+const inputRef = useRef(null);
+
+const handleClearSearch = () => {
+    if (inputRef.current) {
+        inputRef.current.value = "";
+    }
+    setLevelSearch(true);
+    setEtatSearch(false);
+    register("checkValue").onChange({ target: { value: "" } });
+};
     const changeIcon = () => {
         const select = selectRef.current;
         setRotateIcon(!rotateIcon);
@@ -424,6 +460,15 @@ export const MainRightGrammaire = () => {
         })
     };
 
+    const handleRemove = (index, lang) => {
+        if (lang === "fr") {
+            setPhrasesFr(prev => prev.filter((_, i) => i !== index));
+        } else if (lang === "en") {
+            setPhrasesEn(prev => prev.filter((_, i) => i !== index));
+        }
+    };
+
+
     const handleSelectJuridictions = () => {
         let select = selectWordsRef.current
         setRotateIconWords(!rotateIconWords);
@@ -456,12 +501,21 @@ export const MainRightGrammaire = () => {
         setLoading(true)
         try {
 
+            // const dataSend = {
+            //     title: data.title,
+            //     level: optionNameGrammar,
+            //     description: htmlContent,
+            //    phrases:[],
+            // };
             const dataSend = {
                 title: data.title,
                 level: optionNameGrammar,
                 description: htmlContent,
-                crossword_ids: crossword_id,
                 thematique_id: thematique_id,
+                phrases: phrasesFr.map((fr, index) => ({
+                    phraseFr: fr,
+                    phraseEn: phrasesEn[index] || ""  // on aligne les deux
+                }))
             };
             console.log(dataSend)
             const response = await fetchData("lessons", dataSend, token);
@@ -531,10 +585,6 @@ export const MainRightGrammaire = () => {
         <div className="parent_main">
             <div className="title_main">
                 <HeaderTitleMain h1="Grammaire" />
-                {/* <div className="update_theme" onClick={checkTheme}>
-                    <span>+</span>
-                    <span>Ajouter une leçon</span>
-                </div> */}
             </div>
             {masqueRemove && <div id="masqueTheme"></div>}
             {/* {masqueRemove && <PopupRemove h1="Suppression de la lesson." closePopup={closePopup} text="Voulez-vous vraiment supprimer cette lesson?" TextRemove="Supprimer" removeLesson={handleThematique} closeLesson={closeTheme} />} */}
@@ -550,7 +600,7 @@ export const MainRightGrammaire = () => {
             )}
             <div className="sous_parent_main_users_header">
                 <div className="sous_parent_main_users_header_input">
-                    <input type="text" className="input_users" placeholder="Rechercher une thématique ou une leçon de grammaire" name="checkValueThematique" onChange={(e) => {
+                    <input type="text" ref={inputRef} className="input_users" placeholder="Rechercher une thématique ou une leçon de grammaire" name="checkValueThematique" onChange={(e) => {
                         const searchValue = e.target.value.toLowerCase();
                         setLevelSearch(false);
                         setEtatSearch(true)
@@ -563,22 +613,13 @@ export const MainRightGrammaire = () => {
                     <FontAwesomeIcon
                         icon={faClose}
                         className="icons_close_list"
-                        onClick={() => searchElementTheme("")}
+                        onClick={handleClearSearch}
+                      
                     />
                     <div className="parent_search_users">
                         <img src={search} alt="" className="search_users" />
                     </div>
                 </div>
-                {/* <Select
-                    dataSelectStatus={dataSelectStatus}
-                    changeIcon={changeIcon}
-                    handleChildClick={handleChildClick}
-                    selectRef={selectRef}
-                    optionName={optionName}
-                    optionVisible={optionVisible}
-                    rotateIcon={rotateIcon}
-                    defautClassNameOption="option"
-                    defautClassName="select" /> */}
                 <div className="update_theme1" onClick={checkTheme}>
                     <span>+</span>
                     <span>Ajouter une leçon</span>
@@ -748,20 +789,26 @@ export const MainRightGrammaire = () => {
                                 <textarea className="textarea_sous_thematique" placeholder="Entrer une phrase française" onKeyDown={(e) => {
                                     if (e.key === 'Enter') {
                                         e.preventDefault();
-                                        // handleAddChip(sousThemes.id, e.target.value);
+                                        handleAddPhrase(e.target.value, "fr");
                                         e.target.value = '';
                                     }
                                 }}>
                                 </textarea>
-                                {/* <div className="option_chips">
-                                    {sousThemes.words.map((chip, index) => (
+
+
+                                <div className="option_chips">
+                                    {phrasesFr.map((phrase, index) => (
                                         <div key={index} className="chip">
-                                            <span>{chip}</span>
-                                            <FontAwesomeIcon icon={faClose} className="close_chips" onClick={() => handleRemoveChip(sousThemes.id, index)} />
+                                            <span>{phrase}</span>
+                                            <FontAwesomeIcon
+                                                icon={faClose}
+                                                className="close_chips"
+                                                onClick={() => handleRemove(index, "fr")}
+                                            />
                                         </div>
                                     ))}
-                                </div> */}
-                                <span className="nbre_words">Listes de phrases:</span>
+                                </div>
+                                <span className="nbre_words">Listes de phrases:{phrasesFr.length}</span>
 
                             </div>
                         </div>
@@ -771,85 +818,29 @@ export const MainRightGrammaire = () => {
                                 <textarea className="textarea_sous_thematique" placeholder="Entrer un phrase anglaise" onKeyDown={(e) => {
                                     if (e.key === 'Enter') {
                                         e.preventDefault();
-                                        // handleAddChip(sousThemes.id, e.target.value);
+                                        handleAddPhrase(e.target.value, "en");
                                         e.target.value = '';
                                     }
                                 }}>
                                 </textarea>
-                                {/* <div className="option_chips">
-                                    {sousThemes.words.map((chip, index) => (
+
+                                <div className="option_chips">
+                                    {phrasesEn.map((phrase, index) => (
                                         <div key={index} className="chip">
-                                            <span>{chip}</span>
-                                            <FontAwesomeIcon icon={faClose} className="close_chips" onClick={() => handleRemoveChip(sousThemes.id, index)} />
+                                            <span>{phrase}</span>
+                                            <FontAwesomeIcon
+                                                icon={faClose}
+                                                className="close_chips"
+                                                onClick={() => handleRemove(index, "en")}
+                                            />
                                         </div>
                                     ))}
-                                </div> */}
-                                <span className="nbre_words">Listes de phrases:</span>
+                                </div>
+                                <span className="nbre_words">Listes de phrases:{phrasesEn.length}</span>
 
                             </div>
                         </div>
-                        {/* <div className="space-signup">
-                            <label htmlFor="thématique">Thématique</label>
-                            <input
-                                type="text"
-                                name="thématique"
-                                defaultValue={thématique}
-                                {...register("thématique", { required: "La thématique est obligatoire" })}
-                                onBlur={() => {
-                                    setTimeout(() => setSelect(false), 200);
-                                }}
-                                onChange={(e) => {
-                                    searchElementUserNameGrammar(e.target.value);
-                                    setSelect(true);
-                                    register('thématique').onChange(e);
-                                }}
-                            />
-                            {errors.thématique && <span className="error">{errors.thématique.message}</span>}
 
-                            {select && (
-                                <div className="optionGrammar1">
-                                    {searchResultsGrammar.map((infosUsers) => {
-                                        return (
-                                            <span key={infosUsers.id} onClick={() => handleChildClickTheme(infosUsers.name, infosUsers.id)}>
-                                                {infosUsers.name}
-                                            </span>
-                                        );
-                                    })}
-                                </div>
-                            )}
-                        </div> */}
-
-                        {/* <div className="space-signup" onClick={handleSelectJuridictions} ref={selectWordsRef}>
-                            <label htmlFor="words">Listes de mots</label>
-                            <input
-                                type="text"
-                                name="words"
-                                value={words}
-                                onChange={(e) => {
-                                    setWords(e.target.value)
-                                    register('words').onChange(e);
-                                    if (words.length === 1) {
-
-                                        setCrossword_id([])
-                                    }
-                                    console.log(words)
-                                }}
-                            />
-                            <FontAwesomeIcon icon={faAngleDown} className="iconWords" style={{ transform: rotateIconWords && "rotate(180deg)" }} />
-                            {errors.words && <span className="error">{errors.words.message}</span>}
-
-                            {selectWords && (
-                                <div className="optionGrammar1">
-                                    {dataWords.map((infosUsers) => {
-                                        return (
-                                            <span key={infosUsers.id} onClick={() => handleChildClickWords(infosUsers.name, infosUsers.id)}>
-                                                {infosUsers.name}
-                                            </span>
-                                        );
-                                    })}
-                                </div>
-                            )}
-                        </div> */}
                     </div>
 
                     <div className="description">

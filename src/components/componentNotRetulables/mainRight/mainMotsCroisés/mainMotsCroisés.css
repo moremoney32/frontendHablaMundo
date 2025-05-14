@@ -51,11 +51,37 @@
     height: 375px;
     overflow-y: auto;
 }
+.sous_parent_main_croisés_left_parent1{
+    display:grid;
+   grid-template-columns: 1fr;
+    gap: 5px !important;
+    max-height: 375px;
+    overflow-y: auto;
+}
 .sous_parent_main_croisés_left_1{
     /* display: flex;
     justify-content: space-between; */
     display:grid;
     grid-template-columns: 1fr 1fr 1fr; 
+  padding-left: 10px;
+  padding-right: 10px;
+    align-items: center;
+    /* padding-left: 10px;
+    padding-right: 10px; */
+    border: none;
+    border-radius:5px;
+     background: #0084FA0D; 
+    color: black;
+    font-weight: 550;
+    font-size: 14px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.sous_parent_main_croisés_left_21{
+    /* display: flex;
+    justify-content: space-between; */
+    display:grid;
+    grid-template-columns: 1fr 1fr; 
   padding-left: 10px;
   padding-right: 10px;
     align-items: center;
@@ -77,6 +103,20 @@
     padding-bottom: 10px; 
     display:grid;
       grid-template-columns: 1fr 1fr 1fr; 
+    padding-left: 10px;
+    padding-right: 10px;
+    border: none;
+    border-radius: 5px !important;
+    font-size: 14px;
+    border: 1px solid #D6EBFF;
+      align-items: center;  
+      position: relative;
+}
+.sous_parent_main_croisés_left_3{
+    padding-top: 10px;
+    padding-bottom: 10px; 
+    display:grid;
+      grid-template-columns: 1fr 1fr; 
     padding-left: 10px;
     padding-right: 10px;
     border: none;

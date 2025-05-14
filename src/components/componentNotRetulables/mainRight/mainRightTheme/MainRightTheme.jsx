@@ -105,7 +105,7 @@ export const MainRightTheme = () => {
     let message1 = "Demande prise en compte"
     let message2 = "Demande non prise en compte"
     const [thematiques, setThematiques] = useState([
-        { id: 1, thematique: '', crossword: '', words: [],wordsAnglais:[] },
+        { id: 1, thematique: '', crossword: '', words: [], wordsAnglais: [] },
     ]);
     const [loading, setLoading] = useState(false);
     const selectRef = useRef(null);
@@ -288,10 +288,14 @@ export const MainRightTheme = () => {
             const dataSend = {
                 name: data.thematique,
                 color: color,
-                 visibility: 0,
+                visibility: 0,
                 // icon: icons[selectedIconIndex].name,
-                wordsFr: thematiques[0].words,
-                wordsEn:thematiques[0].wordsAnglais
+
+                dataCrossword: [{
+                    crossword: thematiques[0].crossword,
+                    wordsFr: thematiques[0].words,
+                    wordsEn: thematiques[0].wordsAnglais,
+                }]
             }
             console.log(dataSend)
             setEtatSousTheme(true);
@@ -351,13 +355,22 @@ export const MainRightTheme = () => {
     const handleAddThematique = () => {
         setThematiques([...thematiques, { id: thematiques.length + 1, crossword: '', words: [] }])
     }
+const inputRef = useRef(null);
 
+const handleClearSearch = () => {
+    if (inputRef.current) {
+        inputRef.current.value = "";
+    }
+    setLevelSearch(true);
+    setEtatSearch(false);
+    register("checkValue").onChange({ target: { value: "" } });
+};
     const handleAddChip = (id, value) => {
         const updatedFormations = [...thematiques];
         const updatedFormation = updatedFormations.find((f) => f.id === id);
 
         // Séparer les mots par les virgules
-        const chips = value.split(',')
+        const chips = value.split(/\r?\n/)
             .map(chip => chip.trim())
             .filter(chip => chip);
 
@@ -366,20 +379,22 @@ export const MainRightTheme = () => {
 
         setThematiques(updatedFormations);
     };
+
     const handleAddChips = (id, value) => {
         const updatedFormations = [...thematiques];
         const updatedFormation = updatedFormations.find((f) => f.id === id);
 
         // Séparer les mots par les virgules
-        const chips = value.split(',')
+        const chips = value.split(/\r?\n/)
             .map(chip => chip.trim())
             .filter(chip => chip);
 
         // doublons
-        updatedFormation.wordsAnglais  = [...updatedFormation.wordsAnglais, ...chips];
+        updatedFormation.wordsAnglais = [...updatedFormation.wordsAnglais, ...chips];
         setThematiques(updatedFormations);
     };
   
+
     const handleRemoveThematique = (id) => {
         setThematiques(thematiques.filter((theme) => theme.id !== id));
     };
@@ -394,7 +409,7 @@ export const MainRightTheme = () => {
                 //snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg", result.message, 4000);
                 snackbbar(document.querySelector("#body"), infos, message1, 4000);
                 setResultAllThematiques(result.thematique);
-                return  fetchDataGet("themes").then((result) => {
+                return fetchDataGet("themes").then((result) => {
                     console.log(result)
                     const response = result.sort((a, b) => a.name.localeCompare(b.name))
                     setResultAllThematiques(response)
@@ -433,7 +448,7 @@ export const MainRightTheme = () => {
             </div>
             <div className="sous_parent_main_users_header">
                 <div className="sous_parent_main_users_header_input">
-                    <input type="text" className="input_users" placeholder="Rechercher une thématique" name="checkValueThematique" onChange={(e) => {
+                    <input type="text"   ref={inputRef} className="input_users" placeholder="Rechercher une thématique" name="checkValueThematique" onChange={(e) => {
                         const searchValue = e.target.value.toLowerCase();
                         setLevelSearch(false);
                         setEtatSearch(true)
@@ -444,10 +459,11 @@ export const MainRightTheme = () => {
                         }
                         register("checkValue").onChange(e);
                     }} />
-                     <FontAwesomeIcon
-                                            icon={faClose}
-                                            className="icons_close_list"
-                                        /> 
+                    <FontAwesomeIcon
+                        icon={faClose}
+                        className="icons_close_list"
+                        onClick={handleClearSearch}
+                    />
                     <div className="parent_search_users">
                         <img src={search} alt="" className="search_users" />
                     </div>
@@ -621,7 +637,7 @@ export const MainRightTheme = () => {
                     <div className="parent_contenair_sous_thematique">
                         {
                             thematiques?.map((sousThemes) => {
-                                console.log("sousThemes",sousThemes)
+                                console.log("sousThemes", sousThemes)
                                 return (
                                     <div className="contenair_sous_thematique" key={sousThemes.id}>
                                         <div className="parent_sous_thematique">
@@ -656,7 +672,7 @@ export const MainRightTheme = () => {
                                                         ))}
                                                     </div>
                                                     <span className="nbre_words">Listes de mots:{sousThemes.words.length}</span>
-                                                    
+
                                                 </div>
                                             </div>
                                             <div className="space_contenair">
@@ -679,10 +695,10 @@ export const MainRightTheme = () => {
                                                         ))}
                                                     </div>
                                                     <span className="nbre_words">Listes de mots:{sousThemes.wordsAnglais.length}</span>
-                                                    
+
                                                 </div>
                                             </div>
-                                           
+
                                         </div>
                                         <div className="add_remove">
                                             {

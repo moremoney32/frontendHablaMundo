@@ -1,0 +1,37 @@
+import { useState, useCallback} from 'react';
+
+export function useSearchNamesTitres(arrayInformation) {
+  const [searchResults, setSearchResults] = useState([]);
+
+  const searchElementUserName = useCallback((userInformation) => {
+    return new Promise((resolve) => {
+      let timeOutId = null;
+        clearTimeout(timeOutId);
+      timeOutId = setTimeout(()=>{
+        const searchName = () => {
+          return new Promise((resolve) => {
+            const searchName = arrayInformation.filter((info) => info.titre);
+            const searchNamesInfos = arrayInformation.filter((info) => {
+              
+              if (info.titre && info.titre.toLowerCase().includes(userInformation.toLowerCase())) {
+                return true;
+              }
+              return false;
+            });
+            return resolve(searchNamesInfos);
+          });
+        };
+    
+       
+        Promise.all([searchName()]).then((response) => {
+          const results = [...response[0]];
+          const filterDoublon = [...new Set(results)];
+          setSearchResults(filterDoublon);
+          return resolve(filterDoublon);
+        });
+    },500)
+     });
+  }, [arrayInformation]);
+  
+  return [searchResults, searchElementUserName];
+}

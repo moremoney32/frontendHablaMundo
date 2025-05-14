@@ -26,6 +26,7 @@ import { faEdit } from "@fortawesome/free-solid-svg-icons/faEdit";
 import { fetchDataPut } from "../../../../helpers/fetchDataPut";
 import { useCallback } from "react";
 import { useSearchGrammar } from "../../../../customsHooks/userSearchGrammar";
+import { useSearchNamesTitres } from "../../../../customsHooks/userSearchNamesTitres";
 export const MainConversions = () => {
     const [dataUser, setDataUser] = useState([]);
     const [thématique, setThématiques] = useState("");
@@ -43,11 +44,12 @@ export const MainConversions = () => {
     const selectRefGrammar = useRef(null)
     const textareaRef = useRef(null);
     const fileInputRef = useRef(null);
-    const [crossword_id, setCrossword_id] = useState([]);
+    const [crossword_id, setCrossword_id] = useState("");
     const [color, setColor] = useState('#ED4C5C');
     const [showPicker, setShowPicker] = useState(false);
     const [etatSousTheme, setEtatSousTheme] = useState(false);
     const [optionVisible, setOptionVisible] = useState(false);
+    const [title, setTitle] = useState("");
     const [optionVisibleVisibility, setOptionVisibleVisibility] = useState(false);
     const [optionName, setOptionName] = useState("Ordre Aphabétique");
     const [rotateIcon, setRotateIcon] = useState(false);
@@ -61,24 +63,21 @@ export const MainConversions = () => {
     const [optionNameVisibility, setOptionNameVisibility] = useState("Non");
     const [rotateIconLanguages, setRotateIconLanguages] = useState(false);
     const [rotateIconVisility, setRotateIconVisibility] = useState(false);
-     const itemsPages = 10;
-       const [dataConversations, setDataConversations] = useState([]);
-    const [searchResults, searchElementUserName] = useSearchNames(dataConversations);
-   
+    const itemsPages = 10;
+    const [dataConversations, setDataConversations] = useState([]);
+    const [searchResults, searchElementUserName] = useSearchNamesTitres(dataConversations);
+
     /******edit Name */
     const [etatEdit, setEtatEdit] = useState(false);
     const [editingId, setEditingId] = useState(null); // ID de l'élément en édition
-    const [editingData, setEditingData] = useState({titre: ""});
-    const [contextMenu, setContextMenu] = useState(null); // Stocke les coordonnées du clic droit
-    const [selectedId, setSelectedId] = useState(null); // Stocke l'ID de la thématique cliquée
-    const [selectedName, setSelectedName] = useState(null); // Stocke le nom de la thématique
+    const [editingData, setEditingData] = useState({ titre: "" });
     const token = localStorage.getItem("token")
 
     // Fonction pour ouvrir la popup avec les données actuelles
     const handleEdit = (id, titre) => {
         console.log(id)
         setEditingId(id);
-        setEditingData({ titre});
+        setEditingData({ titre });
         setEtatEdit(true);
     };
 
@@ -114,21 +113,39 @@ export const MainConversions = () => {
         // Fermer la popup
     };
 
-    const handleChildClickTheme = (theme, id) => {
-        setThematique_id(id)
-        localStorage.setItem("idThematiqueTraduction", id)
-        const userId = {
-            id: id
+    const handleChildClickTheme = async (theme, id) => {
+    console.log(id);
+    setThematique_id(id);
+    const userId = { id };
+
+    setSelect(false);
+    setDataWords([]);
+    setThématiques(theme);
+    setValue('thématique', theme);
+
+    try {
+        const response = await fetch("https://www.backend.habla-mundo.com/api/v1/theme", {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ id })
+        });
+
+        if (!response.ok) {
+            console.error("Erreur HTTP:", response.status);
+            return;
         }
-        setSelect(false);
-        setDataWords([])
-        setThématiques(theme)
-        setValue('thématique', theme);
-        fetchData("theme", userId).then((result) => {
-            console.log(result)
-            return setDataWords(result)
-        })
-    };
+
+        const result = await response.json();
+        console.log(result);
+        setDataWords(result);  // Si ton API renvoie bien un tableau de mots
+    } catch (error) {
+        console.error("Erreur réseau:", error);
+    }
+};
+
 
     const handleSelectJuridictions = () => {
         let select = selectWordsRef.current
@@ -146,8 +163,8 @@ export const MainConversions = () => {
     const handleChildClickWords = (value, id) => {
         if (!words.includes(value)) {
             // Ajouter la nouvelle juridiction à celles déjà sélectionnées, séparées par des virgules
-            setWords(prevJuridictions => prevJuridictions ? `${prevJuridictions}, ${value}` : value);
-            setCrossword_id(prevIds => [...prevIds, id]);
+            setWords(value);
+            setCrossword_id(id);
         }
         setSelectWords(false);
     };
@@ -157,6 +174,14 @@ export const MainConversions = () => {
     const handleClose = () => {
         setEtatEdit(false);
         setEditingId(null);
+    };
+    const handleRemove = (index, lang) => {
+        if (lang === "fr") {
+            setPhrasesFr(prev => prev.filter((_, i) => i !== index));
+        } else if (lang === "en") {
+            // setPhrasesEn(prev => prev.filter((_, i) => i !== index));
+            return null
+        }
     };
 
 
@@ -170,6 +195,7 @@ export const MainConversions = () => {
     const selectRef = useRef(null);
     const selectRefLanguages = useRef(null);
     const selectRefVisibility = useRef(null);
+    const [phrasesFr, setPhrasesFr] = useState([]);
     const dataSelectStatus = ["Ordre Aphabétique", "Plus récents", "Moins récents"];
     const dataSelectVisibility = ["Non", "Oui"];
     const dataSelect = ["Anglais"];
@@ -201,6 +227,33 @@ export const MainConversions = () => {
             setOptionVisibleVisibility(true);
         }
     };
+
+    // const handleAddPhrase = (value, type) => {
+    //     const phrases = value.split(",").map(p => p.trim()).filter(p => p);
+
+    //     if (type === "fr") {
+    //         setPhrasesFr(prev => [...prev, ...phrases]);
+    //     } else if (type === "en") {
+    //         // setPhrasesEn(prev => [...prev, ...phrases]);
+    //         return null
+    //     }
+    // };
+
+    const handleAddPhrase = (value, type) => {
+    const separators = /\r?\n/; // Supporte Windows (\r\n) et Unix (\n)
+
+    const phrases = value
+        .split(separators)  // On coupe selon les sauts de ligne
+        .map(p => p.trim()) // On nettoie les espaces autour
+        .filter(p => p.length > 0); // On ignore les vides
+
+    if (type === "fr") {
+        setPhrasesFr(prev => [...prev, ...phrases]);
+    } else if (type === "en") {
+        return null;
+    }
+};
+
     const changeIconLanguages = () => {
         const select = selectRefLanguages.current;
         setRotateIcon(!rotateIcon);
@@ -316,64 +369,81 @@ export const MainConversions = () => {
             setResultAllThematiques(response)
         })
     }, [])
-  
+ const fetchData = async() => {
+            try {
+                const response =  await fetch(
+                    "https://www.backend.habla-mundo.com/api/v1/get_thematique_conversation_list",
+                    {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${token}`
+                        }
+                    }
+                );
+
+                if (!response.ok) {
+                    throw new Error(`Erreur HTTP: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log("Données récupérées :", data);
+                setDataConversations(data.data)
+
+            } catch (error) {
+                console.error("Erreur lors de la récupération :", error);
+            }
+        };
 
     useEffect(() => {
-        const fetchData = async () => {
-          try {
-            const response = await fetch(
-              "https://www.backend.habla-mundo.com/api/v1/get_thematique_conversation_list", 
-              {
-                method: "GET",
-                headers: {
-                  "Content-Type": "application/json",
-                   "Authorization": `Bearer ${token}`
-                }
-              }
-            );
-    
-            if (!response.ok) {
-              throw new Error(`Erreur HTTP: ${response.status}`);
-            }
-    
-            const data = await response.json();
-            console.log("Données récupérées :", data);
-            setDataConversations(data.data[0])
-            
-          } catch (error) {
-            console.error("Erreur lors de la récupération :", error);
-          }
-        };
-    
+       
+
         fetchData();
-      }, []);
+    }, []);
     let checkVisibility;
-    const onSubmit = async (data) => {
+    const onSubmit =  async(data) => {
 
         setLoading(true)
         try {
 
             const dataSend = {
+                titre: title,
                 crossword_id: crossword_id,
                 thematique_id: thematique_id,
+                phrases: phrasesFr
             };
             console.log(dataSend)
-            const response = await fetchData("conversations_add", dataSend, token);
-            console.log(response)
-            //  if (response.status === 422) {
-            //      return snackbbar(document.querySelector("#body"), infos, "Cette leçon existe déjà", 3000);
+          const response =  await fetch(
+                    "https://www.backend.habla-mundo.com/api/v1/conversations_add",
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${token}`
+                        },
+                             body: JSON.stringify(dataSend)
+                    }
+                );
 
-            //  } else if (response.status === 201) {
-            //      return snackbbar(document.querySelector("#body"), infos, "Demande prise en compte", 3000), navigate("/AllTraduction")
-            //  }
-            //  else if (response.message === "The description field is required.") {
-            //      return snackbbar(document.querySelector("#body"), infos, "Description obligatoire", 3000)
-            //  }
+                if (response.ok) {
+                    snackbbar(document.querySelector("#body"), infos, "Demande prise en compte", 3000)
+                   navigate("/conversation")
+                    setEtat(false)
+                    setPhrasesFr([])
+                    setTitle("")
+                    setThematiques("")
+                    fetchData()
+                }
+
+              
+               
+
         } catch (error) {
             console.error(error);
         } finally {
             setLoading(false);
         }
+
     };
 
     useEffect(() => {
@@ -394,68 +464,48 @@ export const MainConversions = () => {
     const handleAddThematique = () => {
         setThematiques([...thematiques, { id: thematiques.length + 1, crossword: '', words: [] }])
     }
+    const inputRef = useRef(null);
+const handleClearSearch = () => {
+    if (inputRef.current) {
+        inputRef.current.value = "";
+    }
+    setLevelSearch(true);
+    setEtatSearch(false);
+    register("checkValue").onChange({ target: { value: "" } });
+};
 
-    const handleAddChip = (id, value) => {
-        const updatedFormations = [...thematiques];
-        const updatedFormation = updatedFormations.find((f) => f.id === id);
-
-        // Séparer les mots par les virgules
-        const chips = value.split(',')
-            .map(chip => chip.trim())
-            .filter(chip => chip);
-
-        // doublons
-        updatedFormation.words = [...updatedFormation.words, ...chips];
-        // updatedFormation.words = Array.from(new Set(updatedFormation.words.map(word => word.toLowerCase())))
-        //     .map(lowercaseWord =>
-        //         updatedFormation.words.find(word => word.toLowerCase() === lowercaseWord)
-        //     );
-
-        setThematiques(updatedFormations);
-    };
     const handleRemoveThematique = (id) => {
         setThematiques(thematiques.filter((theme) => theme.id !== id));
     };
     const removeTheme = (id) => {
-        const dataSend = {
-            id: id
-        }
         console.log(id)
-        fetchDelete("themes", dataSend, token).then((result) => {
-            // console.log(result)
-            if (result.message === "the thematique is deleted") {
-                //snackbbar(document.querySelector("#body"), "../../../assets/icons/info.svg", result.message, 4000);
-                snackbbar(document.querySelector("#body"), infos, message1, 4000);
-                setResultAllThematiques(result.thematique);
-                return fetchDataGet("themes").then((result) => {
-                    console.log(result)
-                    const response = result.sort((a, b) => a.name.localeCompare(b.name))
-                    setResultAllThematiques(response)
-                })
+        const dataSend = {       
+            conversation_id: id
+        }
+        console.log(dataSend)
+        fetchDelete("conversation", dataSend, token).then((result) => {
+             console.log(result)
+            if (result.status === 200) {
+                snackbbar(document.querySelector("#body"), infos, "demande prise en compte", 4000);
+                
+                setTimeout(() =>{
+                         fetchData();
+                },2000)
             }
         }).catch((error) => {
             console.log({ messahge: error })
         })
     };
     const updateCrosswords = (id, name) => {
-         setTimeout(() => {
-    navigate("/conversationDetails", {
-      state: { 
-        id: id, 
-        name: name 
-      }
-    });
-  }, 500);
+        setTimeout(() => {
+            navigate("/conversationDetails", {
+                state: {
+                    id: id,
+                    name: name
+                }
+            });
+        }, 500);
     }
-    // const updateCrosswords = (id, name) => {
-    //     const result = { id };
-    //     const dataSend = { name };
-    //     localStorage.setItem("result", JSON.stringify(result));
-    //     localStorage.setItem("theme", JSON.stringify(dataSend));
-
-    //     navigate("/sousThematiques"); 
-    // }
-    console.log("conversations",dataConversations)
     return (
         <div className="parent_main">
             <div className="title_main">
@@ -467,7 +517,7 @@ export const MainConversions = () => {
             </div>
             <div className="sous_parent_main_users_header">
                 <div className="sous_parent_main_users_header_input">
-                    <input type="text" className="input_users" placeholder="Rechercher une conversation" name="checkValueThematique" onChange={(e) => {
+                    <input type="text"  ref={inputRef} className="input_users" placeholder="Rechercher une conversation" name="checkValueThematique" onChange={(e) => {
                         const searchValue = e.target.value.toLowerCase();
                         setLevelSearch(false);
                         setEtatSearch(true);
@@ -481,6 +531,7 @@ export const MainConversions = () => {
                     <FontAwesomeIcon
                         icon={faClose}
                         className="icons_close_list"
+                        onClick={handleClearSearch}
 
                     />
                     <div className="parent_search_users">
@@ -501,12 +552,12 @@ export const MainConversions = () => {
                         key={result.id}
                         className="sous_alls_thematicss"
                     >
-                         <span
-                                className="parent_icons_thematics_child2"
-                                onClick={() => updateCrosswords(result.id, result.titre)}
-                            >
-                                {result?.titre}
-                            </span>
+                        <span
+                            className="parent_icons_thematics_child2"
+                            onClick={() => updateCrosswords(result.id_conversation, result.titre)}
+                        >
+                            {result?.titre}
+                        </span>
                         <div className="parent_icons_thematics">
                             <span
                                 className="parent_icons_thematics_child2"
@@ -525,15 +576,21 @@ export const MainConversions = () => {
                         </span>
                         <FontAwesomeIcon icon={faEdit} className="edit_icon" onClick={() => handleEdit(result.id_conversation, result.titre)} />
                         <div className="parent_icons_thematics_span">
-                            <img src={remove} alt="remove_words" className="remove_words" onClick={() => removeTheme(result.id)} />
+                            <img src={remove} alt="remove_words" className="remove_words" onClick={() => removeTheme(result.id_conversation)} />
                         </div>
                     </div>
                 ))}
                 {etatSearch && searchResults?.map((result) => (
                     <div
                         key={result.id}
-                        className="sous_alls_thematics"
+                        className="sous_alls_thematicss"
                     >
+                         <span
+                            className="parent_icons_thematics_child2"
+                            onClick={() => updateCrosswords(result.id_conversation, result.titre)}
+                        >
+                            {result?.titre}
+                        </span>
                         <div className="parent_icons_thematics">
                             <span
                                 className="parent_icons_thematics_child2"
@@ -553,7 +610,7 @@ export const MainConversions = () => {
                         </span>
                         <FontAwesomeIcon icon={faEdit} className="edit_icon" onClick={() => handleEdit(result.id_conversation, result.titre)} />
                         <div className="parent_icons_thematics_span">
-                            <img src={remove} alt="remove_words" className="remove_words" onClick={() => removeTheme(result.id)} />
+                            <img src={remove} alt="remove_words" className="remove_words" onClick={() => removeTheme(result.id_conversation)} />
                         </div>
                     </div>
                 ))}
@@ -601,7 +658,18 @@ export const MainConversions = () => {
                     <span className="title">CREATION D'UNE CONVERSATION</span>
                     <div className="answer_client_theme2">
                         <div className="space-signup">
-                            <label htmlFor="thématique">TITRE DE LA CONVERSATION</label>
+                            <label htmlFor="thématique">Titre de la Conversation</label>
+                            <input
+                                type="text"
+                                name="thématique"
+                                value={title}
+                                onChange={(e) => {
+                                    setTitle(e.target.value)
+                                }}
+                            />
+                        </div>
+                        <div className="space-signup">
+                            <label htmlFor="thématique">Thématique</label>
                             <input
                                 type="text"
                                 name="thématique"
@@ -621,7 +689,8 @@ export const MainConversions = () => {
                             {select && (
                                 <div className="optionGrammar1">
                                     {searchResultsGrammar.map((infosUsers) => {
-                                        return (
+                                                                           
+                                            return (
                                             <span key={infosUsers.id} onClick={() => handleChildClickTheme(infosUsers.name, infosUsers.id)}>
                                                 {infosUsers.name}
                                             </span>
@@ -632,7 +701,7 @@ export const MainConversions = () => {
                         </div>
 
                         <div className="space-signup" onClick={handleSelectJuridictions} ref={selectWordsRef}>
-                            <label htmlFor="words">Thématique</label>
+                            <label htmlFor="words">Listes de mots</label>
                             <input
                                 type="text"
                                 name="words"
@@ -640,10 +709,7 @@ export const MainConversions = () => {
                                 onChange={(e) => {
                                     setWords(e.target.value)
                                     register('words').onChange(e);
-                                    if (words.length === 1) {
-
-                                        setCrossword_id([])
-                                    }
+                                   
                                     console.log(words)
                                 }}
                             />
@@ -664,28 +730,32 @@ export const MainConversions = () => {
                         </div>
                     </div>
                     <div className="space_contenair contenair_phrases">
-                            <label htmlFor="">Liste des phrases de la  conversation</label>
-                            <div className="parent_textarea">
-                                <textarea className="textarea_sous_thematique" placeholder="Entrer une phrase française" onKeyDown={(e) => {
-                                    if (e.key === 'Enter') {
-                                        e.preventDefault();
-                                        // handleAddChip(sousThemes.id, e.target.value);
-                                        e.target.value = '';
-                                    }
-                                }}>
-                                </textarea>
-                                {/* <div className="option_chips">
-                                    {sousThemes.words.map((chip, index) => (
-                                        <div key={index} className="chip">
-                                            <span>{chip}</span>
-                                            <FontAwesomeIcon icon={faClose} className="close_chips" onClick={() => handleRemoveChip(sousThemes.id, index)} />
-                                        </div>
-                                    ))}
-                                </div> */}
-                                <span className="nbre_words">Listes de phrases:</span>
-
+                        <label htmlFor="">Liste des phrases de la  conversation</label>
+                        <div className="parent_textarea">
+                            <textarea className="textarea_sous_thematique" placeholder="Entrer une phrase française" onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    e.preventDefault();
+                                    handleAddPhrase(e.target.value, "fr");
+                                    e.target.value = '';
+                                }
+                            }}>
+                            </textarea>
+                            <div className="option_chips">
+                                {phrasesFr.map((phrase, index) => (
+                                    <div key={index} className="chip">
+                                        <span>{phrase}</span>
+                                        <FontAwesomeIcon
+                                            icon={faClose}
+                                            className="close_chips"
+                                            onClick={() => handleRemove(index, "fr")}
+                                        />
+                                    </div>
+                                ))}
                             </div>
+                            <span className="nbre_words">Listes de phrases:{phrasesFr.length}</span>
+
                         </div>
+                    </div>
 
 
 
