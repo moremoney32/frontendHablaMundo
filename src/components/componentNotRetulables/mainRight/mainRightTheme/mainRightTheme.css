@@ -485,7 +485,8 @@ text-decoration: underline;
   gap: 20px;
 }
 .answer_client_theme2_child1{
-  width: calc(100% - 220px);
+   /* width: calc(100% - 220px); */
+   width: calc(50%);
   display: flex;
   gap: 20px;
   align-items: center;
@@ -494,7 +495,7 @@ text-decoration: underline;
   display: flex;
   flex-direction: column;
   gap: 5px;
-  width: 50%;
+  width: 100%;
   position: relative;
 }
 .answer_client_theme2_child1_left label{
@@ -512,7 +513,8 @@ text-decoration: underline;
   outline: none;
 }
 .answer_client_theme2_child2{
-  width: 200px;
+  /* width: 200px; */
+  width: 50%;
   display: flex;
   flex-direction: column;
   gap: 5px;

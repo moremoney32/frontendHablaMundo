@@ -593,7 +593,7 @@ const handleClearSearch = () => {
                                 <input type="text" placeholder="Entrer le nom de la thematique" name="thematique" {...register("thematique", { required: "Veuillez entrer une thématique" })} />
                                 {errors.thematique && <span className="error_theme">{errors.thematique.message}</span>}
                             </div>
-                            <div className="answer_client_theme2_child1_left">
+                            {/* <div className="answer_client_theme2_child1_left">
                                 <label htmlFor="">Langue de la traduction</label>
                                 <SelectLanguages
                                     dataSelectStatus={dataSelect}
@@ -605,7 +605,7 @@ const handleClearSearch = () => {
                                     rotateIcon={rotateIconLanguages}
                                     icon={state} />
 
-                            </div>
+                            </div> */}
                         </div>
                         <div className="answer_client_theme2_child2">
                             <label htmlFor="">Couleur</label>
@@ -711,10 +711,10 @@ const handleClearSearch = () => {
                                             }
 
                                             <span className="element_none">0</span>
-                                            <div className="add_theme">
+                                            {/* <div className="add_theme">
                                                 <span>+</span>
                                                 <span onClick={handleAddThematique}>Ajouter une sous-thématique</span>
-                                            </div>
+                                            </div> */}
                                         </div>
                                     </div>
                                 )

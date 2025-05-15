@@ -20,7 +20,7 @@ html, body {
   --color-secondary: #24D26D;
 }
 ::-webkit-scrollbar {
-  width: 4px !important;
+  width: 7px !important;
 }
 
 /* Track */

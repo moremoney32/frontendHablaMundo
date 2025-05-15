@@ -111,7 +111,7 @@ export const MainRightHome = () => {
                     <InformationUser defaultClassName="icons_user_img1" user="Nombres de mots" icon={faSchool} number={stat?.words} className="color_home2" />
                     <InformationUser defaultClassName="icons_user_img1" user="Nombres de phrases" icon={faSpellCheck} number={stat?.nombre_phrase} className="color_home" />
                 </div>
-                <div className="sous_parent_main_home2">
+                {/* <div className="sous_parent_main_home2">
                     <div className="title_main_home">
                         <span className="h3_home">Thématiques</span>
                         <div className="update_theme_home">
@@ -131,7 +131,7 @@ export const MainRightHome = () => {
                     </div>
                     <NavLink to="/theme" className="voir_plus"><span>Voir plus</span></NavLink>
 
-                </div>
+                </div> */}
                 {/* <div className="sous_parent_main_home3">
                     <span className="h3_home">Notifications</span>
                     <div className="parent_notifications_home">

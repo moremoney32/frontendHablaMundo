@@ -407,7 +407,7 @@ export const MainConversions = () => {
         try {
 
             const dataSend = {
-                titre: title,
+                // titre: title,
                 crossword_id: crossword_id,
                 thematique_id: thematique_id,
                 phrases: phrasesFr
@@ -550,13 +550,13 @@ const handleClearSearch = () => {
                 {levelSearch && dataConversations?.map((result) => (
                     <div
                         key={result.id}
-                        className="sous_alls_thematicss"
+                        className="sous_alls_thematics"
                     >
                         <span
                             className="parent_icons_thematics_child2"
-                            onClick={() => updateCrosswords(result.id_conversation, result.titre)}
+                            onClick={() => updateCrosswords(result.id_conversation, result.crossword_name)}
                         >
-                            {result?.titre}
+                            {result?.crossword_name}
                         </span>
                         <div className="parent_icons_thematics">
                             <span
@@ -574,7 +574,7 @@ const handleClearSearch = () => {
                         <span className="parent_icons_thematics_span">
                             créé {formatTime(result?.created_at)}
                         </span>
-                        <FontAwesomeIcon icon={faEdit} className="edit_icon" onClick={() => handleEdit(result.id_conversation, result.titre)} />
+                        {/* <FontAwesomeIcon icon={faEdit} className="edit_icon" onClick={() => handleEdit(result.id_conversation, result.crossword_name)} /> */}
                         <div className="parent_icons_thematics_span">
                             <img src={remove} alt="remove_words" className="remove_words" onClick={() => removeTheme(result.id_conversation)} />
                         </div>
@@ -583,13 +583,13 @@ const handleClearSearch = () => {
                 {etatSearch && searchResults?.map((result) => (
                     <div
                         key={result.id}
-                        className="sous_alls_thematicss"
+                        className="sous_alls_thematics"
                     >
                          <span
                             className="parent_icons_thematics_child2"
-                            onClick={() => updateCrosswords(result.id_conversation, result.titre)}
+                            onClick={() => updateCrosswords(result.id_conversation, result.crossword_name)}
                         >
-                            {result?.titre}
+                            {result?.crossword_name}
                         </span>
                         <div className="parent_icons_thematics">
                             <span
@@ -608,7 +608,7 @@ const handleClearSearch = () => {
                         <span className="parent_icons_thematics_span">
                             créé {formatTime(result.created_at)}
                         </span>
-                        <FontAwesomeIcon icon={faEdit} className="edit_icon" onClick={() => handleEdit(result.id_conversation, result.titre)} />
+                        {/* <FontAwesomeIcon icon={faEdit} className="edit_icon" onClick={() => handleEdit(result.id_conversation, result.titre)} /> */}
                         <div className="parent_icons_thematics_span">
                             <img src={remove} alt="remove_words" className="remove_words" onClick={() => removeTheme(result.id_conversation)} />
                         </div>
@@ -657,7 +657,7 @@ const handleClearSearch = () => {
                     <FontAwesomeIcon icon={faClose} className="close_theme" onClick={close} />
                     <span className="title">CREATION D'UNE CONVERSATION</span>
                     <div className="answer_client_theme2">
-                        <div className="space-signup">
+                        {/* <div className="space-signup">
                             <label htmlFor="thématique">Titre de la Conversation</label>
                             <input
                                 type="text"
@@ -667,7 +667,7 @@ const handleClearSearch = () => {
                                     setTitle(e.target.value)
                                 }}
                             />
-                        </div>
+                        </div> */}
                         <div className="space-signup">
                             <label htmlFor="thématique">Thématique</label>
                             <input

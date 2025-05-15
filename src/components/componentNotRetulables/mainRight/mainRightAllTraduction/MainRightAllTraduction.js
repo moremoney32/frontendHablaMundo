@@ -13,7 +13,7 @@ import closePopup from "../../../../assets/icons/closePopup.png";
 import { Popup } from '../../../repeatableComponents/atomes/popup/Popup';
 import { fetchDelete } from '../../../../helpers/fetchDelete';
 import { PopupRemove } from '../../../repeatableComponents/atomes/popup/PopupRemove';
-import { faEdit } from '@fortawesome/free-solid-svg-icons';
+import { faCopy, faEdit } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export const MainRightAllTraduction = () => {
@@ -90,15 +90,44 @@ export const MainRightAllTraduction = () => {
     //     updatedLevels[levelIndex].sentences.push(newSentence);
     //     setLevels(updatedLevels);
     // };
-    const addSentence = (lessonId) => {
-        const dataSend = {
-            lesson_id: lessonId
-        }
-        fetchData("generate_more_sentences", dataSend, token).then((response) => {
-            console.log(response)
-            return snackbbar(document.querySelector("#body"), infos, "Demande prise en compte", 3000), setLevels(response?.data)
-        })
+    const addSentence = (levelIndex,lessonId) => {
+    const updatedLevels = [...levels];
+
+    const newSentence = {
+      
+        content: "",
+        traduction: "",
+        lesson_id: lessonId,
     };
+
+    updatedLevels[levelIndex].sentences.push(newSentence);
+    setLevels(updatedLevels);
+};
+const removeSentence = (levelIndex, sentenceIndex) => {
+    const updatedLevels = [...levels];
+    const targetSentence = updatedLevels[levelIndex].sentences[sentenceIndex];
+
+    // Supprimer seulement si la phrase est vide
+    if (
+        targetSentence.content.trim() === "" &&
+        targetSentence.traduction.trim() === ""
+    ) {
+        updatedLevels[levelIndex].sentences.splice(sentenceIndex, 1);
+        setLevels(updatedLevels);
+    } else {
+        snackbbar(document.querySelector("#body"), infos, "Impossible de supprimer une phrase remplie", 3000);
+    }
+};
+    // const addSentence = (lessonId) => {
+    //     const dataSend = {
+    //         lesson_id: lessonId
+    //     }
+    //     console.log(dataSend)
+    //     fetchData("generate_more_sentences", dataSend, token).then((response) => {
+    //         console.log(response)
+    //         return snackbbar(document.querySelector("#body"), infos, "Demande prise en compte", 3000), setLevels(response?.data)
+    //     })
+    // };
 
     const handleSave = async (sentences, idThematique, levelIndex, level, description, lessonId) => {
         console.log(lessonId)
@@ -277,39 +306,13 @@ export const MainRightAllTraduction = () => {
                     {
                         levels.map((level, levelIndex) => {
                             return (
-                                // <div className="sous_child_traduction1" key={levelIndex}>
-                                //     {/* <span className="sous_child_traduction_span">{level.description}</span> */}
-                                //     <p className="sous_child_traduction_span" dangerouslySetInnerHTML={{ __html: level.description }} contentEditable
-                                //         suppressContentEditableWarning
-                                //         onBlur={(e) => {
-                                //             const updatedLevels = [...levels];
-                                //             // Capturer le contenu HTML pour conserver les styles
-                                //             updatedLevels[levelIndex].description = e.currentTarget.innerHTML.trim();
-                                //             setLevels(updatedLevels); // Met à jour le state pour ce niveau spécifique
-                                //         }} />
-                                //     <FontAwesomeIcon icon={faEdit} className='write_traduction' onClick={(e) => {
-                                //         // Trouve le parent le plus proche avec la classe
-                                //         const parentDiv = e.currentTarget.closest('.sous_child_traduction1');
-                                //         // Sélectionne le paragraphe dans ce parent
-                                //         const pElement = parentDiv.querySelector('.sous_child_traduction_span');
-                                //         setTimeout(() => {
-                                //             copyText(pElement.innerText);
-                                //           }, 100);
-                                //         // Copie le texte brut sans le HTML
-                                        
-                                //     }} />
-                                //     <img src={removeTraduction} className='remove_traduction' onClick={() => handleMasque(level.id)} />
-
-                                // </div>
-
-
                                 <div className="sous_child_traduction1" key={levelIndex}>
                                 {/* En-tête cliquable pour le toggle */}
                                 <div 
                                     className="description-header"
                                     onClick={() => toggleDescription(levelIndex)}
                                 >
-                                    <span>Description du niveau {level.level_name}</span>
+                                    <span>Niveau {level.level_name}</span>
                                     <img
                                         src={downTraduction}
                                         className={`toggle-arrow ${
@@ -335,7 +338,7 @@ export const MainRightAllTraduction = () => {
                                             }}
                                         />
                                         <FontAwesomeIcon 
-                                            icon={faEdit} 
+                                            icon={faCopy} 
                                             className='write_traduction' 
                                             onClick={(e) => {
                                                 const parentDiv = e.currentTarget.closest('.sous_child_traduction1');
@@ -381,7 +384,7 @@ export const MainRightAllTraduction = () => {
                                                     onBlur={(e) =>
                                                         handleEditContent(levelIndex, sentenceIndex, e.currentTarget.textContent)
                                                     }>{sentence.content}</span>
-                                                <img src={reset} alt="" className='reset' onClick={() => resetSentence(sentence.id, sentence.lesson_id, sentence.word_id)} />
+                                                {/* <img src={reset} alt="" className='reset' onClick={() => resetSentence(sentence.id, sentence.lesson_id, sentence.word_id)} /> */}
                                             </div>
                                             <div className="english-translation">
                                                 <div
@@ -397,12 +400,32 @@ export const MainRightAllTraduction = () => {
                                             </div>
                                         </div>
                                     ))}
-                                    {level.sentences?.length < 350 && (
-                                        <div className="add-sentence-button" onClick={() => addSentence(level.lesson_id)}>
-                                            <span></span>
-                                            <span className='plusTraduction'>+</span>
+                                    {level.sentences?.length < 700 && (
+                                        <div className="add-sentence-button">
+                                            {/* <span onClick={() => removeSentence(levelIndex,sentenceIndex)}>-</span> */}
+                                            {(() => {
+          const lastSentence = level.sentences[level.sentences.length - 1];
+          const isLastEmpty =
+            lastSentence &&
+            lastSentence.content.trim() === "" &&
+            lastSentence.traduction.trim() === "";
+
+          return isLastEmpty ? (
+            <span
+              onClick={() =>
+                removeSentence(levelIndex, level.sentences.length - 1)
+              }
+              style={{ color: "red", fontWeight: "bold", cursor: "pointer", marginRight: "10px" }}
+            >
+              -
+            </span>
+          ) : null;
+        })()}
+
+                                            <span className='plusTraduction' onClick={() => addSentence(levelIndex,level.lesson_id)}>+</span>
                                         </div>
                                     )}
+                                    
                                 </div>
                             )}
                             <button

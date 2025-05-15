@@ -30,6 +30,7 @@ export const MainRightComptes = () => {
     let message1 = "Demande prise en compte"
     useEffect(() => {
         fetchDataGetToken("user", token).then((result) => {
+            console.log(result)
             setData(result)
         })
         fetch("https://www.backend.habla-mundo.com/api/v1/politiques")
@@ -176,10 +177,10 @@ export const MainRightComptes = () => {
                     <div className="sous_parent_main2_header">
                         <span className="info">Informations personnelles</span>
                         {!isEditable ? <div className="update_info_user" onClick={handleEditable}>
-                            <img src={edit} alt="edit" />
-                            <span>modifier</span>
+                            {/* <img src={edit} alt="edit" /> */}
+                            <span>Modifier</span>
                         </div> : <div className="update_info_user" onClick={handleEditable}>
-                            <img src={edit} alt="edit" />
+                            {/* <img src={edit} alt="edit" /> */}
                             <span>Enregistrer</span>
                         </div>}
                     </div>

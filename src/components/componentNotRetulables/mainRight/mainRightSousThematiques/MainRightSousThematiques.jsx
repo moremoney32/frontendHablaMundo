@@ -188,7 +188,13 @@ export const MainRightSousThematiques = () => {
         if (data) {
             const dataSend = {
                 thematique_id: resultValue.id,
-                dataCrossword: thematiques
+                dataCrossword: [
+                    {
+                        crossword:thematiques[0].crossword,
+                        wordsFr:thematiques[0].words,
+                        wordsEn:thematiques[0].wordsAnglais
+                    }
+                ]
             }
              console.log(dataSend)
             setLoading(true);
@@ -330,10 +336,10 @@ export const MainRightSousThematiques = () => {
                                         }
 
                                         <span className="element_none">0</span>
-                                        <div className="add_theme">
+                                        {/* <div className="add_theme">
                                             <span className="add_theme_1">+</span>
                                             <span onClick={handleAddThematique} className="add_theme_2">Ajouter une sous-thématique</span>
-                                        </div>
+                                        </div> */}
                                     </div>
                                 </div>
                             )

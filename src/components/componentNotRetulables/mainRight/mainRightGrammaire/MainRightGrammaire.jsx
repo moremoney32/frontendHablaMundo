@@ -400,19 +400,19 @@ const handleClearSearch = () => {
     const fetchDataByUrl = (url) => {
         fetchDataGet(url)
             .then((result) => {
-                console.log(result);
+                console.log("result",result);
                 // const sortedData = result.data.sort( 
                 //     (a, b) => new Date(b.created_at) - new Date(a.created_at)
                 // );
-                const sortedData = result.data
-                    ? result.data.sort((a, b) => a.title.localeCompare(b.title))
-                    : [];
-                const uniqueData = Array.from(
-                    new Map(sortedData.map((item) => [item.title, item])).values()
-                );
-                console.log(uniqueData)
+                // const sortedData = result
+                //     ? result.sort((a, b) => a.title.localeCompare(b.title))
+                //     : [];
+                // const uniqueData = Array.from(
+                //     new Map(sortedData.map((item) => [item.title, item])).values()
+                // );
+               // console.log(sortedData)
 
-                setDataUser(uniqueData);
+                setDataUser(result);
             })
             .catch((error) => {
                 console.error("Erreur lors de la récupération des données :", error);
